@@ -1,0 +1,9 @@
+# SETTINGS
+#
+
+backends: [ 
+        { type: "simple", alias: "SimpleSimon",
+          settings: { url: "http://localhost:4567"}
+          },
+]
+tooltips: true

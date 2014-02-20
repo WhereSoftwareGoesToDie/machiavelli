@@ -1,0 +1,67 @@
+<script>
+$(document).ready(function() { 
+	$('#search_filter').on('keyup', function() {
+		val = this.value.toLowerCase();
+		$(".filter_list > li").show().filter(function() {
+			return $(this).text().toLowerCase().indexOf(val) < 0
+		}).hide();
+	});
+
+
+	$("#side-menu").sortable({
+		stop: function(event, ui) { 
+			var metrics = [], params = []
+			$(".sortable").each(function(i,el){
+				metrics.push("metric="+$(el).text().trim())
+			})
+			$.each(location.search.split("&"), function(i, d) {
+				if(d.indexOf("metric") == -1) { params.push(d) }
+				} )
+			new_url = location.origin + location.pathname +"?"+ params.join("&").replace("?","") +"&"+metrics.join("&")
+			window.location.href= new_url
+		}
+	})
+	$(".hover-li").hover(function(){$(this).find(".hover").css("visibility","visible") }, function(){$(this).find(".hover").css("visibility","hidden")})
+
+})
+</script>
+
+<nav class="navbar-default navbar-static-side" role="navigation">
+	<div class="sidebar-collapse">
+		<ul class="nav" id="side-menu" style="font-size: small">
+			<li class="header-text"><i class="icon-bar-chart"></i>Graphed Metrics</li>
+
+			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
+			<li class="hover-li sortable"><div>
+			<a href="<%= rem_qs :metric, metric %>" data-toggle="tooltip" data-original-title="Drag to re-order. Click to remove.">
+				<span class="hover hover-left drag"><i class="icon-reorder"></i></span>
+				<span class="metric"><%= metric %></span>
+				<span class="hover hover-right"><i class="icon-remove"></i></span>
+			</a>
+			</div></li>
+			<% end %>
+		</ul>
+		<ul class="nav" id="side-menu" style="font-size: small">
+			<li class="header-text"><i class="icon-th-list"></i>Available Metrics</li>
+			<%= form_for "search", class: "form-inline", url: graph_filter_submit_path do |f| %>
+			<li><div class="search-box">
+				<div class="search-bar">
+					<i class="icon-search"></i>
+					<i class="icon-question-sign" data-toggle="tooltip-always" data-original-title="Type part of a metric to filter list. Press enter to add all matches."></i>
+					<%= f.text_field :filter, :placeholder => "Filter metrics"%>
+				</div>
+			</div></li>
+			<% end %>
+		</ul>
+		<ul class="nav filter_list" id="side-menu" style="font-size: small">
+			<% @available_metrics.sort.each do |metric| %>
+			<li class="hover-li">
+				<div><a href="<%= add_qs :metric, metric%>" data-toggle="tooltip" data-original-title="Click to add">
+					<span class="hover hover-left"><i class="icon-plus"></i></span>
+					<span class="metric"><%= metric %></span>
+				</a></div>
+			</li>
+			<% end %>
+		</ul>
+	</div>
+</nav>

@@ -1,0 +1,66 @@
+module ApplicationHelper
+	include Layouts::ApplicationLayoutHelper
+
+	# Take a plan size in MB, return a nice number
+	def mb_to_human mb
+		number_to_human_size(mb * 1024**2)
+	end
+
+	# Take an array of addresses, return a nicely sorted list
+        def sort_ips list
+		list.sort_by! {|ip| ip.split('.').map{|o| o.to_i}}
+        end
+
+        def redis_state_style state
+                case state
+                        when "pending_build" then "danger"
+                        when "broken" then "danger"
+                        when "building" then "warning"
+                        else ""
+                end
+        end
+
+	module BootstrapExtension
+		FORM_CONTROL_CLASS = "form-control"
+		BUTTON_CLASS = "btn btn-default"
+	
+		# Override the class value for whatever object type to include bootstrap values by default.
+		# original definitions: https://github.com/rails/rails/blob/master/actionview/lib/action_view/helpers	
+		def add_class_option class_name, add_class=FORM_CONTROL_CLASS
+			if class_name.nil?
+                                # Add 'form-control' as the only class if no class was provided
+                                class_name = add_class
+                        else
+                                # Add ' form-control' to the class if it doesn't already exist
+                                class_name << " #{add_class}" if " #{class_name} ".index(" #{add_class} ").nil?
+                        end
+			class_name
+		end
+
+		# Form objects to override
+		def password_field(object_name, method, options = {})
+			options[:class] = add_class_option options[:class]
+			super #Call super to do the real work
+		end
+
+		def text_area(object_name, method, options = {})
+			options[:class] = add_class_option options[:class]
+			super #Call super to do the real work
+		end
+
+		def text_field(object_name, method, options = {})
+			options[:class] = add_class_option options[:class]
+			super #Call super to do the real work
+		end
+
+		# TODO This method override doesn't actually work, which is annoying
+		def submit(value=nil, options={})
+			options[:class] = add_class_option options[:class], BUTTON_CLASS
+			super #Call super to do the real work
+		end
+	end
+
+	# Add the modified method to ApplicationHelper
+	include BootstrapExtension
+
+end

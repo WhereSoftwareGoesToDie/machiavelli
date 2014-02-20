@@ -1,0 +1,71 @@
+<%= javascript_include_tag "d3.v2" %>
+<%= javascript_include_tag "cubism.v1" %>
+<%= stylesheet_link_tag    "cubism" %>
+
+<div id="cubism_graph" style="position:relative;"></div>
+
+<script>
+		
+	// Create a unsafe/safe metrics array for graph titling
+	metrics = <%= ("['" + @metrics.join("','") + "']").html_safe %>
+	metrics_safe = <%= ("['" + @metrics.map{|m| safe_string(m)}.join("','") + "']").html_safe %>
+
+	/// Sample the first element for cubism context
+	graph_data = gon.stats.<%=safe_string(@metrics.first)%>
+	data_length = graph_data.data.length
+	resolution  = graph_data.resolution
+	custom_colors = graph_data.colors
+	document.getElementById("cubism_graph").style.width = data_length+"px";
+
+	//Build the cubism "context", using the sample data. 
+	// ASSUMES: datasources are the same, for length of data and resolution
+	var context = cubism.context()
+		.size(data_length)
+		.step((resolution * 1000))
+		.stop()
+
+	function gon_metric(name) {
+		var values = []
+		values = eval("gon.stats."+name+".data")
+		return context.metric(function (start, stop, step, callback) {
+			callback(null, values = values.slice((start - stop) / step));
+		}, name);
+	}
+
+	//Get the Metrics from the `gon` variable
+	var datum = []
+	<% @metrics.each do |metric| %>
+		metric = gon_metric("<%=safe_string(metric)%>")
+		datum.push(metric)
+	<% end %>
+
+
+	// Erectin' a dispenser
+	d3.select("#cubism_graph").call(function(div) {
+		div.append("div")
+			.attr("class", "axis")
+			.call(context.axis().orient("top"));
+
+		div.selectAll(".horizon")
+			.data(datum)
+			.enter().append("div")
+			.attr("class", "horizon")
+			.call(
+				context.horizon()
+				.height(50)
+				.colors(custom_colors)
+				.title(function(d){
+					return metrics[metrics_safe.indexOf(String(d))] 
+				})
+			); 
+
+		div.append("div")
+			.attr("class", "rule")
+			.call(context.rule());
+	});
+
+	// On mousemove, reposition the chart values to match the rule.
+	context.on("focus", function(i) {
+		d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
+	});
+</script>

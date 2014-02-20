@@ -1,0 +1,19 @@
+<%= javascript_include_tag "d3.v2" %>
+<%= javascript_include_tag "d3.layout.min" %>
+<%= javascript_include_tag "rickshaw" %>
+<%= stylesheet_link_tag    "graphs_rickshaw" %>
+
+<div class="slider" id="multi_slider" style="margin-top:10px"></div>
+
+<% @metrics.each do |metric| %>
+       <%= render partial: "partial/graph/rickshaw", locals: {metric: metric} %>
+<% end %>
+
+<script>
+	new Rickshaw.Graph.RangeMultiSlider({ 
+		graph: [<%= @metrics.map{|m| "graph_#{safe_string(m)}"}.join(",")%>],
+		element: $("#multi_slider")
+	});
+</script>
+
+

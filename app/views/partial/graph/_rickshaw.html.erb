@@ -1,0 +1,93 @@
+<%	
+	orig_metric = metric
+	metric = safe_string(metric)
+	def hash_string string; raw_string"##{string}"; end
+	def raw_string string; raw("'#{string}'"); end
+
+	y_axis = metric + "_y_axis"
+	x_axis = metric + "_x_axis"
+	chart  = metric + "_chart"
+	legend = metric + "_legend"
+%>
+<div class="col-md-10" style="padding-bottom: 10px">
+	<h4>
+		<span id="<%=metric%>"></span>
+		<%= orig_metric %>
+	</h4>
+        <div id="chart_container">
+		<div class="y_axis" id="<%=y_axis%>"></div>
+		<div class="chart"  id="<%=chart %>"></div>
+		<div class="x_axis" id="<%=x_axis%>"></div>
+		<div class="legend" id="<%=legend%>"></div>
+        </div>
+</div>
+<script>
+metric = "<%=metric%>"
+data = gon.stats[metric]
+var palette = new Rickshaw.Color.Palette()
+series = []
+
+for (n = 0; n < data.length; n++) {
+        series.push( { color: palette.color(),
+                        data: data[n].data,
+                        name: data[n].name,
+        })
+}
+
+// Chart
+<% graph = "graph_#{metric}"%>
+var <%=graph%> = new Rickshaw.Graph({
+	element: document.querySelector(<%= hash_string chart %>),
+    width: 700,
+    height: 200,
+    renderer: 'line',
+    series: series
+
+});
+
+new Rickshaw.Graph.Axis.Y( {
+	graph: <%=graph%>,
+   orientation: 'left',
+   tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+   element: document.getElementById(<%= raw_string y_axis %>)
+} );
+
+
+new Rickshaw.Graph.Axis.Time({
+graph: <%=graph%>,
+timeFixture: new Rickshaw.Fixtures.Time.Local()
+});
+
+///////
+<%=graph%>.render();
+
+
+var hoverDetail = new Rickshaw.Graph.HoverDetail({ 
+	graph: <%=graph%>,
+	formatter: function (series, x, y) {
+		var _date = '<span class="date">' + new Date(x*1000).toUTCString()+'</span>';
+		var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
+		//var content = swatch + '<span>'+ series.name + ": " + Rickshaw.Fixtures.Number.formatKMBT(parseInt(y)) +"</span><br/>"+ _date;
+		var content = swatch + '<span>'+ series.name + ": " + y +"</span><br/>"+ _date;
+		
+	        return content;
+	}
+});
+
+/*
+var legend = new Rickshaw.Graph.Legend({
+	graph: <%=graph%>,
+	element: document.querySelector(<%=hash_string legend%>)
+});
+var highlight = new Rickshaw.Graph.Behavior.Series.Highlight({
+	graph: <%=graph%>,
+	legend: legend,
+	disabledColor: function () { return 'rgba(0, 0, 0, 0.2)' }
+});
+
+var toggle = new Rickshaw.Graph.Behavior.Series.Toggle({
+	graph: <%=graph%>,
+	legend: legend
+});
+*/
+</script>

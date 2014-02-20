@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<title>Machiavelli</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<%= stylesheet_link_tag    "application", media: "all" %>
+	<%= javascript_include_tag "application" %>
+	<%= csrf_meta_tags %>
+
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<script>
+		$(document).ready(function() { 
+		<% if Settings.tooltips == true %>
+			$("[data-toggle='tooltip']").tooltip({ placement: "right", container: "body", delay: { show: 500} })
+			$("[data-toggle='tooltip-down']").tooltip({ placement: "bottom", container: "body", delay: { show: 500}}) 
+		<% end %> 
+			$("[data-toggle='tooltip-always']").tooltip({ placement: "right", container: "body", delay: { show: 500}}) 
+		})
+		</script>
+	<div id="wrapper">
+		<nav class="navbar navbar-default navbar-static-top" role="navigation" id="navbar" style="margin-bottom: 0">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<%= link_to root_path, class: "navbar-brand" do %> Machiavelli	<%end%>
+			</div>
+			<ul class="nav navbar-top-links navbar-right" style="margin-top:10px; margin-right: 10px">
+				<%= render partial: "partial/navbar/timescales" %>
+			</ul>
+		</nav>
+
+		<%= render_sidenav %>
+
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-md-12">
+					<% flash.each do |key, value| %><div class="<%= flash_class(key) %>"><%= value %></div><% end %>
+					<%= yield %>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+</html>
