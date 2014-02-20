@@ -10,7 +10,7 @@
 <% end %>
 
 <script>
-	new Rickshaw.Graph.RangeMultiSlider({ 
+	new Rickshaw.Graph.RangeSlider({ 
 		graph: [<%= @metrics.map{|m| "graph_#{safe_string(m)}"}.join(",")%>],
 		element: $("#multi_slider")
 	});
