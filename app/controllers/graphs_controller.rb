@@ -72,6 +72,7 @@ class GraphsController < ApplicationController
 		case params[:graph] || UI_DEFAULTS[:graph]
 		when "horizon" then; Graph::Cubism
 		when "stacked" then; Graph::Stacked
+		when "live"    then; Graph::Websocket
 		else 		     Graph::Rickshaw
 		end
 	end

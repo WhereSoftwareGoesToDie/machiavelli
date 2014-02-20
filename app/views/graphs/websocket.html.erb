@@ -1,0 +1,142 @@
+<%= javascript_include_tag "d3.v2" %>
+<%= javascript_include_tag "d3.layout.min" %>
+<%= javascript_include_tag "rickshaw" %>
+<%= javascript_include_tag "underscore.min" %>
+<%= stylesheet_link_tag    "graphs_stacked" %>
+
+<div class="col-md-10" style="padding-bottom: 10px; padding-top: 40px">
+        <div id="chart_container">
+		<div class="chart" id="chart"></div>
+		<div class="y_axis" id="y_axis"></div>
+		<div class="legend" id="legend">
+		<div class="output">
+        </div>
+</div>
+
+<script>
+	metrics = []
+	<% @metrics.each do |m| %>
+		metrics.push("<%= m %>")
+	<%end%>
+
+	stream_name = ""
+	$.each(gon.stats, function(d) { 
+		stream_name = d	
+	})
+
+	var wsUri = gon.stats[stream_name]
+//"ws://echo.websocket.org/"
+	
+
+
+var setup_pending = true
+var graph
+var output = document.getElementById("output")
+
+function setup(data) { 
+
+        palette = new Rickshaw.Color.Palette()  
+
+        var list = [], raw_list = []
+        var colours = []
+        $.each( Object.keys(data) , function(i, d) {  
+ 		raw_list.push(d)
+                list.push( { name: d }) 
+                colours.push(palette.color()) 
+        }) 
+
+        series = new Rickshaw.Series.FixedDuration( 
+                list, 
+                undefined,
+                 { timeInterval: 1000, maxDataPoints: 200,timeBase: new Date().getTime() / 1000 }
+        )
+
+        graph = new Rickshaw.Graph( {
+                element: document.getElementById("chart"),
+                width: 700,
+                height: 300,
+                renderer: 'line',
+                series: series
+        })
+
+	
+
+	new Rickshaw.Graph.Axis.Y( {
+		graph: graph,
+		orientation: 'left',
+		tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+		element: document.getElementById("y_axis")
+	} );
+
+
+        graph.render();
+
+var legend = document.querySelector("#legend")
+
+function generate_legend(date, v) { 
+        legend.innerHTML = "<table>"
+///		+"<tr><td colspan=3>"+ date + "</td></tr>"
+                + $.map(v, function(d) {
+                        return "<tr><td><div class='swatch' style='background-color: "+d[2]+"'></div></td>"
+                                +"</td><td>"+d[0]+"</td><td> "
+                                +d[1]
+                                +"</td></tr>"
+                } ).join("</td></tr>")
+
+}
+
+// Initial Labels with no values
+fake_label = []
+for (i = 0; i < list.length; i++) { 
+        fake_label.push([raw_list[i], "", colours[i]])
+}
+generate_legend("&nbsp;",fake_label)
+
+
+// Overload HoverDetail so it populates our legend dynamically
+var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
+        render: function(args) {
+
+                date = args.formattedXValue;
+                v = []
+                args.detail.sort(function(a, b) { return a.order - b.order }).forEach( function(d) {
+                        v.push([ d.name, d.formattedYValue, d.series.color])
+
+                        // Highlight selected datapoints
+                        var dot = document.createElement('div');
+                        dot.className = 'dot';
+                        dot.style.top = graph.y(d.value.y0 + d.value.y) + 'px';
+                        dot.style.borderColor = d.series.color;
+
+                        this.element.appendChild(dot);
+                        dot.className = 'dot active';
+                        this.show();
+                }, this );
+                generate_legend(date, v)
+        }
+});
+
+
+var hover = new Hover( { graph: graph } ); 
+
+
+        setup_pending = false
+} 
+
+var websocket = new WebSocket(wsUri);
+
+websocket.onmessage = function(evt) { 
+        data = JSON.parse(evt.data)
+
+        if (setup_pending) { setup(data)  }
+        graph.series.addData(data)
+        graph.render()
+
+}
+
+
+function send(){
+        payload = '{"Average message size":10,"Points per second":5,"Bytes per second":2}'
+        websocket.send(payload)
+}
+</script>
