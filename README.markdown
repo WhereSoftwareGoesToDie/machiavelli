@@ -98,6 +98,7 @@ Dependencies
 Machiavelli makes use of the following projects and code libraries under their associated licences:
 
  * [Rickshaw](https://github.com/shutterstock/rickshaw), available under the MIT Licence.
+  - we use a slightly patched version, availble [here](https://github.com/glasnt/rickshaw)
  * [Cubism](https://github.com/square/cubism), available under the Apache 2.0 Licence.
  * [D3](https://github.com/mbostock/d3), available under the BSD3 Licence.
  * [Bootstrap](https://github.com/twbs/bootstrap/), available under the MIT Licence.
