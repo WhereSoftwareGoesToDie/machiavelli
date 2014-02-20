@@ -7,18 +7,18 @@ It does this by defining a set of data sources, or "backends", and a set of char
 
 #### Backends
 A backend is a flatfile or json feed from a website. For Machiavelli to work it's magic, it needs to know two things about any particular backend:
- * How to get a list of sources - or metrics -  available for graphing, and
- * A stream of data-points for any particular metric, in the form `[{epoch, y}, ..]`
+ * How to get a list of available metrics, and 
+ * How to get a data set for a particular metric
 
 Machiavelli currently has modules supporting the following backend types:
  * Graphite
- * "Simple" json feed
- * flatfile (csv)
+ * A "simple" json feed (dummy sinatra application, see Installation)
+ * flat files, e.g. comma delimited datapoints.
 
 ### Graphs
 Once a metric source has been obtained, it can be fed to a graph. This is done by a series of ruby classes, views and javascript files in order to manipulate and display the data. These can be toggled on the fly in the user interface, as required.
 
-Machiavelli includes these graphing libraries:
+Machiavelli current includes these graphing libraries:
  * Cubism (for horizon charts)
  * Rickshaw (for standard, and stacked charts).
 
@@ -35,6 +35,8 @@ bundle install
 bundle exec rails server
 ```
 
+### Testing Data source
+
 The default configuration settings include a simple data source, a itty bitty Sinatra application that can be run along side a default installation of Machiavelli to demo the application. Run this by executing:
 ```sh
 ruby simple_endpoint.rb
@@ -46,7 +48,7 @@ Usage
 
 After loading the Machiavelli page for the first time, no metrics are available to display. Clicking the "Refresh" button on the top navigation bar iterates over all the configuration settings and pulls all available metrics to be graphed into the left hand side bar.
 
-Then, any metric can be added or removed from the page by clicking it's link.
+Then, any metric can be added or removed from the page by clicking its link. Active metrics can be rearranged by dragging their listing to reorder.
 
 The filter bar can be used to narrow down the list of available metrics (those that aren't already graphed) for ease of selection. Entering a substring matching multiple metrics and pressing enter will add all matches to the page.
 
@@ -67,7 +69,7 @@ Multiple backends of the same type can be invoked at once by adding an `alias` s
 Creating New Backends
 --
 
-( description pending )
+New backends can be defined by copying the simple backend as a template. In addition, the `generic_backend.rb` describes the `get_metrics_list` and `get_metrcs` functions, which are overloaded in child classes. Overload these in your child library to implement. 
 
 
 Optional Settings
@@ -91,6 +93,8 @@ Machiavelli will accept any `config/settings.yml` overwrites of the following va
 <dt>  `metrics_key` </dt>
 <dd> default `Machiavelli.Backend.Metrics` </dd>
 <dd>Set a base key for metric name caching in Redis.</dd>
+</dl>
+
 
 Dependencies
 --
