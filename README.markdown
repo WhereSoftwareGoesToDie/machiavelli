@@ -104,7 +104,9 @@ Machiavelli makes use of the following projects and code libraries under their a
  * [Rickshaw](https://github.com/shutterstock/rickshaw), available under the MIT Licence.
   - we use a slightly patched version, availble [here](https://github.com/glasnt/rickshaw)
  * [Cubism](https://github.com/square/cubism), available under the Apache 2.0 Licence.
+  - we use a slighly patched version, available [here](https://github.com/glasnt/cubism)
  * [D3](https://github.com/mbostock/d3), available under the BSD3 Licence.
+  - we use a slighly patched version, avaiable [here](https://github.com/glasnt/d3)
  * [Bootstrap](https://github.com/twbs/bootstrap/), available under the MIT Licence.
  * [jQuery](https://github.com/jquery/jquery), available under the MIT Licence.
  * [Underscore](https://github.com/jashkenas/underscore), available under the MIT Licence.
