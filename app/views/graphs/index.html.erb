@@ -1,4 +1,7 @@
+<%= javascript_include_tag "d3.v3" %>
+<%= javascript_include_tag "d3.layout.min" %>
 <%= include_gon %>
+
 <% if @metrics.length > 0 then %>
 	<%= render :file => "graphs/#{@graph}" if @graph%>
 <% elsif @available_metrics.length == 0 %>
