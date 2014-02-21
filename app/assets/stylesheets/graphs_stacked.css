@@ -1,20 +1,16 @@
-@import url("rickshaw.min.css");
-@import url("graphs_rickshaw.css");
-
+/*= require graphs_rickshaw  */
 .swatch {
         display: inline-block;
         width: 10px;
         height: 10px;
         margin: 0 8px 0 0;
 }
-.label2 {
-        display: inline-block;
-}
 .line {
         display: inline-block;
         margin: 0 0 0 30px;
 }
-.legend { opacity: 0.75; font-size: 12px; }
+.legend { 
+	opacity: 0.75; font-size: 12px; }
 .stub { 
         position: absolute;
         top: 0px;
@@ -23,8 +19,8 @@
 
 .swatch_line { 
 	position: absolute;
-width:3px; height:300px } 
-
+	width:3px; 
+	height:300px 
+} 
 
 .stub_left { left: 40px; } 
-.stub_right{  } 
