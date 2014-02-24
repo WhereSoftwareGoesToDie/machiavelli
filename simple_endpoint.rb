@@ -1,5 +1,4 @@
 require 'sinatra'
-require "sinatra/reloader" if development?
 require 'json'
 
 source_list = ["The_Prince","Discources_On_Livy","Andria","Clizia","The_Mandrake"]

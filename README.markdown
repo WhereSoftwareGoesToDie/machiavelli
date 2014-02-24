@@ -39,6 +39,7 @@ bundle exec rails server
 
 The default configuration settings include a simple data source, a itty bitty Sinatra application that can be run along side a default installation of Machiavelli to demo the application. Run this by executing:
 ```sh
+gem install sinatra # only required once
 ruby simple_endpoint.rb
 ```
 Then, just navigate to `http://localhost:3000` in your favourite browser, and you're on your way.
