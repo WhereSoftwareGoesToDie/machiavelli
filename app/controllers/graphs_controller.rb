@@ -43,8 +43,8 @@ class GraphsController < ApplicationController
 		else 
 
 			Settings.backends.each do |b|
-				backend = init_backend b.type, b.settings
 				begin
+					backend = init_backend b.type, b.settings
 					backend.refresh_metrics_cache b.alias
 				rescue Backend::Error => e
 					errors << e
