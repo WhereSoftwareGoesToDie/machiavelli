@@ -2,8 +2,9 @@ class Backend::Websocket < Backend::GenericBackend
 
 	def initialize params={}
 		@base_url  = params[:url]
+		raise Backend::Error, "Error initalizing Websocket backend: Must provide a url value" if @base_url.nil?
 		@metric = params[:metric]
-		raise Backend::Error, "Must provide a url value" if @base_url.nil?
+		raise Backend::Error, "Error initalizing Websocket backend: Must provide a metric name for display" if @metric.nil?
 	end
         
 	def get_metrics_list
