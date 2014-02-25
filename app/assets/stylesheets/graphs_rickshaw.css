@@ -9,6 +9,8 @@
 .slider {
        display: inline-block;
         margin-left: 40px;
+	margin-top: 10px;
+	padding-left: 15px;
 }
 .chart {
        display: inline-block;

@@ -1,7 +1,7 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= stylesheet_link_tag    "graphs_rickshaw" %>
 
-<div class="slider" id="multi_slider" style="margin-top:10px"></div>
+<div class="slider" id="multi_slider" ></div></div>
 
 <% @metrics.each do |metric| %>
        <%= render partial: "partial/graph/rickshaw", locals: {metric: metric} %>
