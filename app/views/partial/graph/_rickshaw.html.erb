@@ -38,18 +38,18 @@ for (n = 0; n < data.length; n++) {
 <% graph = "graph_#{metric}"%>
 var <%=graph%> = new Rickshaw.Graph({
 	element: document.querySelector(<%= hash_string chart %>),
-    width: 700,
-    height: 200,
-    renderer: 'line',
-    series: series
+	width: 700,
+	height: 200,
+	renderer: 'line',
+	series: series
 
 });
 
 new Rickshaw.Graph.Axis.Y( {
 	graph: <%=graph%>,
-   orientation: 'left',
-   tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-   element: document.getElementById(<%= raw_string y_axis %>)
+	orientation: 'left',
+	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+	element: document.getElementById(<%= raw_string y_axis %>)
 } );
 
 
@@ -65,29 +65,8 @@ timeFixture: new Rickshaw.Fixtures.Time.Local()
 var hoverDetail = new Rickshaw.Graph.HoverDetail({ 
 	graph: <%=graph%>,
 	formatter: function (series, x, y) {
-		var _date = '<span class="date">' + new Date(x*1000).toUTCString()+'</span>';
-		var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
-		//var content = swatch + '<span>'+ series.name + ": " + Rickshaw.Fixtures.Number.formatKMBT(parseInt(y)) +"</span><br/>"+ _date;
-		var content = swatch + '<span>'+ series.name + ": " + y +"</span><br/>"+ _date;
-		
-	        return content;
+		return content = "<span class='date'>"+d3.time.format("%Y-%m-%d %H:%M:%S")(new Date(x*1000)) +"</span><br/>"+y
 	}
 });
 
-/*
-var legend = new Rickshaw.Graph.Legend({
-	graph: <%=graph%>,
-	element: document.querySelector(<%=hash_string legend%>)
-});
-var highlight = new Rickshaw.Graph.Behavior.Series.Highlight({
-	graph: <%=graph%>,
-	legend: legend,
-	disabledColor: function () { return 'rgba(0, 0, 0, 0.2)' }
-});
-
-var toggle = new Rickshaw.Graph.Behavior.Series.Toggle({
-	graph: <%=graph%>,
-	legend: legend
-});
-*/
 </script>
