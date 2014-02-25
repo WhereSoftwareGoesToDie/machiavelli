@@ -24,3 +24,7 @@
 } 
 
 .stub_left { left: 40px; } 
+
+.legend-indent { 
+	padding-left: 30px;
+} 
