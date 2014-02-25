@@ -176,9 +176,9 @@ for (i = 0; i < scales.length; i++) {
 		} 
 	} 
 }
-document.getElementById("axis0").setAttribute("style", "left: -"+(pad[0]*3-3)+"px")
+document.getElementById("axis0").setAttribute("style", "left: -"+(pad[0]*3-6)+"px")
 
-for (j = 0; j < uniq_scales.length; j++) {
+for (j = 1; j < uniq_scales.length; j++) {
 	document.getElementById("axis"+j).lastChild.setAttribute("style","left: "+(pad[j]*3-3)+"px")
 }
 

@@ -18,13 +18,13 @@
 }       
 
 .swatch_line { 
-	position: absolute;
+	float: left;
 	width:3px; 
 	height:300px 
 } 
 
-.stub_left { left: 40px; } 
+.stub_left { left: 37px; } 
 
-.legend-indent { 
-	padding-left: 30px;
-} 
+.legend-indent {                                                                                                                                                                   
+	padding-left: 30px;                                                                                                                                                         
+}  
