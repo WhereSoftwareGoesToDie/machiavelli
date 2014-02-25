@@ -31,6 +31,10 @@
     right: 0px;
 
 }
+.header-text .refresh { 
+	float: right;
+	padding-right: 5px
+} 
 
 /* Nicer Richshaw Hovers */
 

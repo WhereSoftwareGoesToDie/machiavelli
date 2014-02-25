@@ -42,7 +42,12 @@ $(document).ready(function() {
 			<% end %>
 		</ul>
 		<ul class="nav" id="side-menu" style="font-size: small">
-			<li class="header-text"><i class="icon-th-list"></i>Available Metrics</li>
+			<li class="header-text">
+			<span><i class="icon-th-list"></i>Available Metrics
+			<span class="refresh"><a href="<%= refresh_path %>" data-toggle="tooltip" data-original-title="Click to refresh available metrics" 
+			onClick="$(this).addClass('icon-spin')"><i class="icon-refresh"></i></span></a>
+			</span>
+			</li>
 			<%= form_for "search", class: "form-inline", url: graph_filter_submit_path do |f| %>
 			<li><div class="search-box">
 				<div class="search-bar">
