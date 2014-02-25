@@ -47,3 +47,13 @@
         left: 740px; /* Chart width + 40 */
         width: 40px;
 }
+
+/* Rickshaw Customizations */
+/* Increase hover value dot for ease of visibility */
+.rickshaw_graph .detail .dot {
+        width: 8px;
+        height: 8px;
+        margin-left: -4px;
+        margin-top: -4px;
+}
+
