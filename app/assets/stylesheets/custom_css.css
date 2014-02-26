@@ -13,6 +13,7 @@
 .header-text i { padding-right: 2px } 
 .hover-li { padding: 5px }
 .hover-right { float:right;}
+.hover-left { float:left;}
 #side-menu a { text-decoration: none }
 .search-box {
     position: relative;
@@ -42,6 +43,13 @@
 .rickshaw_graph .detail .item { line-height: 1.4; padding: 0.5em }
 .detail_swatch { float: right; display: inline-block; width: 10px; height: 10px; margin: 0 4px 0 0 }
 .rickshaw_graph .detail .date { color: #a0a0a0 }
+
+#side-menu .metric { 
+	display:inline-block;
+	width: 215px;
+	overflow: hidden; 
+	text-overflow: ellipsis
+} 
 
 /*
  * http://getbootstrap.com/docs-assets/css/docs.css

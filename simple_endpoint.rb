@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'json'
 
-source_list = ["The_Prince","Discources_On_Livy","Andria","Clizia","The_Mandrake"]
+source_list = ["The_Prince","Discources_On_Livy","The_Woman_of_Andros_Part_1","Clizia","The_Mandrake"]
 
 get '/' do
 	"Beep Boop. I am a simple API. I have these endpoints: <br/><br/>"+ 
