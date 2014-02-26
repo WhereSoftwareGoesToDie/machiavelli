@@ -33,7 +33,8 @@ $(document).ready(function() {
 
 			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
 			<li class="hover-li sortable"><div>
-			<a href="<%= rem_qs :metric, metric %>" data-toggle="tooltip" data-original-title="Drag to re-order. Click to remove.">
+				<a href="<%= rem_qs :metric, metric %>" data-toggle="tooltip" data-original-title="Drag to re-order. Click to remove."
+				onClick="this.href = this.href+window.location.hash"	>
 				<span class="hover hover-left drag"><i class="icon-reorder"></i></span>
 				<span class="metric"><%= metric %></span>
 				<span class="hover hover-right"><i class="icon-remove"></i></span>
@@ -61,7 +62,9 @@ $(document).ready(function() {
 		<ul class="nav filter_list" id="side-menu" style="font-size: small">
 			<% @available_metrics.sort.each do |metric| %>
 			<li class="hover-li">
-				<div><a href="<%= add_qs :metric, metric%>" data-toggle="tooltip" data-original-title="Click to add">
+			<div>
+				<a href="<%= add_qs :metric, metric%>" data-toggle="tooltip" data-original-title="Click to add"
+				onClick="this.href = this.href+window.location.hash">
 					<span class="hover hover-left"><i class="icon-plus"></i></span>
 					<span class="metric"><%= metric %></span>
 				</a></div>

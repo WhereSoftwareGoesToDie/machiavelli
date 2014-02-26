@@ -2414,6 +2414,7 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 		var element = this.element;
 		var graph = this.graph;
+		hash = window.location.hash.slice(1).split(",")
 
 		var self = this;
 
@@ -2424,8 +2425,8 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 					min: graph[0].dataDomain()[0],
 					max: graph[0].dataDomain()[1],
 					values: [
-						graph[0].dataDomain()[0],
-						graph[0].dataDomain()[1]
+						hash[0] || graph[0].dataDomain()[0],
+						hash[1] || graph[0].dataDomain()[1]
 					],
 					slide: function( event, ui ) {
 						for( var i=0; i<graph.length; i++) {
@@ -2460,8 +2461,8 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 					min: domain[0],
 					max: domain[1],
 					values: [ 
-						domain[0],
-						domain[1]
+						hash[0] || domain[0],
+						hash[1] || domain[1]
 					],
 					slide: function( event, ui ) {
 
@@ -2517,6 +2518,7 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 			values[1] = domain[1];
 		}
 
+		window.location.hash = values
 		$(element).slider('option', 'values', values);
 	},
 
