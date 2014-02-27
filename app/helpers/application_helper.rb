@@ -1,25 +1,6 @@
 module ApplicationHelper
 	include Layouts::ApplicationLayoutHelper
 
-	# Take a plan size in MB, return a nice number
-	def mb_to_human mb
-		number_to_human_size(mb * 1024**2)
-	end
-
-	# Take an array of addresses, return a nicely sorted list
-        def sort_ips list
-		list.sort_by! {|ip| ip.split('.').map{|o| o.to_i}}
-        end
-
-        def redis_state_style state
-                case state
-                        when "pending_build" then "danger"
-                        when "broken" then "danger"
-                        when "building" then "warning"
-                        else ""
-                end
-        end
-
 	module BootstrapExtension
 		FORM_CONTROL_CLASS = "form-control"
 		BUTTON_CLASS = "btn btn-default"
