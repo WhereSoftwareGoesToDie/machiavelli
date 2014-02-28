@@ -5,4 +5,6 @@ Machiavelli::Application.routes.draw do
   post "filter_metrics" => "graphs#filter_metrics", as: "filter_metrics"
 
   get "refresh" => "graphs#refresh", as: "refresh"
+
+  get "metrics/:metric" => "metrics#get", as: "get_metric"
 end

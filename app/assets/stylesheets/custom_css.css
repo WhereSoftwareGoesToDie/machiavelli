@@ -1,12 +1,9 @@
 
 /* Make a hoverlink look kind of normal */
-
 .hoverlink { cursor: pointer } 
 
 
 /* Font-awesome search */
-
-
 .hover { opacity: 0.5; visibility: hidden}
 .drag{ cursor: move}
 .header-text { font-weight: bold; padding: 5px}
@@ -50,6 +47,11 @@
 	overflow: hidden; 
 	text-overflow: ellipsis
 } 
+
+#chart_container { 
+	 padding-bottom: 40px
+} 
+
 
 /*
  * http://getbootstrap.com/docs-assets/css/docs.css

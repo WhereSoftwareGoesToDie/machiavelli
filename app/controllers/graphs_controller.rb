@@ -10,26 +10,19 @@ class GraphsController < ApplicationController
 # GET
 	def index # index.html
 		@metrics = selected_metrics
-		_start  = params[:start] || UI_DEFAULTS[:start]
-		_end    = params[:end]
-		@available_metrics = []
+		@all_metrics = all_metrics #backend.get_cached_metrics_list
+		@available_metrics = @all_metrics - @metrics || []
+		@graph = graph.view 
 
-		gon.stats = {}
-		begin
-			@all_metrics = all_metrics #backend.get_cached_metrics_list
-			
-			@available_metrics = @all_metrics - @metrics || []
-			@metrics.each do |m|
-				options = (graph.view == "cubism" ? {datapoints: 700} : {} )
-				metric = get_metric(m, _start, _end, options)
-				stats = graph.parse_metric m, metric
-				gon.stats[safe_string(m)] = stats
-			end
-			@graph = graph.view 
-		rescue Backend::Error => e
-			flash.now[:error] = "#{e}"
+		gon.start = params[:start] || UI_DEFAULTS[:start]
+		gon.end   = params[:end] || "0h"
+
+		gon.metric = []
+		gon.feed = []
+
+		@metrics.each_with_index do |m,i|
+			gon.metric[i] = m
 		end
-		
 	end
 	
 	def refresh # refresh button

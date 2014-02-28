@@ -22,19 +22,22 @@ class Backend::Simple < Backend::GenericBackend
         end
 
         def get_metric m, _start=nil, _end=nil, options={}
-		if options[:datapoints]
-			_step = to_seconds(_start) / options[:datapoints]
-			_step = 1 if _step == 0
-		end
+
+		start = to_epoch(_start)
+		stop = to_epoch(_end)
+		
+		datapoints = options[:datapoints] || 500
+
+		step = (stop - start) / datapoints
+		step = 1 if step == 0
 
 		query = []
-		query << "start=#{to_epoch(_start)}" unless _start.nil?
-		query << "end=#{to_epoch(_end)}"     unless _end.nil?
-		query << "step=#{_step}"             unless _step.nil?
+		query << "start=#{start}"
+		query << "end=#{stop}"
+		query << "step=#{step}"
 
 		query_string = "?" + query.join("&")
 		
-
 		begin
 			get_json "#{@base_url}/source/#{m}#{query_string}"
 		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e

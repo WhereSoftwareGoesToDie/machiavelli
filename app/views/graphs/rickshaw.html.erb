@@ -1,17 +1,26 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= stylesheet_link_tag    "graphs_rickshaw" %>
 
-<div class="slider" id="multi_slider" ></div></div>
-
-<% @metrics.each do |metric| %>
-       <%= render partial: "partial/graph/rickshaw", locals: {metric: metric} %>
+<script>graph=[]</script>
+<div class="slider" id="multi_slider" ></div>
+<% @metrics.each_with_index do |metric, index| %>
+	<%= render partial: "partial/graph/rickshaw", locals: {metric: metric, index: index} %>
 <% end %>
 
 <script>
+
+complete = 0;
+function renderSlider() { 
+	complete++;
+
+	// Render the multiple graph slider only when all the graphing operations have been completed.
+	if (complete = gon.metric.length) { 
 	new Rickshaw.Graph.RangeSlider({ 
-		graph: [<%= @metrics.map{|m| "graph_#{safe_string(m)}"}.join(",")%>],
+		graph: graph, 
 		element: $("#multi_slider")
-	});
+		});
+	}
+}
 </script>
 
 

@@ -94,5 +94,6 @@ module Layouts
 			
 			hash_query hash
 		end
+
 	end
 end
