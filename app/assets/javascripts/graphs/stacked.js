@@ -8,7 +8,7 @@ function getMetrics(metrics) {
 		
 		feed = "/metrics/"+d+"?start="+gon.start+"&end="+gon.end
 		$.getJSON( feed , function(data) { 
-			dataChart.push(data)
+			dataChart.push( { data: data, name: d})
 			console.log(data)
 			flagComplete()
 		})
@@ -25,8 +25,6 @@ function flagComplete() {
 		renderStacked(dataChart)
 	}
 }
-
-
 
 function renderStacked(data) { 
 
