@@ -1,6 +1,36 @@
 // Stacked Graph Type Javascript
 //
 //
+var dataChart = []
+
+function getMetrics(metrics) { 
+	$.each(metrics, function(i, d) { 
+		
+		feed = "/metrics/"+d+"?start="+gon.start+"&end="+gon.end
+		$.getJSON( feed , function(data) { 
+			dataChart.push(data)
+			console.log(data)
+			flagComplete()
+		})
+	})
+} 
+
+complete = 0
+
+function flagComplete() {
+	complete++;
+	console.log("completE: "+complete+" metr lengh: "+metrics.length) 
+	if (complete == metrics.length) { 
+
+		renderStacked(dataChart)
+	}
+}
+
+
+
+function renderStacked(data) { 
+
+console.log(data)
 var palette = new Rickshaw.Color.Palette({ scheme: "munin"})
 
 colours = []; scales = [];
@@ -181,5 +211,4 @@ document.getElementById("axis0").setAttribute("style", "left: -"+(pad[0]*3-6)+"p
 for (j = 1; j < uniq_scales.length; j++) {
 	document.getElementById("axis"+j).lastChild.setAttribute("style","left: "+(pad[j]*3-3)+"px")
 }
-
-// ?? right-y axis line padding?
+}
