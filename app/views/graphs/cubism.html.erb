@@ -10,7 +10,35 @@
 	metrics_safe = <%= ("['" + @metrics.map{|m| safe_string(m)}.join("','") + "']").html_safe %>
 
 	/// Sample the first element for cubism context
-	graph_data = gon.stats.<%=safe_string(@metrics.first)%>
+//	graph_data = gon.stats.<%=safe_string(@metrics.first)%>
+		
+	getMetrics(metrics)	
+
+dataChart = []
+function getMetrics(metrics) {
+        $.each(metrics, function(i, d) {
+
+                feed = "/metrics/"+d+"?start="+gon.start+"&end="+gon.end
+                $.getJSON( feed , function(data) {
+			console.log(data)
+                        dataChart.push( { data: data, name: d})
+                        console.log(data)
+                        flagComplete()
+                })
+        })
+}
+
+complete = 0
+
+function flagComplete() {
+        complete++;
+        if (complete == metrics.length) {
+                renderCubism(dataChart)
+        }
+}
+
+function renderCubism(graph_data) { 
+
 	data_length = graph_data.data.length
 	resolution  = graph_data.resolution
 	custom_colors = graph_data.colors
@@ -67,4 +95,5 @@
 	context.on("focus", function(i) {
 		d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
 	});
+}
 </script>

@@ -19,9 +19,7 @@ complete = 0
 
 function flagComplete() {
 	complete++;
-	console.log("completE: "+complete+" metr lengh: "+metrics.length) 
 	if (complete == metrics.length) { 
-
 		renderStacked(dataChart)
 	}
 }
