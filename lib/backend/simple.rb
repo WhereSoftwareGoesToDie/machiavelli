@@ -21,19 +21,11 @@ class Backend::Simple < Backend::GenericBackend
 		end
         end
 
-        def get_metric m, _start=nil, _end=nil, options={}
+        def get_metric m, start=nil, stop=nil, step=nil
 	
-		start = _start
-		stop = _end 
-		
-		datapoints = options[:datapoints] || 500
-
-		step = (stop - start) / datapoints
-		step = 1 if step == 0
-
 		query = []
 		query << "start=#{start}"
-		query << "end=#{stop}"
+		query << "stop=#{stop}"
 		query << "step=#{step}"
 
 		query_string = "?" + query.join("&")
