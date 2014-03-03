@@ -7,8 +7,8 @@ class MetricsController < ApplicationController
 	def get
 		now = Time.now().to_i
 
-		_start  = params[:start] || now - START
-		_end    = params[:end] || now - STOP
+		_start  = (params[:start] || now).to_i - START
+		_end    = (params[:end] || now).to_i - STOP
 		m = params["metric"]
 		options = (graph.view == "cubism" ? {datapoints: 700} : {} )
 
