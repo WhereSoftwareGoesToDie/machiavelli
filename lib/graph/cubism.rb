@@ -14,9 +14,14 @@ class Graph::Cubism < Graph::GenericGraph
 		resolution = metric[1][:x] - metric[0][:x]
 
 		# Only need to generate colours once
-		@@colors ||= tint_range(complement GRAPH_COLOUR) + tint_range(GRAPH_COLOUR, reverse: true)
+		@@colors ||= get_colours #tint_range(complement GRAPH_COLOUR) + tint_range(GRAPH_COLOUR, reverse: true)
 		
 		{data: stream, resolution: resolution, colors: @@colors}
+	end
+
+
+	def self.get_colours
+		tint_range(complement GRAPH_COLOUR) + tint_range(GRAPH_COLOUR, reverse: true)
 	end
 
 	# Cubism colour range. 
@@ -40,7 +45,7 @@ class Graph::Cubism < Graph::GenericGraph
 
 		arr.map{|b| "#"+b.map{|a| a.to_s(16).rjust(2,"0")}.join("")}
 	end
-	
+
 	# Given a html color, establish it's complement on the color wheel
  	# Uses the 'color' library
 	def self.complement base	
