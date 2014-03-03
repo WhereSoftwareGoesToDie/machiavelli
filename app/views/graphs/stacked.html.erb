@@ -1,7 +1,9 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= javascript_include_tag "underscore.min" %>
+
 <%= stylesheet_link_tag    "graphs_stacked" %>
 <script src="/assets/graphs/stacked.js"></script>
+<script src="/assets/graphs/util.js"></script>
 
 <div class="col-md-10" style="padding-bottom: 10px; padding-top: 40px">
         <div id="chart_container">
@@ -26,5 +28,7 @@
 	<% @metrics.each do |m| %>
 		metrics.push("<%= m %>")
 	<%end%>
+
+	renderWaiting("chart")
 	data = getMetrics(metrics)
 </script>
