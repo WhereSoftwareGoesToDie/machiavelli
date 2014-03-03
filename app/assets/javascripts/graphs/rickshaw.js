@@ -50,7 +50,7 @@ function render_rickshaw(index) {
 		width: 700,
 		height: 200,
 		renderer: 'line',
-		series: new Rickshaw.Series.FixedDuration([{name: gon.metric[index]}], undefined, { 
+		series: new Rickshaw.Series.FixedDuration([{name: "data"}], undefined, { 
 			timeInterval: gon.step*1000,
 			maxDataPoints: 200, 
 			timeBase: parseInt(new Date().getTime() / 1000)
