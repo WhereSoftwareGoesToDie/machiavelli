@@ -1,8 +1,8 @@
+var graph=[]
 
-var timer = 1; //seconds
+
 var data; 
 function render_rickshaw(index, data) { 
-
 	chart = "chart_"+index
 	yaxis = "y_axis_"+index
 
@@ -51,9 +51,9 @@ function render_rickshaw(index) {
 		height: 200,
 		renderer: 'line',
 		series: new Rickshaw.Series.FixedDuration([{name: gon.metric[index]}], undefined, { 
-			timeInterval: timer*1000,
+			timeInterval: gon.step*1000,
 			maxDataPoints: 200, 
-			timeBase: new Date().getTime() / 1000
+			timeBase: parseInt(new Date().getTime() / 1000)
 		})
 	})
 
@@ -91,16 +91,16 @@ function render_rickshaw(index) {
 	update = gon.feed[index]+"?start="+gon.start+"&stop="+gon.stop+"&step="+gon.step                               
                                                                                                                        
         console.log(update)                                                                                            
-	$.getJSON(update, function(d) {                                                                                
+	$.getJSON(update, function(d) {                               
                 $.each(d, function(i, point) {                                                                         
                         x = {data: point.y} 
                         graph[index].series.addData(x) //{name: gon.metric[index], data: point.y})
                 })
                 graph[index].render()
+		unrenderWaiting();
+		renderSlider();
         }) 
 	
-	unrenderWaiting();
-	renderSlider();
 
 }
 function updateRickshaw(){ 
@@ -108,7 +108,7 @@ function updateRickshaw(){
 		now = parseInt(Date.now()/1000)
 
 		$.each(gon.feed, function(i, feed) { 
-			update = feed+"?start="+(now-(gon.step * timer))+"&stop="+now+"&step="+gon.step
+			update = feed+"?start="+(now-gon.step)+"&stop="+now+"&step="+gon.step
 
 			$.getJSON(update, function(d){ 
 				new_data = {data: d[d.length-1].y}
@@ -117,7 +117,20 @@ function updateRickshaw(){
 			})
 		})
 	}
-	, timer*1000);
-return id
+	, gon.step*1000);
+	return id
 }
 
+
+var complete = 0;
+function renderSlider() { 
+        complete++;
+
+        // Render the multiple graph slider only when all the graphing operations have been completed.
+        if (complete = gon.metric.length) { 
+        new Rickshaw.Graph.RangeSlider({ 
+                graph: graph, 
+                element: $("#multi_slider")
+                });
+        }
+}
