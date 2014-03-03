@@ -5,8 +5,6 @@
 <script src="/assets/graphs/util.js"></script>
 <% width = 800 %>
 
-<input type="checkbox" id="toggle_live" checked> Live Updates
-
 <div id="cubism_graph" style="position:relative; width:<%=width%>px"></div>
 
 <% def safe_array a; ("['"+a.join("','")+"']").html_safe; end
