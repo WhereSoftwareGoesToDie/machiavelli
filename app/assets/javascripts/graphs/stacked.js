@@ -9,7 +9,6 @@ function getMetrics(metrics) {
 		feed = "/metrics/"+d+"?start="+gon.start+"&end="+gon.end
 		$.getJSON( feed , function(data) { 
 			dataChart.push( { data: data, name: d})
-			console.log(data)
 			flagComplete()
 		})
 	})
@@ -21,12 +20,12 @@ function flagComplete() {
 	complete++;
 	if (complete == metrics.length) { 
 		renderStacked(dataChart)
+		unrenderWaiting()
 	}
 }
 
 function renderStacked(data) { 
 
-console.log(data)
 var palette = new Rickshaw.Color.Palette({ scheme: "munin"})
 
 colours = []; scales = [];
