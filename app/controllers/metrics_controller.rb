@@ -7,13 +7,13 @@ class MetricsController < ApplicationController
 	def get
 		now = Time.now().to_i
 
-		_start  = (params[:start] || now).to_i - START
-		_end    = (params[:end] || now).to_i - STOP
-		m = params["metric"]
-		options = (graph.view == "cubism" ? {datapoints: 700} : {} )
+		start  = (params[:start] || now - START).to_i 
+		stop   = (params[:stop] || now - STOP).to_i
+		step   = (params[:step] || 300).to_i
+		m      = params["metric"]
 
 		begin
-			metric = get_metric(m, _start, _end, options)
+			metric = get_metric(m, start, stop, step)
 			render json: metric	
 		rescue Backend::Error => e
 			render json: { error: e.to_s } 
@@ -34,15 +34,11 @@ class MetricsController < ApplicationController
 		end
 	end
 
-	def get_metric m, _start, _end, options
-		
+	def get_metric m, start, stop, step
 		type, metric = m.split(":")
-
 		settings = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first
-
 		backend = init_backend settings[:type], settings[:settings]
-
-		backend.get_metric metric, _start, _end, options
+		backend.get_metric metric, start, stop, step
 	end
 
 	def init_backend name, settings

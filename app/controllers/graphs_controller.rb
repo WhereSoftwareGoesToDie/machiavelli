@@ -14,14 +14,17 @@ class GraphsController < ApplicationController
 		@available_metrics = @all_metrics - @metrics || []
 		@graph = graph.view 
 
-		gon.start = to_epoch(params[:start] || UI_DEFAULTS[:start])
-		gon.end   = to_epoch(params[:end] || "0h")
+		start = params[:start] || UI_DEFAULTS[:start]
+		gon.start = to_epoch(start)
+		gon.stop  = to_epoch(params[:stop] || "0h")
+		gon.step  = steps(start) 
 
 		gon.metric = []
 		gon.feed = []
 
 		@metrics.each_with_index do |m,i|
 			gon.metric[i] = m
+			gon.feed[i] = "/metrics/"+m
 		end
 	end
 	
@@ -59,6 +62,17 @@ class GraphsController < ApplicationController
 # Functions
 	def backend
 		Backend::GenericBackend.new
+	end
+
+	def steps period
+		case period
+		when "10min" then; 1   # second
+		when "1h"    then; 10
+		when "3h"    then; 30
+		when "1d"    then; 60  # 1 minute
+		when "1w"    then; 60 * 20 # 20 mintes
+		when "2w"    then; 60 * 60 # 1 hour
+		end
 	end
 
 	def graph
