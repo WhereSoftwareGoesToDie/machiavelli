@@ -1,6 +1,8 @@
 require 'sinatra'
 require 'json'
 
+require 'sinatra/reloader' if development?
+
 source_list = ["The_Prince","Discources_On_Livy","The_Woman_of_Andros_Part_1","Clizia","The_Mandrake"]
 
 get '/' do
@@ -17,20 +19,29 @@ end
 get '/source/:source' do
 	content_type :json
 
-	start = (params[:start] || Time.now().to_i - 60*60*24).to_i # 24 Hours
-	stop  = (params[:end]   || Time.now().to_i).to_i            # Now
-	step  = (params[:step]  || 300).to_i                        # 5 minutes => ~300 datapoints
-	source = params[:source]
-
-	return '[]' unless source_list.include? params[:source]
+	[:start, :stop, :step].each do |p|
+		return { error: "Must provide #{p}"}.to_json unless params[p]
+	end
 	
-	data = []
-	i = source_list.index(source) || 2
+	start = params[:start].to_i
+	stop = params[:stop].to_i
+	step = params[:step].to_i
 
-	(start..stop).step(step).each {|x|
-		y = 10 * (Math.sin(0.005 * x) + Math.sin((0.004 * x) + ((Math::PI * i) / source_list.length) )) + 20 + i 
+	unless source_list.include? params[:source] then
+		return {error: "Source #{params[:source]} does not exist. Check /source_list"}.to_json
+	end
+	
+	source = params[:source]
+	
+	i = source_list.index(source) || 2
+	len = source_list.length
+
+	data = []
+
+	(start..stop).step(step).each do |x|
+		y = 10 * (Math.sin(0.005 * x) + Math.sin((0.004 * x) + ((Math::PI * i) / len) )) + 20 + i 
 		data << { x: x, y: y.round(2) } 
-	}
+	end
 
 	data.to_json
 
