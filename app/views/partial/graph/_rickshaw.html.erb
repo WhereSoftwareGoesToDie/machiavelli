@@ -14,18 +14,24 @@
 
 <script>
 renderWaiting("chart_<%=index%>")
-feed = "/metrics/"+gon.metric[<%=index%>]+"?start="+gon.start+"&end="+gon.end
+var data = []
 
+/*
+// if static
+feed = gon.feed[<%=index%>]+"?start="+gon.start+"&stop="+gon.stop+"&step="+gon.step
 $.getJSON( feed , function(data) { 
 	if (data.length == 0) { 
 		renderError("chart_<%=index%>", "No data returned. Data source: "+feed) }
 	if (data.error) {
-		renderError("chart_<%=index%>", data.error)
+		renderError("chart_<%=index%>", "Error encountered: "+data.error)
 		return false
 	}
 
 	render_rickshaw(<%=index%>,data)
-
 })
+// else
+*/
+
+render_rickshaw(<%=index%>)
 
 </script>
