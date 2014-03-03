@@ -1,12 +1,14 @@
 class MetricsController < ApplicationController
 	include Layouts::ApplicationLayoutHelper
 
+	START = 60*60*3
+	STOP  = 0
 # GET
 	def get
-		#begin
+		now = Time.now().to_i
 
-		_start  = params[:start]
-		_end    = params[:end]
+		_start  = params[:start] || now - START
+		_end    = params[:end] || now - STOP
 		m = params["metric"]
 		options = (graph.view == "cubism" ? {datapoints: 700} : {} )
 
@@ -19,7 +21,6 @@ class MetricsController < ApplicationController
 		end
 	end
 	
-
 # Functions
 	def backend
 		Backend::GenericBackend.new
