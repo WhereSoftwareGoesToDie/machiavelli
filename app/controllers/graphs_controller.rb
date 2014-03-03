@@ -14,8 +14,8 @@ class GraphsController < ApplicationController
 		@available_metrics = @all_metrics - @metrics || []
 		@graph = graph.view 
 
-		gon.start = params[:start] || UI_DEFAULTS[:start]
-		gon.end   = params[:end] || "0h"
+		gon.start = to_epoch(params[:start] || UI_DEFAULTS[:start])
+		gon.end   = to_epoch(params[:end] || "0h")
 
 		gon.metric = []
 		gon.feed = []
