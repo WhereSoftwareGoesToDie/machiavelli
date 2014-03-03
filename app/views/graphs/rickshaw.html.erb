@@ -1,37 +1,41 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= stylesheet_link_tag    "graphs_rickshaw" %>
+<%= include_gon %>
 
-<input type="checkbox" id="toggle_live" checked> Live Updates
-<script>graph=[]; feed=[]</script>
+<script src="/assets/graphs/util.js"></script>
+<script src="/assets/graphs/rickshaw.js"></script>
+
+<div><input type="checkbox" id="toggle_live" checked> Live Updates</div>
+
 <div class="slider" id="multi_slider" ></div>
 <% @metrics.each_with_index do |metric, index| %>
-	<%= render partial: "partial/graph/rickshaw", locals: {metric: metric, index: index} %>
+<h4><%= metric %></h4>
+
+<div id="chart_container">
+        <div class="y_axis" id="<%="y_axis_#{index}"%>"></div>
+        <div class="chart"  id="<%="chart_#{index}"%>"></div>
+</div>
+
+<script>
+renderWaiting("chart_<%=index%>")
+var data = []
+render_rickshaw(<%=index%>)
+
+</script>
+	
 <% end %>
 
 
 <script>
-var intervalID = updateRickshaw() 
- $(document).ready(function() {
-                $("#toggle_live").click(function() { 
-                        if ($(this).is(":checked")) {} else { //intervalID = updateRickshaw() } else {  
-				clearInterval(intervalID) } 
-                }) 
-        })
+var intervalID = updateRickshaw()
+ 
+$(document).ready(function() {
+	$("#toggle_live").click(function() { 
+		if ($(this).is(":checked")) {} else { //intervalID = updateRickshaw() } else {  
+			clearInterval(intervalID) } 
+	}) 
+})
 
-$("#live_rickshaw").
-
-complete = 0;
-function renderSlider() { 
-	complete++;
-
-	// Render the multiple graph slider only when all the graphing operations have been completed.
-	if (complete = gon.metric.length) { 
-	new Rickshaw.Graph.RangeSlider({ 
-		graph: graph, 
-		element: $("#multi_slider")
-		});
-	}
-}
 </script>
 
 
