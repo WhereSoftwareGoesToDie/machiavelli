@@ -18,7 +18,7 @@ class Backend::GenericBackend
 	#      	{ "x": epoch, "y": value },
 	#      	...
 	#    ] 
-	def get_metric m, _start=nil, _end=nil, options={}
+	def get_metric m, start=nil, stop=nil, step=nil
 		raise NotImplementedError
 	end
 
