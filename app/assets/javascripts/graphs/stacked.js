@@ -165,7 +165,7 @@ generate_legend("&nbsp;",fake_label)
 var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
 	render: function(args) {
 
-		date = args.formattedXValue;
+		date = d3.time.format("%a, %d %b %Y %H:%M:%S")(new Date(args.domainX*1000)) //args.formattedXValue;
 		v = []
 		args.detail.sort(function(a, b) { return a.order - b.order }).forEach( function(d) {
 			v.push([ d.name, d.formattedYValue, d.series.color])
