@@ -3,7 +3,7 @@
 <%= stylesheet_link_tag    "graphs_cubism" %>
 
 <script src="/assets/graphs/util.js"></script>
-<% width = 800 %>
+<% width = 600 %>
 
 <div id="cubism_graph" style="position:relative; width:<%=width%>px"></div>
 
@@ -21,7 +21,7 @@ colours = safe_array Graph::Cubism.get_colours
 	var context = cubism.context()
 		.serverDelay(0)
 		.clientDelay(0)
-		.step(1e3)
+		.step(gon.step*1000) //1e3)
 		.size(<%=width%>);
 
 	datum = []

@@ -64,14 +64,14 @@ class GraphsController < ApplicationController
 		Backend::GenericBackend.new
 	end
 
-	def steps period
+	def steps period # make 600 points per period
 		case period
-		when "10min" then; 1   # second
-		when "1h"    then; 10
-		when "3h"    then; 30
-		when "1d"    then; 60  # 1 minute
-		when "1w"    then; 60 * 20 # 20 mintes
-		when "2w"    then; 60 * 60 # 1 hour
+			when "10min" then; 1   # second
+			when "1h"    then; 6  
+			when "3h"    then; 18 
+			when "1d"    then; 144  # ~2.4 minutes
+			when "1w"    then; 1008 # ~16.8 minutes 
+			when "2w"    then; 2016 # ~33.6 minutes
 		end
 	end
 
