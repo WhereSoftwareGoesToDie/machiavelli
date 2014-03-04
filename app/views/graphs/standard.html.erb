@@ -1,9 +1,9 @@
 <%= javascript_include_tag "rickshaw" %>
-<%= stylesheet_link_tag    "graphs_rickshaw" %>
+<%= stylesheet_link_tag    "graphs_standard" %>
 <%= include_gon %>
 
 <script src="/assets/graphs/util.js"></script>
-<script src="/assets/graphs/rickshaw.js"></script>
+<script src="/assets/graphs/standard.js"></script>
 
 <div class="slider" id="multi_slider" ></div>
 <% @metrics.each_with_index do |metric, index| %>
@@ -15,19 +15,14 @@
 </div>
 
 <script>
-renderWaiting("chart_<%=index%>")
-var data = []
-render_rickshaw(<%=index%>)
-
+	renderWaiting("chart_<%=index%>")
+	var data = []
+	renderStandard(<%=index%>)
 </script>
-	
 <% end %>
 
-
 <script>
-var intervalID = updateRickshaw()
-function stopUpdates() { clearInterval(intervalID) } 
-
+	var intervalID = updateStandard()
+	function stopUpdates() { clearInterval(intervalID) } 
 </script>
-
 

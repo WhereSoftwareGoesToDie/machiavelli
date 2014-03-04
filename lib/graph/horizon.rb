@@ -1,25 +1,8 @@
 require 'color'
 
-class Graph::Cubism < Graph::GenericGraph
-	GRAPH_COLOUR = Settings.cubism_color || "#006d2c"
+class Graph::Horizon < Graph::GenericGraph
+	GRAPH_COLOUR = Settings.horizon_color || "#006d2c"
 	
-	def self.view
-		"cubism"
-	end
-
-	# Given a metric name and a series of x:y datapoints, format the metric
-	# however the graphing library requires it. 
-	def self.parse_metric name, metric
-		stream = metric.map { |m| m[:y] }
-		resolution = metric[1][:x] - metric[0][:x]
-
-		# Only need to generate colours once
-		@@colors ||= get_colours #tint_range(complement GRAPH_COLOUR) + tint_range(GRAPH_COLOUR, reverse: true)
-		
-		{data: stream, resolution: resolution, colors: @@colors}
-	end
-
-
 	def self.get_colours
 		tint_range(complement GRAPH_COLOUR) + tint_range(GRAPH_COLOUR, reverse: true)
 	end

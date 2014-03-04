@@ -1,14 +1,14 @@
 <%= javascript_include_tag "cubism.v1" %>
 <%= stylesheet_link_tag    "cubism" %>
-<%= stylesheet_link_tag    "graphs_cubism" %>
+<%= stylesheet_link_tag    "graphs_horizon" %>
 
 <script src="/assets/graphs/util.js"></script>
 <% width = 600 %>
 
-<div id="cubism_graph" style="position:relative; width:<%=width%>px"></div>
+<div id="horizon_graph" style="position:relative; width:<%=width%>px"></div>
 
 <% def safe_array a; ("['"+a.join("','")+"']").html_safe; end
-colours = safe_array Graph::Cubism.get_colours
+colours = safe_array Graph::Horizon.get_colours
 %>
 
 <script>
@@ -28,7 +28,7 @@ colours = safe_array Graph::Cubism.get_colours
 	})
 
 	// Erectin' a dispenser
-	d3.select("#cubism_graph").call(function(div) {
+	d3.select("#horizon_graph").call(function(div) {
 		div.append("div")
 			.attr("class", "axis")
 			.call(context.axis().orient("top"));

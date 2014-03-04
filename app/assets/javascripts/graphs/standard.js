@@ -1,11 +1,10 @@
 var graph=[]
 var data;
 
-function render_rickshaw(index) { 
+function renderStandard(index) { 
 
 	update = metricURL(gon.feed[index], gon.start,gon.stop,gon.step)
                 
-        console.log(update)                                                                                            
 	$.getJSON(update, function(data) {
 
 		graph[index] = new Rickshaw.Graph({
@@ -55,7 +54,7 @@ function render_rickshaw(index) {
 	}) 
 }
 
-function updateRickshaw(){ 
+function updateStandard(){ 
 	id = setInterval(function() { 		
 		now = parseInt(Date.now()/1000)
 

@@ -12,7 +12,7 @@ class GraphsController < ApplicationController
 		@metrics = selected_metrics
 		@all_metrics = all_metrics #backend.get_cached_metrics_list
 		@available_metrics = @all_metrics - @metrics || []
-		@graph = graph.view 
+		@graph = params[:graph] || UI_DEFAULTS[:graph] 
 
 		start = params[:start] || UI_DEFAULTS[:start]
 		gon.start = to_epoch(start)
@@ -72,14 +72,6 @@ class GraphsController < ApplicationController
 			when "1d"    then; 144  # ~2.4 minutes
 			when "1w"    then; 1008 # ~16.8 minutes 
 			when "2w"    then; 2016 # ~33.6 minutes
-		end
-	end
-
-	def graph
-		case params[:graph] || UI_DEFAULTS[:graph]
-		when "horizon" then; Graph::Cubism
-		when "stacked" then; Graph::Stacked
-		else 		     Graph::Rickshaw
 		end
 	end
 
