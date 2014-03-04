@@ -6,5 +6,5 @@ Machiavelli::Application.routes.draw do
 
   get "refresh" => "graphs#refresh", as: "refresh"
 
-  get "metrics/:metric" => "metrics#get", as: "get_metric"
+  get "metrics" => "metrics#get", as: "get_metric"
 end

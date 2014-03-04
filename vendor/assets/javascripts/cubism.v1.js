@@ -466,9 +466,9 @@ cubism_contextPrototype.machiavelli= function(host) {
   source.metric = function(target) {
 
     var metric = context.metric(function(start, stop, step, callback) {
-	feed = host + "/metrics/"
+	feed = host + "/metrics/?metric="
 	      + target
-	      + "?start=" + cubism_machiavelliFormatDate(start - 2 * step)
+	      + "&start=" + cubism_machiavelliFormatDate(start - 2 * step)
 	      + "&end=" + cubism_machiavelliFormatDate(stop - 1000)
 	      + "&step="+ step/1000
 	d3.json(feed
