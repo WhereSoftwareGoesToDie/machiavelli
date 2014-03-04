@@ -1,6 +1,3 @@
-require 'open-uri'
-
-
 # Required config/settings.yml > backend > settings parameters: 
 #  url - the graphite instance url. 
 
@@ -21,17 +18,11 @@ class Backend::Graphite < Backend::GenericBackend
 		end
 	end
 
-	def get_metric m, _start=nil, _end=nil, options={}
-		from = ( _start.nil?  ? "-1h" : "-#{_start}" )
-
-                if options[:datapoints]
-                        step = to_seconds(_start) / options[:datapoints]
-                        step = 1 if step == 0
-                end
-
+	def get_metric m, start=nil, stop=nil, step=nil
 		uri = 	@base_url + 
 			"/render?target=" + m + 
-			"&from=" + from +
+			"&from=#{start}" +
+			"&until=#{stop}" +
 			"&format=json"
 
 		# Because why cook when you can create?
@@ -57,7 +48,7 @@ class Backend::Graphite < Backend::GenericBackend
 	end
 
 	def get_json uri
-		result = URI.parse(uri).read
+		result = Net::HTTP.get URI.parse(uri)
 
 		# Because asking for json return html if there's an error. 
 		if result.include? "Exception"
