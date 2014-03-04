@@ -6,7 +6,7 @@ var dataChart = []
 function getMetrics(metrics) { 
 	$.each(metrics, function(i, d) { 
 		
-		feed = "/metrics/"+d+"?start="+gon.start+"&end="+gon.end
+		feed = "/metrics/"+d+"?start="+gon.start+"&stop="+gon.stop+"&step="+gon.step
 		$.getJSON( feed , function(data) { 
 			dataChart.push( { data: data, name: d})
 			flagComplete()
@@ -91,7 +91,7 @@ for (n = 0; n < data.length; n++) {
 }
 
 // Finally, make the chart
-var graph = new Rickshaw.Graph({
+graph = new Rickshaw.Graph({
 	element: document.querySelector("#chart"),
 	width: 700,
 	height: 300,
@@ -206,4 +206,21 @@ document.getElementById("axis0").setAttribute("style", "left: -"+(pad[0]*3-6)+"p
 for (j = 1; j < uniq_scales.length; j++) {
 	document.getElementById("axis"+j).lastChild.setAttribute("style","left: "+(pad[j]*3-3)+"px")
 }
+
+
+intervalID = setInterval(function(d) { 
+
+	now = parseInt(Date.now()/1000)
+
+	$.each(gon.feed, function(i, feed) {
+		update = feed+"?start="+(now-gon.step)+"&stop="+now+"&step="+gon.step
+
+		$.getJSON(update, function(d){
+			graph.series[i].data.shift()
+			graph.series[i].data.push(d.slice(-1)[0])
+			graph.render()
+		})
+	})
+
+} , gon.step*1000)
 }

@@ -29,6 +29,16 @@
 		metrics.push("<%= m %>")
 	<%end%>
 
+	var graph;
 	renderWaiting("chart")
-	data = getMetrics(metrics)
+data = getMetrics(metrics)
+
+var intervalID// = updateRickshaw()
+ 
+$(document).ready(function() {
+        $("#toggle_live").click(function() { 
+                if ($(this).is(":checked")) {} else { //intervalID = updateRickshaw() } else {  
+                        clearInterval(intervalID) } 
+        }) 
+})
 </script>
