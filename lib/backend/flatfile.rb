@@ -29,19 +29,13 @@ class Backend::Flatfile < Backend::GenericBackend
 		[@metric]	
         end
 
-        def get_metric m, _start=nil, _end=nil, options={}
+        def get_metric m, start=nil, stop=nil, step=nil
 		data = []
-		s = to_epoch(_start)
-		s = 0 if s == ""
-		e = to_epoch(_end)
-		e = Time.now().to_i if e == ""
-		
-	
 		begin
 			f = File.open(@file)
 			f.each_line do |line|
 				x, y = line.split(@delimiter)
-				data << {x: x.to_i, y: y.to_f} if x.to_i.between?(s,e)
+				data << {x: x.to_i, y: y.to_f} if x.to_i.between?(start, stop)
 			end
 		rescue ENOENT => e
 			raise Backend::Error, e
