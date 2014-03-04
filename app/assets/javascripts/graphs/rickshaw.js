@@ -3,7 +3,7 @@ var data;
 
 function render_rickshaw(index) { 
 
-	update = gon.feed[index]+"?start="+gon.start+"&stop="+gon.stop+"&step="+gon.step                               
+	update = metricURL(gon.feed[index], gon.start,gon.stop,gon.step)
                 
         console.log(update)                                                                                            
 	$.getJSON(update, function(data) {
@@ -60,7 +60,8 @@ function updateRickshaw(){
 		now = parseInt(Date.now()/1000)
 
 		$.each(gon.feed, function(i, feed) { 
-			update = feed+"?start="+(now-gon.step)+"&stop="+now+"&step="+gon.step
+			update = metricURL(feed,now-gon.step,now,gon.step)
+
 
 			$.getJSON(update, function(d){ 
 				new_data = {data: d[d.length-1].y}

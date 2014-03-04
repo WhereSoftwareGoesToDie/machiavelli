@@ -10,7 +10,7 @@ class MetricsController < ApplicationController
 		start  = (params[:start] || now - START).to_i 
 		stop   = (params[:stop] || now - STOP).to_i
 		step   = (params[:step] || 300).to_i
-		m      = params["metric"]
+		m      = params[:metric]
 
 		begin
 			metric = get_metric(m, start, stop, step)

@@ -24,7 +24,7 @@ class GraphsController < ApplicationController
 
 		@metrics.each_with_index do |m,i|
 			gon.metric[i] = m
-			gon.feed[i] = "/metrics/"+m
+			gon.feed[i] = "/metrics/?metric="+m
 		end
 	end
 	
