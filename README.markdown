@@ -44,6 +44,8 @@ ruby simple_endpoint.rb
 ```
 Then, just navigate to `http://localhost:3000` in your favourite browser, and you're on your way.
 
+For testing flatfiles, run `generate_flatfile.rb` and reference the file in `public/flatfile.csv`
+
 Usage
 --
 
