@@ -105,17 +105,5 @@ module Layouts
 				end )
 			eval("#{s.tr("a-z","")}.#{time_scale}.ago.to_i")
 		end
-
-		def to_seconds s
-			return "" if s.nil?
-			multi = (case s.tr("0-9","")
-				 when "min"; 60
-				 when "h"; 60*60
-				 when "d"; 60*60*24
-				 when "w"; 60*60*24*7
-				 end)
-			s.tr("a-z","").to_i * multi
-		end
-
 	end
 end
