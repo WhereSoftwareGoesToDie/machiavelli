@@ -85,7 +85,7 @@ Machiavelli will accept any `config/settings.yml` overwrites of the following va
 <dd> default `off`.</dd>
 <dd>Set to true for tooltips for the basic user interface</dd>
 
-<dt> `cubism_color` </dt>
+<dt> `horizon_color` </dt>
 <dd> default `#006d2c` ("Cubism" green).</dd>
 <dd>Set a base colour for the darkest horizon colouring.</dd>
 
