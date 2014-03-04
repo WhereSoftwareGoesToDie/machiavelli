@@ -26,13 +26,7 @@ render_rickshaw(<%=index%>)
 
 <script>
 var intervalID = updateRickshaw()
- 
-$(document).ready(function() {
-	$("#toggle_live").click(function() { 
-		if ($(this).is(":checked")) {} else { //intervalID = updateRickshaw() } else {  
-			clearInterval(intervalID) } 
-	}) 
-})
+function stopUpdates() { clearInterval(intervalID) } 
 
 </script>
 

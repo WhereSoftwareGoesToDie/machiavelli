@@ -12,11 +12,7 @@ colours = safe_array Graph::Cubism.get_colours
 %>
 
 <script>
-	$(document).ready(function() {
-		$("#toggle_live").click(function() { 
-			if ($(this).is(":checked")) { context.start() } else { context.stop() } 
-		}) 
-	})
+	function stopUpdates() { context.stop() }
 
 	var context = cubism.context()
 		.serverDelay(0)

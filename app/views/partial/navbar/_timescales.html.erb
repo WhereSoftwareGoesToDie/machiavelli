@@ -1,5 +1,19 @@
+<script>
+function stopButtonClick() { 
+	stopUpdates()
+		b = $("#toggle_live")
+		b.attr("href", "<%=request.url.html_safe%>")
+		b.attr("onClick","")
+		b.attr("data-original-title","Click to start updating graph again")
+
+	$("#toggle_live").find("i")[0].setAttribute("class","icon-play")
+} 
+</script>
 <div class="btn-group">
-	<input type="checkbox" id="toggle_live" checked>
+	<a id="toggle_live" type="button" class='btn btn-xs btn-default' 
+		onClick="stopButtonClick(); return false"
+		data-toggle="tooltip-down" data-toggle="button" data-original-title="Click to stop updating graph"
+	><i class="icon-stop"></i></a>
 </div>
 <div class="btn-group">
 	<a type="button" class='btn btn-xs btn-default' href="<%= request.url %>"
