@@ -83,17 +83,6 @@ class GraphsController < ApplicationController
 		end
 	end
 
-	def get_metric m, _start, _end, options
-		
-		type, metric = m.split(":")
-
-		settings = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first
-
-		backend = init_backend settings[:type], settings[:settings]
-
-		backend.get_metric metric, _start, _end, options
-	end
-
 	def init_backend name, settings
 		"Backend::#{name.titleize}".constantize.new settings.to_hash
 	end
