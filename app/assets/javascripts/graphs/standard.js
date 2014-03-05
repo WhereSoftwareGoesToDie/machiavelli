@@ -6,7 +6,8 @@ function renderStandard(index) {
 	update = metricURL(gon.feed[index], gon.start,gon.stop,gon.step)
                 
 	$.getJSON(update, function(data) {
-
+		if (data.error) { renderError("chart_"+index, data.error); stopUpdates(); return false} 
+		if (data.length == 0) { renderError("chart_"+index, "renderStandard(): no data returned from endpoint: "+update); stopUpdates(); return false}
 		graph[index] = new Rickshaw.Graph({
 			element: document.getElementById("chart_"+index),
 			width: 700,
@@ -61,8 +62,9 @@ function updateStandard(){
 		$.each(gon.feed, function(i, feed) { 
 			update = metricURL(feed,now-gon.step,now,gon.step)
 
-
 			$.getJSON(update, function(d){ 
+				if (d.error) { renderError("flash", d.error); stopUpdates(); return false} 
+				if (d.length == 0) { renderError("flash", "renderStandard(): no data returned from endpoint: "+update); stopUpdates(); return false}
 				new_data = {data: d[d.length-1].y}
 				graph[i].series.addData(new_data); 
 				graph[i].render()

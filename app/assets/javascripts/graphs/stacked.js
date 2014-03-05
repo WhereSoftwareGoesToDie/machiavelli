@@ -8,6 +8,9 @@ function getMetrics(metrics) {
 		
 		feed = metricURL(gon.feed[i],gon.start,gon.stop,gon.step)
 		$.getJSON( feed , function(data) { 
+			if (data.error) { renderError("chart", data.error); stopUpdates(); return false} 
+			if (data.length == 0) { renderError("chart", "renderStandard(): no data returned from endpoint: "+feed); stopUpdates(); return false}
+
 			dataChart.push( { data: data, name: d})
 			flagComplete()
 		})
@@ -216,6 +219,9 @@ intervalID = setInterval(function(d) {
 		update = metricURL(feed,now-gon.step,now,gon.step)
 
 		$.getJSON(update, function(d){
+
+			if (d.error) { renderError("flash", d.error); stopUpdates(); return false} 
+			if (d.length == 0) { renderError("flash", "renderStandard(): no data returned from endpoint: "+update); stopUpdates(); return false}
 			graph.series[i].data.shift()
 			graph.series[i].data.push(d.slice(-1)[0])
 			graph.render()
