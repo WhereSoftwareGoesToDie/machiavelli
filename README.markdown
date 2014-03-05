@@ -49,13 +49,19 @@ For testing flatfiles, run `generate_flatfile.rb` and reference the file in `pub
 Usage
 --
 
-After loading the Machiavelli page for the first time, no metrics are available to display. Clicking the "Refresh" button on the top navigation bar iterates over all the configuration settings and pulls all available metrics to be graphed into the left hand side bar.
+After loading the Machiavelli page for the first time, no metrics are available to display. Clicking the "Refresh" button on the left hand side navigation menu near the -- currently-empty -- Available Metrics listing, iterates over all the configuration settings and pulls all available metrics to be graphed into the left hand side bar.
 
 Then, any metric can be added or removed from the page by clicking its link. Active metrics can be rearranged by dragging their listing to reorder.
 
 The filter bar can be used to narrow down the list of available metrics (those that aren't already graphed) for ease of selection. Entering a substring matching multiple metrics and pressing enter will add all matches to the page.
 
 The buttons on the top navigation bar can be used to toggle the date range, and graphing style to use. Depending on the view being used, hovering can show more detail, and sliders can be used to zoom to specific points in time.
+
+Clicking 'Refresh' in the top navigation bar will refresh the page, and thus the metric data being displayed
+
+The Play/Stop button can be used to stop the live updating of metrics. Clicking the Play button refreshes the page, and the live updating starts again. 
+
+**Please note** - live metric updating requires that your local time be up to date with the Machiavelli server time. Should any errors relating to lack of live updating data occur, please confirm the ntp services on your local machine and the hosted Machiavelli environment
 
 
 Invoking Backends
