@@ -2430,6 +2430,11 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 					],
 					slide: function( event, ui ) {
 						for( var i=0; i<graph.length; i++) {
+
+							// If the slider gets close enough that it will end up selecting no data, stop it
+							step = graph[i].series[0].data[1].x - graph[i].series[0].data[0].x
+							if ((ui.values[0] + step) >= ui.values[1]) { return false; }
+							
 							graph[i].window.xMin = ui.values[0];
 							graph[i].window.xMax = ui.values[1];
 							graph[i].update();
@@ -2466,7 +2471,9 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 					],
 					slide: function( event, ui ) {
 
-						if (ui.values[1] <= ui.values[0]) return;
+						// If the slider gets close enough that it will end up selecting no data, stop it
+						step = graph.series[0].data[1].x - graph.series[0].data[0].x
+						if (ui.values[1] <= ui.values[0] + step ) return;
 
 						graph.window.xMin = ui.values[0];
 						graph.window.xMax = ui.values[1];
