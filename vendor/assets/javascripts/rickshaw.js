@@ -2525,7 +2525,9 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 			values[1] = domain[1];
 		}
 
-		window.location.hash = values
+		baseURL = window.location.href.split("#")[0]
+		window.location.replace(baseURL + "#" + values)
+
 		$(element).slider('option', 'values', values);
 	},
 
