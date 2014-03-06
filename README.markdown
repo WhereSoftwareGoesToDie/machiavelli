@@ -1,6 +1,10 @@
 Machiavelli
 =========
 
+[![Build
+Status](https://travis-ci.org/anchor/machiavelli.png?branch=travis)](https://travis-ci.org/anchor/machiavelli)
+
+
 Machiavelli is a Ruby on Rails application for taking any arbitrarily defined data source, and feeding it into any arbitrarily defined graphing library.
 
 It does this by defining a set of data sources, or "backends", and a set of charting libraries, or "graphs".
