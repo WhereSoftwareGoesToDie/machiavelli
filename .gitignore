@@ -21,3 +21,6 @@
 
 # Ignore local config settings
 config/settings.local.yml
+
+# ignore the generated flatfile
+public/flatfile.csv

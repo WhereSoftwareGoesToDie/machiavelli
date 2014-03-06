@@ -38,7 +38,6 @@ class Backend::Simple < Backend::GenericBackend
         end
 
 	def get_json uri 
-		puts uri
 		result = URI.parse(uri).read
 		JSON.parse(result, :symbolize_names => true)
 	end

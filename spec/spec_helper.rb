@@ -1,20 +1,20 @@
+require 'rubygems'
+
+ENV["RAILS_ENV"] ||= 'test'
+require File.expand_path("../../config/environment", __FILE__)
+require 'rspec/rails'
+require 'rspec/autorun'
 require 'capybara/rspec'
+require 'capybara/rails'
 require 'capybara/webkit'
-require 'capybara/dsl'
-require 'rspec'
+require 'binding_of_caller'
 
-Capybara.app_host = ENV['APP_HOST'] || raise("Need an APP_HOST to point at")
-Capybara.run_server = false
+require './generate_flatfile'
 
-Capybara.default_wait_time = 10  
-LONG_WAIT_TIME = 60
- 
-unless ENV['BROWSER'] == "firefox" then
-	Capybara.default_driver = :webkit 
-	Capybara.javascript_driver = :webkit
-end
+Capybara.javascript_driver = :webkit
 
 RSpec.configure do |config|
-        config.include Capybara::DSL
-	config.fail_fast = true
+	config.include Capybara::DSL
+	config.mock_with :rspec
+	config.order = "random"
 end

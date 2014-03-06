@@ -1,14 +1,10 @@
 require 'spec_helper'
 require 'redis'
-require 'pry-debugger'
-require 'pry'
-
-
 
 describe "Machiavelli", :js => true do
 
-	TYPE = "SimpleSimon"
-	METRIC = TYPE+":Clizia"
+	TYPE = "Flatfile"
+	METRIC = TYPE+":Metric"
 	CHART = METRIC.tr(":.","_")+"_chart"
 
 	it "has a front page with buttons" do
@@ -63,7 +59,7 @@ describe "Machiavelli", :js => true do
 		# Check there's a chart rendered on the page
 		expect(page).to have_content METRIC
 		expect(page).to have_css "div#multi_slider"
-		expect(page).to have_css "div##{CHART}"
+		expect(page).to have_css "div#chart_0"
 		expect(page).to have_css "div.x_tick"
 	end
 
@@ -73,7 +69,7 @@ describe "Machiavelli", :js => true do
 		# Check there's a chart rendered on the page
 		expect(page).to have_content METRIC
 		expect(page).to have_css "div.horizon"
-		expect(page).to have_css "div#cubism_graph"
+		expect(page).to have_css "div#horizon_graph"
 		expect(page).to have_css "div.axis"
 	end
 
@@ -84,7 +80,7 @@ describe "Machiavelli", :js => true do
 		expect(page).to have_content METRIC
 		expect(page).to have_css "div.rickshaw_graph"
 		expect(page).to have_css "div#chart_container"
-		expect(page).to have_css "div.swatch_line"
+		expect(page).to have_css "div#axis0_stub"
 	end
 
 end
