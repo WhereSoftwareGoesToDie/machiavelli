@@ -42,6 +42,26 @@ class Backend::Flatfile < Backend::GenericBackend
 		end
 
 		raise Backend::Error, "No data for #{m} within selected time period" if data == []
-		data
+
+		filtered = []			
+		
+		# Attempt filtering of data as per the 3st parameters.
+		# Currently broken
+		start..stop.step(step).each do |x|
+			points = data.select{|p| p[:x].between?(x, x+step)}
+			case
+				when points.length == 1 then 
+					filtered << points[0]
+				when points.length > 0 then 
+					avg = points.map{|b| b[:y]}.inject{|a, b| a+b}.to_f / points.size
+					filtered << {x: x, y: avg}
+				when points.length == 0 then
+					filtered << {x: x, y: 0}
+				else 
+					raise Backend::Error, "Oops"
+			end
+		end
+
+		filtered
         end
 end 

@@ -1,7 +1,7 @@
-file = "public/flatfile.csv"
+file = "public/flatfile_15s.csv"
 
 datapoints = 600
-step = 1
+step = 15
 
 stop = Time.now().to_i
 start = stop - (datapoints * step)

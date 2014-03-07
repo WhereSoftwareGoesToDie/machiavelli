@@ -223,6 +223,7 @@ intervalID = setInterval(function(d) {
 			if (d.error) { renderError("flash", d.error); stopUpdates(); return false} 
 			if (d.length == 0) { renderError("flash", "renderStandard(): no data returned from endpoint: "+update); stopUpdates(); return false}
 			graph.series[i].data.shift()
+			console.log(d.slice(-1)[0])
 			graph.series[i].data.push(d.slice(-1)[0])
 			graph.render()
 		})
