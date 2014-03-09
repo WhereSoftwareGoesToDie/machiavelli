@@ -46,19 +46,17 @@ class Backend::Flatfile < Backend::GenericBackend
 		filtered = []			
 		
 		# Attempt filtering of data as per the 3st parameters.
-		# Currently broken
-		start..stop.step(step).each do |x|
-			points = data.select{|p| p[:x].between?(x, x+step)}
+		(start..stop).step(step).each do |x|
+			points = data.select{|p| p[:x].between?(x, x+step-1)}
 			case
 				when points.length == 1 then 
-					filtered << points[0]
+					filtered << {x: x, y: points[0][:y]}
 				when points.length > 0 then 
 					avg = points.map{|b| b[:y]}.inject{|a, b| a+b}.to_f / points.size
 					filtered << {x: x, y: avg}
 				when points.length == 0 then
-					filtered << {x: x, y: 0}
-				else 
-					raise Backend::Error, "Oops"
+					# no data within range, so give it a NaN
+					filtered << {x: x, y: (0.0 / 0.0)}
 			end
 		end
 
