@@ -24,7 +24,11 @@ class Backend::Flatfile < Backend::GenericBackend
 		@metric    = params[:metric]
 		@delimiter = params[:delimiter]  || ","
 	end
-        
+
+	def self.live?
+		false # Flat files don't auto update, therefore cannot be assumed to be live
+	end
+
 	def get_metrics_list
 		[@metric]	
         end
