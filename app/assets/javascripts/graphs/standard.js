@@ -3,7 +3,7 @@ var data;
 
 function renderStandard(index) { 
 
-	update = metricURL(gon.feed[index], gon.start,gon.stop,gon.step)
+	update = metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step)
                 
 	$.getJSON(update, function(data) {
 		if (data.error) { renderError("chart_"+index, data.error); stopUpdates(); return false} 
@@ -46,7 +46,7 @@ function renderStandard(index) {
 
 		$.each(data, function(i, point) {                                                                         
 			x = {data: point.y} 
-			graph[index].series.addData(x) //{name: gon.metric[index], data: point.y})
+			graph[index].series.addData(x) 
 		})
 		graph[index].render()
 
@@ -59,9 +59,9 @@ function updateStandard(){
 	id = setInterval(function() { 		
 		now = parseInt(Date.now()/1000)
 
-		$.each(gon.feed, function(i, feed) { 
-			update = metricURL(feed,now-gon.step,now,gon.step)
-
+		$.each(gon.metrics, function(i, metric) { 
+			if (metric.live) { 
+			update = metricURL(metric.feed,now-gon.step,now,gon.step)
 			$.getJSON(update, function(d){ 
 				if (d.error) { renderError("flash", d.error); stopUpdates(); return false} 
 				if (d.length == 0) { renderError("flash", "renderStandard(): no data returned from endpoint: "+update); stopUpdates(); return false}
@@ -69,6 +69,7 @@ function updateStandard(){
 				graph[i].series.addData(new_data); 
 				graph[i].render()
 			})
+			}
 		})
 	}
 	, gon.step*1000);
@@ -80,7 +81,7 @@ function renderSlider() {
         complete++;
 
         // Render the multiple graph slider only when all the graphing operations have been completed.
-        if (complete = gon.metric.length) { 
+        if (complete = gon.metrics.length) { 
         new Rickshaw.Graph.RangeSlider({ 
                 graph: graph, 
                 element: $("#multi_slider")

@@ -19,12 +19,10 @@ class GraphsController < ApplicationController
 		gon.stop  = to_epoch(params[:stop] || "0h")
 		gon.step  = steps(start) 
 
-		gon.metric = []
-		gon.feed = []
+		gon.metrics = []
 
 		@metrics.each_with_index do |m,i|
-			gon.metric[i] = m
-			gon.feed[i] = "/metrics/?metric="+m
+			gon.metrics[i] = { metric: m, feed: "/metrics/?metric="+m, live: (metric_type m).live?}
 		end
 	end
 	
@@ -62,6 +60,12 @@ class GraphsController < ApplicationController
 # Functions
 	def backend
 		Backend::GenericBackend.new
+	end
+
+	def metric_type m
+		type = m.split(":").first
+		subtype = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first[:type].titleize
+		return "Backend::#{subtype}".constantize
 	end
 
 	def steps period # make 600 points per period

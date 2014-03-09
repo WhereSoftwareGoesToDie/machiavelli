@@ -2,6 +2,6 @@
 #
 
 backends: [ 
-        { type: "simple", alias: "Simple", settings: { url: "http://localhost:4567"}},
+        { type: "simple", alias: "Simple", settings: { url: "http://localhost:4567"}}
 ]
 tooltips: true

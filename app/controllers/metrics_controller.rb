@@ -3,13 +3,14 @@ class MetricsController < ApplicationController
 
 	START = 60*60*3
 	STOP  = 0
+	STEP = 10
 # GET
 	def get
 		now = Time.now().to_i
 
 		start  = (params[:start] || now - START).to_i 
 		stop   = (params[:stop] || now - STOP).to_i
-		step   = (params[:step] || 300).to_i
+		step   = (params[:step] || STEP).to_i
 		m      = params[:metric]
 
 		begin

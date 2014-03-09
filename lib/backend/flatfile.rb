@@ -24,7 +24,11 @@ class Backend::Flatfile < Backend::GenericBackend
 		@metric    = params[:metric]
 		@delimiter = params[:delimiter]  || ","
 	end
-        
+
+	def self.live?
+		false # Flat files don't auto update, therefore cannot be assumed to be live
+	end
+
 	def get_metrics_list
 		[@metric]	
         end
@@ -42,6 +46,24 @@ class Backend::Flatfile < Backend::GenericBackend
 		end
 
 		raise Backend::Error, "No data for #{m} within selected time period" if data == []
-		data
+
+		filtered = []			
+		
+		# Attempt filtering of data as per the 3st parameters.
+		(start..stop).step(step).each do |x|
+			points = data.select{|p| p[:x].between?(x, x+step-1)}
+			case
+				when points.length == 1 then 
+					filtered << {x: x, y: points[0][:y]}
+				when points.length > 0 then 
+					avg = points.map{|b| b[:y]}.inject{|a, b| a+b}.to_f / points.size
+					filtered << {x: x, y: avg}
+				when points.length == 0 then
+					# no data within range, so give it a NaN
+					filtered << {x: x, y: (0.0 / 0.0)}
+			end
+		end
+
+		filtered
         end
 end 

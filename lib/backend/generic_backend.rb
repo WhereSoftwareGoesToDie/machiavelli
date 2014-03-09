@@ -22,6 +22,12 @@ class Backend::GenericBackend
 		raise NotImplementedError
 	end
 
+	# Is the metric returning live data? That is, can it be assumed to have
+	# data values up to Time.now() within step tolerance?
+	def self.live?
+		true
+	end
+
 # Parent class functionality after this point
 
 	REDIS_KEY = Settings.metrics_key || "Machiavelli.Backend.Metrics"

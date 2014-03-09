@@ -23,8 +23,8 @@ colours = safe_array Graph::Horizon.get_colours
 	datum = []
 
 	machiavelli = context.machiavelli(window.location.origin)
-	$.each(gon.metric, function(i,d) {
-		datum.push(machiavelli.metric(d))
+	$.each(gon.metrics, function(i,m) {
+		datum.push(machiavelli.metric(m.metric))
 	})
 
 	// Erectin' a dispenser
