@@ -11,6 +11,9 @@ require 'binding_of_caller'
 
 require './generate_flatfile'
 
+require 'coveralls'
+Coveralls.wear!
+
 Capybara.javascript_driver = :webkit
 
 RSpec.configure do |config|

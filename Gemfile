@@ -11,6 +11,8 @@ gem 'gon'
 gem 'color'
 gem 'redis'
 
+gem 'coveralls', require: false
+
 gem 'sinatra'
 
 
