@@ -57,7 +57,14 @@ module Layouts
 		def obl_qs k,  p={}; alter_qs :obl, k, false, p; end
 
 		def query_hash p={}
-			url = (p[:url] == :referer ? request.referer : request.url)
+			url = case 
+				when p[:url] == :referer 
+					request.referer
+				when p[:url].is_a?(String)
+					p[:url]
+				else 
+					request.url
+				end
 
 			query = URI::parse(url).query
                         query.gsub!("metric=","metric[]=") if query
