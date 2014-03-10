@@ -43,7 +43,7 @@ module Layouts
 				p = chk_qs(param,b) 
 
 				html += "active" if (p || p.nil? && UI_DEFAULTS[param] == b)
-				html += "' href='"+ obl_qs("play", {url: chg_qs(param, b)}) +"'>"+b+"</a>"
+				html += "' href='"+ chg_qs(param, b) +"'>"+b+"</a>"
 				a << html
 			end
 			a
