@@ -35,7 +35,7 @@ module Layouts
 		def render_sidenav
 			render(partial: "partial/sidenav/filter_metrics")
 		end
-
+		
 		def navbar_buttons param, buttons
 			a = []
 			buttons.each do |b|
@@ -43,7 +43,7 @@ module Layouts
 				p = chk_qs(param,b) 
 
 				html += "active" if (p || p.nil? && UI_DEFAULTS[param] == b)
-				html += "' href='"+ chg_qs(param, b) +"'>"+b+"</a>"
+				html += "' href='"+ obl_qs("play", {url: chg_qs(param, b)}) +"'>"+b+"</a>"
 				a << html
 			end
 			a
@@ -54,6 +54,7 @@ module Layouts
 		def chg_qs k,v,p={}; alter_qs :chg, k,v,p; end
 		def add_qs k,v,p={}; alter_qs :add, k,v,p; end
 		def rem_qs k,v,p={}; alter_qs :rem, k,v,p; end
+		def obl_qs k,  p={}; alter_qs :obl, k, false, p; end
 
 		def query_hash p={}
 			url = (p[:url] == :referer ? request.referer : request.url)
@@ -83,13 +84,15 @@ module Layouts
 					else
 						hash[k] ? hash[k] << v : hash[k] = v
 					end
-				when :chg
+				when :chg 
 					hash[k] = v
 					hash.delete("metric") if k == "backend"
-				when :rem
+				when :rem #ove
 					x = Array(hash[k])
 					x.delete(v)
 					x.empty? ? hash.delete(k) : hash[k] = x
+				when :obl #iterate
+					hash.delete(k)
 			end
 			
 			hash_query hash
