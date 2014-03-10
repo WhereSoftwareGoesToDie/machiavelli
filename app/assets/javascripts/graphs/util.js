@@ -15,3 +15,10 @@ function renderError(element, error) {
 function metricURL(base, start, stop, step){ 
 	return base+"&start="+start+"&stop="+stop+"&step="+step		
 }
+
+function stopButtonClick() { 
+        stopUpdates()
+	$("#autoplay_stop").hide()
+	$("#autoplay_play").show()
+} 
+

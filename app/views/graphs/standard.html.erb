@@ -22,7 +22,8 @@
 <% end %>
 
 <script>
-	var intervalID = updateStandard()
-	function stopUpdates() { clearInterval(intervalID) } 
+var intervalID; 
+function stopUpdates() { clearInterval(intervalID) } 
+function startUpdates() { intervalID = updateStandard() } 
 </script>
 
