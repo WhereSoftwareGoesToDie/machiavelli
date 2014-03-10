@@ -34,5 +34,6 @@
 	data = getMetrics(metrics)
 
 	var intervalID;
+	function startUpdates(){ intervalID = updateStacked() } 
 	function stopUpdates() { clearInterval(intervalID) } 
 </script>

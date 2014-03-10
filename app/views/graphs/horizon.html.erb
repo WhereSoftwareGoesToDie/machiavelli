@@ -13,12 +13,14 @@ colours = safe_array Graph::Horizon.get_colours
 
 <script>
 	function stopUpdates() { context.stop() }
+	function startUpdates() { context.start() } 
 
 	var context = cubism.context()
 		.serverDelay(0)
 		.clientDelay(0)
 		.step(gon.step*1000) //1e3)
-		.size(<%=width%>);
+		.size(<%=width%>)
+		.stop();
 
 	datum = []
 
