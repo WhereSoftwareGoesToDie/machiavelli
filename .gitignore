@@ -24,3 +24,6 @@ config/settings.local.yml
 
 # ignore the generated flatfile
 public/flatfile*.csv
+
+# Ignore simplecov generated files
+/coverage

@@ -1,7 +1,0 @@
-# SETTINGS
-#
-
-backends: [ 
-        { type: "flatfile", settings: { file_name: "public/flatfile_1s.csv", metric: "metric"}}
-]
-tooltips: true
