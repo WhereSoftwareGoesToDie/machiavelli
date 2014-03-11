@@ -30,19 +30,17 @@ class Backend::Flatfile < Backend::GenericBackend
 	end
 
 	def get_metrics_list
+		raise Backend::Error, "File #{@file} does not exist" unless File.exists?(@file)
 		[@metric]	
         end
 
         def get_metric m, start=nil, stop=nil, step=nil
+		raise Backend::Error, "File #{@file} does not exist" unless File.exists?(@file)
+		
 		data = []
-		begin
-			f = File.open(@file)
-			f.each_line do |line|
-				x, y = line.split(@delimiter)
-				data << {x: x.to_i, y: y.to_f} if x.to_i.between?(start, stop)
-			end
-		rescue ENOENT => e
-			raise Backend::Error, e
+		File.open(@file).each_line do |line|
+			x, y = line.split(@delimiter)
+			data << {x: x.to_i, y: y.to_f} if x.to_i.between?(start, stop)
 		end
 
 		raise Backend::Error, "No data for #{m} within selected time period" if data == []

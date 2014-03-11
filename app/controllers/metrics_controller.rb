@@ -23,17 +23,6 @@ class MetricsController < ApplicationController
 	end
 	
 # Functions
-	def backend
-		Backend::GenericBackend.new
-	end
-
-	def graph
-		case params[:graph] || UI_DEFAULTS[:graph]
-		when "horizon" then; Graph::Cubism
-		when "stacked" then; Graph::Stacked
-		else 		     Graph::Rickshaw
-		end
-	end
 
 	def get_metric m, start, stop, step
 		type, metric = m.split(":")
