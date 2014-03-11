@@ -1,6 +1,5 @@
 module ApplicationHelper
 	include Layouts::ApplicationLayoutHelper
-
 	module BootstrapExtension
 		FORM_CONTROL_CLASS = "form-control"
 		BUTTON_CLASS = "btn btn-default"
@@ -17,7 +16,7 @@ module ApplicationHelper
                         end
 			class_name
 		end
-
+=begin
 		# Form objects to override
 		def password_field(object_name, method, options = {})
 			options[:class] = add_class_option options[:class]
@@ -28,20 +27,13 @@ module ApplicationHelper
 			options[:class] = add_class_option options[:class]
 			super #Call super to do the real work
 		end
-
+=end
 		def text_field(object_name, method, options = {})
 			options[:class] = add_class_option options[:class]
-			super #Call super to do the real work
-		end
-
-		# TODO This method override doesn't actually work, which is annoying
-		def submit(value=nil, options={})
-			options[:class] = add_class_option options[:class], BUTTON_CLASS
 			super #Call super to do the real work
 		end
 	end
 
 	# Add the modified method to ApplicationHelper
 	include BootstrapExtension
-
 end

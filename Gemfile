@@ -11,6 +11,8 @@ gem 'gon'
 gem 'color'
 gem 'redis'
 
+gem 'coveralls', require: false, group: :test
+gem 'simplecov', '~> 0.7.1'
 gem 'sinatra'
 
 
