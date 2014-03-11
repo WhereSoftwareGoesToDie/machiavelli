@@ -17,7 +17,7 @@ require 'binding_of_caller'
 require 'redis'
 
 
-TEMP_YML = "tmp/temp.yml"
+TEMP_YML = "temp_settings.yml"
 REDIS_METRIC_KEY = "Machiavelli.Backend.Metrics"
 
 Capybara.javascript_driver = :webkit unless ENV["BROWSER"] == "firefox"

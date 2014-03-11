@@ -25,5 +25,8 @@ config/settings.local.yml
 # ignore the generated flatfile
 public/flatfile*.csv
 
+# Ignore rspec testing file
+temp_settings.yml
+
 # Ignore simplecov generated files
 /coverage
