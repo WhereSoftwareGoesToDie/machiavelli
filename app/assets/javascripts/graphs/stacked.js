@@ -9,12 +9,12 @@ var dataChart = []
 			feed = metricURL(gon.metrics[i].feed, gon.start, gon.stop, gon.step)
 			$.getJSON(feed, function (data) {
 				if (data.error) {
-					renderError("chart", data.error);
+					renderError("chart", data.error, "renderStacked");
 					stopUpdates();
 					return false
 				}
 				if (data.length == 0) {
-					renderError("chart", "renderStacked(): no data returned from endpoint: " + feed);
+					renderError("chart", "no data returned from endpoint: " + feed, "renderStacked");
 					stopUpdates();
 					return false
 				}
@@ -264,12 +264,12 @@ function updateStacked() {
 				$.getJSON(update, function (d) {
 
 					if (d.error) {
-						renderError("flash", d.error);
+						renderError("flash", d.error, "updateStacked");
 						stopUpdates();
 						return false
 					}
 					if (d.length == 0) {
-						renderError("flash", "renderStacked(): no data returned from endpoint: " + update);
+						renderError("flash", "no data returned from endpoint: " + update, "updateStacked");
 						stopUpdates();
 						return false
 					}
