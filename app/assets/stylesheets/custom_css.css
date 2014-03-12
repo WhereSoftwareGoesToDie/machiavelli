@@ -11,7 +11,8 @@
 .hover-li { padding: 5px }
 .hover-right { float:right;}
 .hover-left { float:left;}
-#side-menu a { text-decoration: none }
+.side-menu a { text-decoration: none;}
+.side-menu { font-size:small}
 .search-box {
     position: relative;
     padding: 10px;
@@ -41,7 +42,7 @@
 .detail_swatch { float: right; display: inline-block; width: 10px; height: 10px; margin: 0 4px 0 0 }
 .rickshaw_graph .detail .date { color: #a0a0a0 }
 
-#side-menu .metric { 
+.side-menu .metric { 
 	display:inline-block;
 	width: 215px;
 	overflow: hidden; 

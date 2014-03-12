@@ -8,7 +8,7 @@ $(document).ready(function() {
 	});
 
 
-	$("#side-menu").sortable({
+	$("#graphed_metrics").sortable({
 		stop: function(event, ui) { 
 			var metrics = [], params = []
 			$(".sortable").each(function(i,el){
@@ -28,7 +28,7 @@ $(document).ready(function() {
 
 <nav class="navbar-default navbar-static-side" role="navigation">
 	<div class="sidebar-collapse">
-		<ul class="nav" id="side-menu" style="font-size: small">
+		<ul class="nav side-menu" id="graphed_metrics">
 			<li class="header-text"><i class="icon-bar-chart"></i>Graphed Metrics</li>
 
 			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
@@ -42,7 +42,7 @@ $(document).ready(function() {
 			</div></li>
 			<% end %>
 		</ul>
-		<ul class="nav" id="side-menu" style="font-size: small">
+		<ul class="nav side-menu" id="search">
 			<li class="header-text">
 			<span><i class="icon-th-list"></i>Available Metrics
 			<span class="refresh"><a href="<%= refresh_path %>" data-toggle="tooltip" data-original-title="Click to refresh available metrics" 
@@ -59,7 +59,7 @@ $(document).ready(function() {
 			</div></li>
 			<% end %>
 		</ul>
-		<ul class="nav filter_list" id="side-menu" style="font-size: small">
+		<ul class="nav filter_list side-menu" id="available_metrics">
 			<% @available_metrics.sort.each do |metric| %>
 			<li class="hover-li">
 			<div>
