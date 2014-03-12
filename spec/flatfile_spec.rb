@@ -1,6 +1,8 @@
 require 'spec_helper'
 require './generate_flatfile'
 
+
+
 describe "Flatfiles backend", :js => true do
 
         type = "Flatfile"

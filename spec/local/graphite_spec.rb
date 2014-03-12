@@ -1,5 +1,5 @@
 require 'spec_helper'
-
+require 'pry-debugger'; 
 describe "Graphite", :js => true do
 
 	type = "Graphite"
@@ -28,4 +28,19 @@ describe "Graphite", :js => true do
                 it_behaves_like "a graph", "horizon", metric
         end
 
+	it "returns valid graphite errors if provoked" do
+		visit "/metrics/?metric=#{metric}&start=-1337"
+		json = JSON.parse(page.text)
+		expect(json).to include "error"
+		expect(json["error"]).to include "Graphite Exception raised"
+	end
+end
+
+describe "broken graphite" do
+	it "doesn't work with an unconnectable graphite instance" do
+		add_config "backends: [{ type: 'graphite', settings: { url: 'http://idontwork.nope.org'}}]"
+		visit "/refresh"
+		expect(page).to have_css "div.alert-danger"
+		expect(page).to have_content "Error retrieving Graphite metrics"
+	end
 end
