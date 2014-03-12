@@ -6,12 +6,21 @@ class MetricsController < ApplicationController
 	STEP = 10
 # GET
 	def get
-		now = Time.now().to_i
+		unless params[:metric] then
+			render json: available_metrics
+			return
+		end
+		m = params[:metric]
 
+		now = Time.now().to_i
 		start  = (params[:start] || now - START).to_i 
 		stop   = (params[:stop] || now - STOP).to_i
 		step   = (params[:step] || STEP).to_i
-		m      = params[:metric]
+
+		unless available_metrics.include? m then
+			render json: {error: "Metric '#{m}' not in list of available metrics"}
+			return
+		end
 
 		begin
 			metric = get_metric(m, start, stop, step)
@@ -23,6 +32,10 @@ class MetricsController < ApplicationController
 	end
 	
 # Functions
+	def available_metrics
+		Backend::GenericBackend.new.get_cached_metrics_list
+	end
+
 
 	def get_metric m, start, stop, step
 		type, metric = m.split(":")
