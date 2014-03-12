@@ -25,7 +25,6 @@ $(document).ready(function() {
 
 })
 </script>
-
 <nav class="navbar-default navbar-static-side" role="navigation">
 	<div class="sidebar-collapse">
 		<ul class="nav side-menu" id="graphed_metrics">
@@ -33,7 +32,7 @@ $(document).ready(function() {
 
 			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
 			<li class="hover-li sortable"><div>
-				<a href="<%= rem_qs :metric, metric %>" data-toggle="tooltip" data-original-title="Drag to re-order. Click to remove."
+				<a href="<%= rem_qs :metric, metric %>" data-toggle="tooltip-always" data-original-title="<%=metric%>"
 				onClick="this.href = this.href+window.location.hash"	>
 				<span class="hover hover-left drag"><i class="icon-reorder"></i></span>
 				<span class="metric"><%= metric %></span>
@@ -60,14 +59,19 @@ $(document).ready(function() {
 			<% end %>
 		</ul>
 		<ul class="nav filter_list side-menu" id="available_metrics">
-			<% @available_metrics.sort.each do |metric| %>
+			<% @available_metrics.sort[0,20].each do |metric| %>
 			<li class="hover-li">
 			<div>
-				<a href="<%= add_qs :metric, metric%>" data-toggle="tooltip" data-original-title="Click to add"
+				<a href="<%= add_qs :metric, metric%>" data-toggle="tooltip-always" data-original-title="<%=metric%>"
 				onClick="this.href = this.href+window.location.hash">
 					<span class="hover hover-left"><i class="icon-plus"></i></span>
 					<span class="metric"><%= metric %></span>
 				</a></div>
+			</li>
+			<% end %>
+			<% if @available_metrics.length > 20 %>
+			<li class="header-text" style="font-weight: normal; font-size: small;" align="center">
+				<a href="#">(filter for more results)</a>
 			</li>
 			<% end %>
 		</ul>
