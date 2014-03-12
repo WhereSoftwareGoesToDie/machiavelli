@@ -14,7 +14,7 @@ var dataChart = []
 					return false
 				}
 				if (data.length == 0) {
-					renderError("chart", "renderStandard(): no data returned from endpoint: " + feed);
+					renderError("chart", "renderStacked(): no data returned from endpoint: " + feed);
 					stopUpdates();
 					return false
 				}
@@ -269,7 +269,7 @@ function updateStacked() {
 						return false
 					}
 					if (d.length == 0) {
-						renderError("flash", "renderStandard(): no data returned from endpoint: " + update);
+						renderError("flash", "renderStacked(): no data returned from endpoint: " + update);
 						stopUpdates();
 						return false
 					}
