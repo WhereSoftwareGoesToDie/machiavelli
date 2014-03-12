@@ -26,12 +26,6 @@ module Layouts
 		    end
 		end
 
-		# Safety First - very basic javascript compatible variable name changer
-		def safe_string s	
-			s.tr("/.:-","_")
-		end
-
-
 		def render_sidenav
 			render(partial: "partial/sidenav/filter_metrics")
 		end
