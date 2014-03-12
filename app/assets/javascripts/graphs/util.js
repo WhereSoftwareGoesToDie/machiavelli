@@ -8,7 +8,7 @@ function unrenderWaiting() {
 }
 
 function renderError(element, error) { 
-	error_alert = "<div class='alert alert-danger'>Javascript error: "+error+"</div>"
+	error_alert = "<div class='alert alert-danger'>"+error+"</div>"
 	document.getElementById(element).innerHTML = error_alert
 }
 
