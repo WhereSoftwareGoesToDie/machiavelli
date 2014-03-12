@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry-debugger'; 
 describe "Graphite", :js => true do
 
 	type = "Graphite"

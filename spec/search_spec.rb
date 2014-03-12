@@ -1,6 +1,5 @@
 require 'spec_helper'
 require './generate_flatfile'
-require 'pry-debugger'
 describe "Search", :js => true do
 
 
