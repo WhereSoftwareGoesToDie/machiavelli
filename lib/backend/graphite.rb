@@ -13,7 +13,7 @@ class Backend::Graphite < Backend::GenericBackend
 	def get_metrics_list
 		begin
 			get_json "#{@base_url}/metrics/index.json"
-		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
+		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, SocketError => e
 			raise Backend::Error, "Error retrieving Graphite metrics list: #{e}"
 		end
 	end
