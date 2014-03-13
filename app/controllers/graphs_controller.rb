@@ -8,7 +8,7 @@ class GraphsController < ApplicationController
 		m
 	end
 # GET
-	def index # index.html
+	def index # index.htmli
 		@metrics = selected_metrics
 		@all_metrics = all_metrics #backend.get_cached_metrics_list
 		@available_metrics = @all_metrics - @metrics || []
@@ -22,7 +22,7 @@ class GraphsController < ApplicationController
 		gon.metrics = []
 
 		@metrics.each_with_index do |m,i|
-			gon.metrics[i] = { metric: m, feed: "/metrics/?metric="+m, live: (metric_type m).live?}
+			gon.metrics[i] = { metric: m, feed: "/metrics/?metric="+m, live: (backend m).live?}
 		end
 	end
 	
@@ -67,15 +67,14 @@ class GraphsController < ApplicationController
 	end
 
 # Functions
-	def backend
-		Backend::GenericBackend.new
-	end
-
-	def metric_type m
+=begin
+	def backend m=nil 
+		return Backend::GenericBackend.new if m.nil?                
 		type = m.split(":").first
-		subtype = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first[:type].titleize
-		return "Backend::#{subtype}".constantize
-	end
+                subtype = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first[:type].titleize
+                return "Backend::#{subtype}".constantize
+        end
+=end
 
 	def steps period # make 600 points per period
 		case period
