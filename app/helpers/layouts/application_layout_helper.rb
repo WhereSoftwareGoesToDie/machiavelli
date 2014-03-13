@@ -45,6 +45,22 @@ module Layouts
 			a
 		end
 
+
+		def pretty_metric metric
+			(backend metric).pretty_metric metric
+		end
+
+
+        # TODO Why can't this method be seen by this module, when it's in the ApplicationController?
+	def backend m=nil
+
+                return Backend::GenericBackend.new if m.nil?
+
+                type = m.split(":").first
+                settings = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first
+                return "Backend::#{settings[:type].titleize}".constantize.new settings[:settings]
+        end
+
 		# Query string manipulation functions
 		def chk_qs k,v,p={}; alter_qs :chk, k,v,p; end
 		def chg_qs k,v,p={}; alter_qs :chg, k,v,p; end
