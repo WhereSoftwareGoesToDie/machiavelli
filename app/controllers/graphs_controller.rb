@@ -53,6 +53,15 @@ class GraphsController < ApplicationController
 	def graph_filter_submit # from "filter metrics" search bar
 		available_metrics = all_metrics - selected_metrics(request.referer) || []
 		metrics = available_metrics.select{|m| m.downcase.include? params[:search][:filter].downcase }
+		add_metrics metrics
+	end
+
+	def modal_filter_submit # from big metrics listing modal
+		metrics = params[:filter][:metrics_select][1..-1]
+		add_metrics metrics
+	end
+
+	def add_metrics metrics
 		new_url = add_qs :metric, metrics, {url: :referer}
 		redirect_to root_path + new_url
 	end

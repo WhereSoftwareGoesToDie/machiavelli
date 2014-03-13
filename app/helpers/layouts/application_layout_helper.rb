@@ -27,7 +27,9 @@ module Layouts
 		end
 
 		def render_sidenav
-			render(partial: "partial/sidenav/filter_metrics")
+			partial = "partial/sidenav/"
+			partial += ( @all_metrics.length > 20 ? "big_filter_metrics" : "filter_metrics")
+			render(partial: partial)
 		end
 		
 		def navbar_buttons param, buttons
