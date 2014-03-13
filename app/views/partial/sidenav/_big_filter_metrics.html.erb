@@ -21,13 +21,13 @@ $(document).ready(function() {
 	<div class="sidebar-collapse">
 		<ul class="nav side-menu" id="search">
 			<li class="header-text">
-				<span><i class="icon-th-list"></i>Available Metrics
+				<span><i class="icon-th-list"></i>Choose from Available Metrics
 				<span class="refresh"><a href="<%= refresh_path %>" data-toggle="tooltip" data-original-title="Click to refresh available metrics" 
 				onClick="$(this).addClass('icon-spin')"><i class="icon-refresh"></i></span></a>
 				</span>
 			</li>
 			<li>
-	<li><a href="#filter_metrics" role="button" data-toggle="modal" data-target="#filter_metrics">Select metrics</a></li>
+			<li><a href="#filter_metrics" role="button" data-toggle="modal" data-target="#filter_metrics">Select metrics</a></li>
 			</li>
 		</ul>
 
@@ -38,7 +38,7 @@ $(document).ready(function() {
 				<a href="<%= rem_qs :metric, metric %>" data-toggle="tooltip-always" data-original-title="<%=metric%>"
 				onClick="this.href = this.href+window.location.hash"	>
 				<span class="hover hover-left drag"><i class="icon-reorder"></i></span>
-				<span class="metric"><%= metric %></span>
+				<span class="metric"><%= pretty_metric metric %></span>
 				<span class="hover hover-right"><i class="icon-remove"></i></span>
 			</a>
 			</div></li>
