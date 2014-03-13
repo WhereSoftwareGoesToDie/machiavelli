@@ -1,6 +1,7 @@
 # The Generic Definition of a Backend
 # 
 require 'redis'
+require 'uri'
 class Backend::GenericBackend
 
 #Making a new backend? Copy these functions!
@@ -59,7 +60,7 @@ class Backend::GenericBackend
 		r = redis_conn
 		
 		metrics.each {|m|
-			r.sadd key, "#{prefix}:#{m}"
+			r.sadd key, URI.unescape("#{prefix}:#{m}")
 		}
 	end
 
