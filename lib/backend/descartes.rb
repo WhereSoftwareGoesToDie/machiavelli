@@ -2,6 +2,7 @@
 # #  url - the entrypoint for the descartes backend
 # #  origin - the origin for the data (BETA)
 
+
 require 'open-uri'
 class Backend::Descartes < Backend::GenericBackend
 
@@ -25,17 +26,22 @@ class Backend::Descartes < Backend::GenericBackend
 		query = []
 		query << "start=#{start}"
 		query << "stop=#{stop}"
-		query << "step=#{step}"
+		query << "interval=#{step}"
 		query << "origin=#{@origin}"
 
 		query_string = "?" + query.join("&")
-
+		
 		begin
-			get_json "#{@base_url}/interpolated/#{m}#{query_string}"
+			data = get_json "#{@base_url}/interpolated/#{m}#{query_string}"
 		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenURI::HTTPError=> e
-			binding.pry
 			raise Backend::Error, "Error retreiving descartes metric #{m}: #{e}"
 		end
+
+		metric = []
+		data.each do |node|
+			metric << {x: node[0], y: node[1]}
+		end
+		metric
         end
 
 	def get_json uri 
@@ -43,4 +49,19 @@ class Backend::Descartes < Backend::GenericBackend
 		JSON.parse(result, :symbolize_names => true)
 	end
 
+	def pretty_metric metric
+		if @origin == "LMRH8C" || @origin ==  "R82KX1" then
+			type, x = metric.split(":")
+			keys = Hash[*x.split(",").map{|y| y.split("~")}.flatten]
+			
+			nice = [type]
+			nice << keys["hostname"]
+			nice << keys["service_name"] unless keys["service_name"] == "host"
+			nice << keys["metric"]
+			return nice.join(" - ") + " (#{keys["uom"]})"
+	
+		else
+			return metric
+		end
+	end
 end
