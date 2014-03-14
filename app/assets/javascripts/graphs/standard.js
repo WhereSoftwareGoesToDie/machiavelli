@@ -6,8 +6,12 @@ function renderStandard(index) {
 	update = metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step)
                 
 	$.getJSON(update, function(data) {
-		if (data.error) { renderError("chart_"+index, data.error, "renderStandard"); stopUpdates(); return false} 
-		if (data.length == 0) { renderError("chart_"+index, "no data returned from endpoint: "+update, "renderStandard"); stopUpdates(); return false}
+		if (data.error) { 
+			renderError("chart_"+index, "error retreiving data from endpoint", data.error); stopUpdates(); return false
+		} 
+		if (data.length == 0) { 
+			renderError("chart_"+index, "no data returned from endpoint", metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step)); stopUpdates(); return false
+		}
 		graph[index] = new Rickshaw.Graph({
 			element: document.getElementById("chart_"+index),
 			width: 700,
@@ -63,8 +67,8 @@ function updateStandard(){
 			if (metric.live) { 
 			update = metricURL(metric.feed,now-gon.step,now,gon.step)
 			$.getJSON(update, function(d){ 
-				if (d.error) { renderError("flash", d.error, "updateStandard"); stopUpdates(); return false} 
-				if (d.length == 0) { renderError("flash", "no data returned from endpoint: "+update, "updateStandard"); stopUpdates(); return false}
+				if (d.error) { renderError("flash", "error retrieving data from endpoint", d.error); stopUpdates(); return false} 
+				if (d.length == 0) { renderError("flash", "no data returned from endpoint", update); stopUpdates(); return false}
 				new_data = {data: d[d.length-1].y}
 				graph[i].series.addData(new_data); 
 				graph[i].render()

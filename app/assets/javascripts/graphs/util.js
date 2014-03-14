@@ -7,8 +7,10 @@ function unrenderWaiting() {
 	$(".icon-spinner").hide()
 }
 
-function renderError(element, error, method) { 
-	error_alert = "<div class='alert alert-danger'>"+error+"</div>"
+function renderError(element, error, detail) { 
+	error_alert = "<div class='alert alert-danger'>"+error
+	if (detail) { error_alert += "<br/>"+detail }
+	error_alert += "</div>"
 	document.getElementById(element).innerHTML = error_alert
 }
 
