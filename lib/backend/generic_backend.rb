@@ -60,7 +60,8 @@ class Backend::GenericBackend
 		r = redis_conn
 		
 		metrics.each {|m|
-			r.sadd key, URI.unescape("#{prefix}:#{m}")
+			#r.sadd key, URI.unescape("#{prefix}:#{m}")
+			r.sadd key, "#{prefix}:#{m}"
 		}
 	end
 
