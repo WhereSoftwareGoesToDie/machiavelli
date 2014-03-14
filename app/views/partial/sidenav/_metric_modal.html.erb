@@ -14,7 +14,7 @@ $(document).ready(function() {
 	</div>
 	<%= form_for "filter", url: modal_filter_submit_path do |f| %>
 	<div class="modal-body"> 
-		<%= f.select(:metrics_select, @available_metrics.sort.map{|a| [a,a]}, {prompt: nil},{ multiple: true, size: 10, class: "filter"}) %>
+		<%= f.select(:metrics_select, @available_metrics.sort.map{|a| [(pretty_metric a),a]}, {prompt: nil},{ multiple: true, size: 10, class: "filter"}) %>
 		<div class="modal-footer">
 		<%= f.submit "Filter", class: "btn btn-default" %>
 		</div>
