@@ -1,3 +1,5 @@
+require 'uri'
+
 class MetricsController < ApplicationController
 	helper :all
 	
@@ -17,7 +19,7 @@ class MetricsController < ApplicationController
 		stop   = (params[:stop] || now - STOP).to_i
 		step   = (params[:step] || STEP).to_i
 
-		unless available_metrics.include? m then
+		unless available_metrics.include? URI.decode(m) then
 			render json: {error: "Metric '#{m}' not in list of available metrics"}
 			return
 		end
@@ -33,7 +35,7 @@ class MetricsController < ApplicationController
 	
 # Functions
 	def available_metrics
-		backend.get_cached_metrics_list
+		backend.get_cached_metrics_list.map{|x| URI.decode(x)}
 	end
 
 
