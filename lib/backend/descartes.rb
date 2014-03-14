@@ -45,6 +45,7 @@ class Backend::Descartes < Backend::GenericBackend
         end
 
 	def get_json uri 
+		puts "Loaded URI: #{uri}"
 		result = URI.parse(uri).read
 		JSON.parse(result, :symbolize_names => true)
 	end
@@ -58,8 +59,24 @@ class Backend::Descartes < Backend::GenericBackend
 			nice << keys["hostname"]
 			nice << keys["service_name"] unless keys["service_name"] == "host"
 			nice << keys["metric"]
-			return nice.join(" - ") + " (#{keys["uom"]})"
-	
+			
+			unit = case keys["uom"]
+				when "Invalid", "NullUnit"; ""
+				else " (#{keys["uom"]})"
+			end
+
+			return nice.join(" - ") + unit
+
+		elsif @origin == "4HXR1F" then
+			type, x = metric.split(":")
+			keys = Hash[*x.split(",").map{|y| y.split("~")}.flatten]
+			nice = [type]
+			nice << keys["ip"]
+			nice << case keys["bytes"]
+				when "rx"; " bytes received"
+				else keys["bytes"]
+			end
+			return nice.join(" - ")
 		else
 			return metric
 		end
