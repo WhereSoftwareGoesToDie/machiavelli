@@ -80,6 +80,18 @@ function updateStandard(){
 	return id
 }
 
+
+function clean (arr, deleteValue) {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] == deleteValue) {         
+      arr.splice(i, 1);
+      i--;
+    }
+  }
+  return arr;
+};
+
+
 var complete = 0;
 function renderSlider() { 
         complete++;
@@ -87,7 +99,7 @@ function renderSlider() {
         // Render the multiple graph slider only when all the graphing operations have been completed.
         if (complete = gon.metrics.length) { 
         new Rickshaw.Graph.RangeSlider({ 
-                graph: graph, 
+                graph: clean(graph, undefined), 
                 element: $("#multi_slider")
                 });
         }
