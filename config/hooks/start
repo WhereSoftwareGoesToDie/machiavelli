@@ -4,27 +4,26 @@ set -ex
 
 . /usr/local/lib/giddyup/functions.sh
 
-export RACK_ENV="${APP_ENV}"
-
-#share db/${APP_ENV}.sqlite3
-#share vendor/bundle
-
 cd "${RELEASE}"
 
-. ./rvmrc
+echo "APP_ENV is ${APP_ENV}"
+echo "Linking shared data..."
+mkdir -p "vendor/bundle"
+share "vendor/bundle"
+mkdir -p "config/settings"
+share "config/settings/${APP_ENV}.yml"
 
-if ! bundle -v >/dev/null; then
-	gem install --no-ri --no-rdoc bundler
-	hash -d bundle
-fi
 
-bundle install --deployment --without development
+echo "Installing gems..."
+chruby-exec "$(cat .ruby-version)" -- bundle install --deployment --without 'development test'
+
 
 if [ ${APP_ENV} = 'production' ]; then
-	bundle exec rake assets:precompile
+	echo "Precompiling site assets..."
+	chruby-exec "$(cat .ruby-version)" -- bundle exec rake assets:precompile
 fi
 
-sudo allah start machiavelli_unicorn
+sudo allah start machiavelli_${APP_ENV}_unicorn
 
 mv public/system/maintenance.html public/system/maintenance.html.disabled
 

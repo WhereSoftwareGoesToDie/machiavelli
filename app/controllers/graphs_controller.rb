@@ -10,7 +10,7 @@ class GraphsController < ApplicationController
 # GET
 	def index # index.html
 		@metrics = selected_metrics
-		@all_metrics = all_metrics #backend.get_cached_metrics_list
+		@all_metrics = all_metrics || []
 		@available_metrics = @all_metrics - @metrics || []
 		@graph = params[:graph] || UI_DEFAULTS[:graph] 
 
