@@ -29,7 +29,8 @@ class Backend::Descartes < Backend::GenericBackend
 		query << "interval=#{step}"
 		query << "origin=#{@origin}"
 
-		m.gsub!("/","%2f").gsub!("_","%5f") # TODO make metrics not have to be manhandled back into quasi-encoded status
+		replace = [ ["/", "%2f"], ["_","%5f"]]
+		replace.each { |r| m.gsub!(r[0], r[1]) } # TODO make metrics not have to be manhandled back into quasi-encoded status
 		
 		query_string = "?" + query.join("&")
 		
