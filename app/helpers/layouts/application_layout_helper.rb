@@ -27,7 +27,9 @@ module Layouts
 		end
 
 		def render_sidenav
-			render(partial: "partial/sidenav/filter_metrics")
+			partial = "partial/sidenav/"
+			partial += ( @all_metrics.length > 20 ? "big_filter_metrics" : "filter_metrics")
+			render(partial: partial)
 		end
 		
 		def navbar_buttons param, buttons
@@ -42,6 +44,22 @@ module Layouts
 			end
 			a
 		end
+
+
+		def pretty_metric metric
+			(backend metric).pretty_metric metric
+		end
+
+
+        # TODO Why can't this method be seen by this module, when it's in the ApplicationController?
+	def backend m=nil
+
+                return Backend::GenericBackend.new if m.nil?
+
+                type = m.split(":").first
+                settings = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first
+                return "Backend::#{settings[:type].titleize}".constantize.new settings[:settings]
+        end
 
 		# Query string manipulation functions
 		def chk_qs k,v,p={}; alter_qs :chk, k,v,p; end

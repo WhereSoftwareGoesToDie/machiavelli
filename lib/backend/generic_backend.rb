@@ -1,6 +1,7 @@
 # The Generic Definition of a Backend
 # 
 require 'redis'
+require 'uri'
 class Backend::GenericBackend
 
 #Making a new backend? Copy these functions!
@@ -24,8 +25,13 @@ class Backend::GenericBackend
 
 	# Is the metric returning live data? That is, can it be assumed to have
 	# data values up to Time.now() within step tolerance?
-	def self.live?
+	def live?
 		true
+	end
+
+	# Define any rules to make a metric name pretty. Default, do nothing. 
+	def pretty_metric metric
+		metric
 	end
 
 # Parent class functionality after this point
@@ -54,6 +60,7 @@ class Backend::GenericBackend
 		r = redis_conn
 		
 		metrics.each {|m|
+			#r.sadd key, URI.unescape("#{prefix}:#{m}")
 			r.sadd key, "#{prefix}:#{m}"
 		}
 	end

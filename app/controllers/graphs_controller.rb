@@ -8,7 +8,7 @@ class GraphsController < ApplicationController
 		m
 	end
 # GET
-	def index # index.html
+	def index # index.htmli
 		@metrics = selected_metrics
 		@all_metrics = all_metrics || []
 		@available_metrics = @all_metrics - @metrics || []
@@ -22,7 +22,7 @@ class GraphsController < ApplicationController
 		gon.metrics = []
 
 		@metrics.each_with_index do |m,i|
-			gon.metrics[i] = { metric: m, feed: "/metrics/?metric="+m, live: (metric_type m).live?}
+			gon.metrics[i] = { metric: m, feed: "/metrics/?metric="+m, live: (backend m).live?}
 		end
 	end
 	
@@ -53,20 +53,28 @@ class GraphsController < ApplicationController
 	def graph_filter_submit # from "filter metrics" search bar
 		available_metrics = all_metrics - selected_metrics(request.referer) || []
 		metrics = available_metrics.select{|m| m.downcase.include? params[:search][:filter].downcase }
+		add_metrics metrics
+	end
+
+	def modal_filter_submit # from big metrics listing modal
+		metrics = params[:filter][:metrics_select][1..-1]
+		add_metrics metrics
+	end
+
+	def add_metrics metrics
 		new_url = add_qs :metric, metrics, {url: :referer}
 		redirect_to root_path + new_url
 	end
 
 # Functions
-	def backend
-		Backend::GenericBackend.new
-	end
-
-	def metric_type m
+=begin
+	def backend m=nil 
+		return Backend::GenericBackend.new if m.nil?                
 		type = m.split(":").first
-		subtype = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first[:type].titleize
-		return "Backend::#{subtype}".constantize
-	end
+                subtype = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first[:type].titleize
+                return "Backend::#{subtype}".constantize
+        end
+=end
 
 	def steps period # make 600 points per period
 		case period

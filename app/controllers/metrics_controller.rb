@@ -1,6 +1,8 @@
-class MetricsController < ApplicationController
-	include Layouts::ApplicationLayoutHelper
+require 'uri'
 
+class MetricsController < ApplicationController
+	helper :all
+	
 	START = 60*60*3
 	STOP  = 0
 	STEP = 10
@@ -17,7 +19,7 @@ class MetricsController < ApplicationController
 		stop   = (params[:stop] || now - STOP).to_i
 		step   = (params[:step] || STEP).to_i
 
-		unless available_metrics.include? m then
+		unless available_metrics.include? URI.decode(m) then
 			render json: {error: "Metric '#{m}' not in list of available metrics"}
 			return
 		end
@@ -33,19 +35,13 @@ class MetricsController < ApplicationController
 	
 # Functions
 	def available_metrics
-		Backend::GenericBackend.new.get_cached_metrics_list
+		backend.get_cached_metrics_list.map{|x| URI.decode(x)}
 	end
 
 
 	def get_metric m, start, stop, step
-		type, metric = m.split(":")
-		settings = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first
-		backend = init_backend settings[:type], settings[:settings]
-		backend.get_metric metric, start, stop, step
-	end
-
-	def init_backend name, settings
-		"Backend::#{name.titleize}".constantize.new settings.to_hash
+		metric = m.split(":").last
+		(backend m).get_metric metric, start, stop, step
 	end
 
 end

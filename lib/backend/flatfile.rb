@@ -25,7 +25,7 @@ class Backend::Flatfile < Backend::GenericBackend
 		@delimiter = params[:delimiter]  || ","
 	end
 
-	def self.live?
+	def live?
 		false # Flat files don't auto update, therefore cannot be assumed to be live
 	end
 
