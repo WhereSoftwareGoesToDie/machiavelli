@@ -2,8 +2,8 @@
 # #  url - the entrypoint for the descartes backend
 # #  origin - the origin for the data (BETA)
 
-
-require 'open-uri'
+#require 'open-uri'
+require 'net/http'
 class Backend::Descartes < Backend::GenericBackend
 
         def initialize params={}
@@ -33,13 +33,20 @@ class Backend::Descartes < Backend::GenericBackend
 		replace.each { |r| m.gsub!(r[0], r[1]) } # TODO make metrics not have to be manhandled back into quasi-encoded status
 		
 		query_string = "?" + query.join("&")
-		
+	
+		uri = "#{@base_url}/interpolated/#{m}#{query_string}"
+
+		puts uri
 		begin
-			data = get_json "#{@base_url}/interpolated/#{m}#{query_string}"
+			data = get_json uri
 		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenURI::HTTPError=> e
-			raise Backend::Error, "Error retreiving descartes metric #{m}: #{e}"
+			raise Backend::Error, "Error retreiving descartes metric #{m}: #{e} (full_url: #{@base_url}/interpolated/#{m}#{query_string}"
 		end
 
+		if !data.empty? && data[:error]then
+			raise Backend::Error, "Descartes Exception raised: #{data[:error]}. uri: #{uri}"
+		end
+			
 		metric = []
 		data.each do |node|
 			metric << {x: node[0], y: node[1]}
@@ -47,9 +54,11 @@ class Backend::Descartes < Backend::GenericBackend
 		metric
         end
 
-	def get_json uri 
-		result = URI.parse(uri).read
-		JSON.parse(result, :symbolize_names => true)
+	def get_json url 
+		uri = URI.parse(url)
+		http = Net::HTTP.new(uri.host, uri.port)
+		result = http.get uri.request_uri
+		JSON.parse(result.body, :symbolize_names => true)
 	end
 
 	def pretty_metric metric
