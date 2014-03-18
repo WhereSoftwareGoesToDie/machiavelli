@@ -23,4 +23,8 @@ function stopButtonClick() {
 	$("#autoplay_stop").hide()
 	$("#autoplay_play").show()
 } 
-
+function stopAll() {
+        stopUpdates()
+	stopButtonClick()
+	unrenderWaiting()
+}
