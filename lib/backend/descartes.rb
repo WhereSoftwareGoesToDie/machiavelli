@@ -39,12 +39,14 @@ class Backend::Descartes < Backend::GenericBackend
 		puts uri
 		begin
 			data = get_json uri
-		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenURI::HTTPError=> e
-			raise Backend::Error, "Error retreiving descartes metric #{m}: #{e} (full_url: #{@base_url}/interpolated/#{m}#{query_string}"
+		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError => e
+			raise Backend::Error, "Error retreiving descartes metric #{m}: #{e} (full_url: #{@base_url}/interpolated/#{m}#{query_string})"
 		end
 
-		if !data.empty? && data[:error]then
-			raise Backend::Error, "Descartes Exception raised: #{data[:error]}. uri: #{uri}"
+		if (data.is_a? Hash) then
+			if data[:error] then
+				raise Backend::Error, "Descartes Exception raised: #{data[:error]}. uri: #{uri}"
+			end
 		end
 			
 		metric = []
