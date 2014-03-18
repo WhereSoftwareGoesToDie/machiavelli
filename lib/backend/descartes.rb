@@ -25,7 +25,7 @@ class Backend::Descartes < Backend::GenericBackend
         def get_metric m, start=nil, stop=nil, step=nil
 		query = []
 		query << "start=#{start}"
-		query << "stop=#{stop}"
+		query << "end=#{stop}"
 		query << "interval=#{step}"
 		query << "origin=#{@origin}"
 
