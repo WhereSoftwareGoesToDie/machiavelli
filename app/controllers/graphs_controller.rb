@@ -17,7 +17,7 @@ class GraphsController < ApplicationController
 		start = params[:start] || UI_DEFAULTS[:start]
 		gon.start = to_epoch(start)
 		gon.stop  = to_epoch(params[:stop] || "0h")
-		gon.step  = steps(start) 
+		gon.step  = params[:step] || steps(start) || 60 
 
 		gon.metrics = []
 
