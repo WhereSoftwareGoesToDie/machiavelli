@@ -1,19 +1,7 @@
 <script>
 $(document).ready(function() { 
-	$("#graphed_metrics").sortable({
-		stop: function(event, ui) { 
-			var metrics = [], params = []
-			$(".sortable").each(function(i,el){
-				metrics.push("metric="+$(el).text().trim())
-			})
-			$.each(location.search.split("&"), function(i, d) {
-				if(d.indexOf("metric") == -1) { params.push(d) }
-				} )
-			new_url = location.origin + location.pathname +"?"+ params.join("&").replace("?","") +"&"+metrics.join("&")
-			window.location.href= new_url
-		}
-	})
-	$(".hover-li").hover(function(){$(this).find(".hover").css("visibility","visible") }, function(){$(this).find(".hover").css("visibility","hidden")})
+		metric_sort()
+		$(".hover-li").hover(function(){$(this).find(".hover").css("visibility","visible") }, function(){$(this).find(".hover").css("visibility","hidden")})
 
 })
 </script>
