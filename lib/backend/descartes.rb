@@ -54,6 +54,9 @@ class Backend::Descartes < Backend::GenericBackend
 			metric << {x: node[0], y: node[1]}
 		end
 
+		metric
+=begin
+
 		padded = []
 		(start..stop).step(step).each do |i|
 			points = metric.select{|p| p[:x].between?(i, i+step-1)}
@@ -67,6 +70,7 @@ class Backend::Descartes < Backend::GenericBackend
 		end
 
 		padded
+=end
         end
 
 	def get_json url 
