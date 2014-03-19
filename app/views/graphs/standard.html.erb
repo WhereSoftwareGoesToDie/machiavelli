@@ -3,19 +3,22 @@
 <%= include_gon %>
 
 <script src="/assets/graphs/standard.js"></script>
-
+<script>
+	var palette = new Rickshaw.Color.Palette({scheme: "munin"})
+</script>
 <div class="slider" id="multi_slider" ></div>
 <% @metrics.each_with_index do |metric, index| %>
-<h4><%= pretty_metric metric %></h4>
+	
+<div style="padding-left: 100px">
+	<h4><a href="#" data-toggle="tooltip-always-top" data-original-title="<%=metric%>" class="plaid"><%= pretty_metric metric %></a></h4>
+</div>
 <div id="chart_container">
-        <div class="y_axis" id="<%="y_axis_#{index}"%>"></div>
-        <div class="chart"  id="<%="chart_#{index}"%>"></div>
+	<div class="y_axis" id="<%="y_axis_#{index}"%>"></div>
+	<div class="chart"  id="<%="chart_#{index}"%>"></div>
 </div>
 
 <script>
-	var palette = new Rickshaw.Color.Palette({scheme: "munin"})
 	renderWaiting("chart_<%=index%>")
-	var data = []
 	renderStandard(<%=index%>)
 </script>
 <% end %>

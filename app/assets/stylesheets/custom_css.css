@@ -1,3 +1,4 @@
+.plaid, .plaid:hover { text-decoration: none; color: black}
 
 /* Make a hoverlink look kind of normal */
 .hoverlink { cursor: pointer } 
