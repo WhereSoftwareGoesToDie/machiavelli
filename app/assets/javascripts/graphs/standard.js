@@ -1,6 +1,7 @@
 var graph=[]
 var data;
 
+
 function renderStandard(index) { 
 
 	update = metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step)
@@ -17,11 +18,7 @@ function renderStandard(index) {
 			width: 700,
 			height: 200,
 			renderer: 'line',
-			series: new Rickshaw.Series.FixedDuration([{name: "data" }], undefined, { 
-				timeInterval: gon.step*1000,
-				maxDataPoints: data.length, 
-				timeBase: data[0].x  
-			})
+			series: [{data: data, color: palette.color()}   ]
 		})
 
 		chart = "chart_"+index
@@ -48,10 +45,6 @@ function renderStandard(index) {
 			}
 		});
 
-		$.each(data, function(i, point) {                                                                         
-			x = {data: point.y} 
-			graph[index].series.addData(x) 
-		})
 		graph[index].render()
 
 		unrenderWaiting();
