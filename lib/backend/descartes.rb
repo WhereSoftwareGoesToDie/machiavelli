@@ -53,7 +53,20 @@ class Backend::Descartes < Backend::GenericBackend
 		data.each do |node|
 			metric << {x: node[0], y: node[1]}
 		end
-		metric
+
+		padded = []
+		(start..stop).step(step).each do |i|
+			points = metric.select{|p| p[:x].between?(i, i+step-1)}
+			if points.length == 1 then
+				padded << points.first
+			elsif points.length > 1 then
+				binding.pry
+			elsif points.length == 0 then
+				padded << {x: i, y: (0.0/0.0)}
+			end
+		end
+
+		padded
         end
 
 	def get_json url 
