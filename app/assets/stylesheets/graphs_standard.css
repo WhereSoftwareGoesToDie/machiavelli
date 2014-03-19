@@ -8,19 +8,19 @@
 }
 .slider {
        display: inline-block;
-        margin-left: 40px;
+        margin-left: 100px;
 	margin-top: 10px;
 	padding-left: 15px;
 }
 .chart {
        display: inline-block;
-        margin-left: 40px;
+        margin-left: 100px;
 }
 .y_axis {
         position: absolute;
         top: 0;
         bottom: 0;
-        width: 40px;
+        width: 100px;
 }
 .legend {
         position: absolute;
@@ -33,21 +33,21 @@
 }                                                                                                                                                                                   
 .x_axis { 
         position: relative;                                                                                                                                                         
-        left: 40px;                                                                                                                                                                 
+        left: 100px;                                                                                                                                                                 
         height: 10px;                                                                                                                                                               
 }  
 .axis0 {
         position: absolute;
         top: 0;
         bottom: 0;
-        width: 40px;
+        width: 100px;
 }
 .axis1 {
         position: absolute;
         top: 0;
         bottom: 0;
-        left: 740px; /* Chart width + 40 */
-        width: 40px;
+        left: 800px; /* Chart width + y-axis:width */
+        width: 100px;
 }
 
 /* Rickshaw Customizations */
