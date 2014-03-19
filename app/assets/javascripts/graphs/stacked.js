@@ -146,7 +146,7 @@ function renderStacked(data) {
 		graph: graph,
 		orientation: 'left',
 		scale: uniq_d3_scale[0],
-		tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+		tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP
 	});
 
 
@@ -160,7 +160,7 @@ function renderStacked(data) {
 				grid: false,
 				orientation: 'right',
 				scale: uniq_d3_scale[n],
-				tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+				tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP
 			});
 		}
 	}
