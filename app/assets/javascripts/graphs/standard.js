@@ -28,6 +28,7 @@ function renderStandard(index) {
 		new Rickshaw.Graph.Axis.Y( {
 			graph: graph[index],
 			orientation: 'left',
+		   	pixelsPerTick: 30,
 			tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round,
 			element: document.getElementById(yaxis)
 		} );
