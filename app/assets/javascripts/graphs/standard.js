@@ -17,6 +17,7 @@ function renderStandard(index) {
 			element: document.getElementById("chart_"+index),
 			width: 700,
 			height: 200,
+			min: 'auto',
 			renderer: 'line',
 			series: [{data: data, color: palette.color()}   ]
 		})
