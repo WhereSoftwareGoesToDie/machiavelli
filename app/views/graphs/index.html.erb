@@ -4,8 +4,8 @@
 
 <% if @metrics.length > 0 then %>
 	<%= render :file => "graphs/#{@graph}" if @graph%>
-<% elsif @available_metrics.length == 0 %>
-	<p><%= ui_message(:no_metrics_available) %></p>
+<%# elsif @available_metrics.length == 0 %>
+	<p><%# = ui_message(:no_metrics_available) %></p>
 <% elsif @metrics.length == 0%>
 	<p><%= ui_message(:no_graphs_selected) %></p>
 <% end %>
