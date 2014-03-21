@@ -23,11 +23,15 @@ class Backend::Descartes < Backend::GenericBackend
 	def search_metric_list q
 		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}"
 		result = get_json uri
-		result.map{|x| "#{@alias}:#{x}"}
+		result.map{|x| "#{@alias}~#{to_mach(x)}"}
 	end
+
+	def to_des m;  m.gsub(":","~"); end
+	def to_mach m; m.gsub("~",":"); end 
 
         def get_metric m, start, stop, step
 		query = []
+		m = to_des(m)
 		query << "start=#{start - 200}" 
 		query << "end=#{stop}"
 		query << "interval=#{step}"
@@ -80,9 +84,9 @@ class Backend::Descartes < Backend::GenericBackend
 
 	def pretty_metric metric
 		if @origin == "LMRH8C" || @origin ==  "R82KX1" then
-			type, x = URI.decode(metric).split(":")
+			type, x = URI.decode(metric).split("~")
 
-			keys = Hash[*x.split(",").map{|y| y.split("~")}.flatten]
+			keys = Hash[*x.split(",").map{|y| y.split(":")}.flatten]
 			
 			nice = [type]
 			nice << keys["hostname"]

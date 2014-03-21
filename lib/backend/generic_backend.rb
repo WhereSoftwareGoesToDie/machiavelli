@@ -13,8 +13,7 @@ class Backend::GenericBackend
 	end
 
 	def sep 
-		#URI.decode("\u00BB")
-		":"
+		"~"
 	end
 
 	def search_metric_list q
