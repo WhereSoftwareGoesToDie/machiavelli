@@ -8,10 +8,8 @@ class GraphsController < ApplicationController
 		m
 	end
 # GET
-	def index # index.htmli
+	def index # index.html
 		@metrics = selected_metrics
-		@all_metrics = all_metrics || []
-		@available_metrics = @all_metrics - @metrics || []
 		@graph = params[:graph] || UI_DEFAULTS[:graph] 
 
 		start = params[:start] || UI_DEFAULTS[:start]
@@ -22,24 +20,24 @@ class GraphsController < ApplicationController
 		gon.metrics = []
 
 		@metrics.each_with_index do |m,i|
-			gon.metrics[i] = { metric: m, feed: "/metrics/?metric="+m, live: (backend m).live?}
+			gon.metrics[i] = { metric: m, feed: "/metric/?metric="+m, live: (init_backend m).live?}
 		end
 	end
 	
 	def refresh # refresh button
-
-		backend.delete_metrics_cache
+	
+		init_backend.delete_metrics_cache
 		Settings.reload!
 		errors = []
 
 		if Settings.backends.nil?
 			flash[:error] = ui_message(:no_backends)
 		else 
-
 			Settings.backends.each do |b|
 				begin
-					backend = init_backend b.type, b.settings
-					backend.refresh_metrics_cache b.alias
+					settings = b.settings.to_hash.merge({alias: b.alias||b.type})
+					backend = init_backend b.type, settings
+					backend.refresh_metrics_cache # b.alias
 				rescue Backend::Error => e
 					errors << e
 				end
@@ -57,25 +55,17 @@ class GraphsController < ApplicationController
 	end
 
 	def modal_filter_submit # from big metrics listing modal
-		metrics = params[:filter][:metrics_select][1..-1]
+		metrics = params[:filter][:metrics_select]
 		add_metrics metrics
 	end
 
 	def add_metrics metrics
 		new_url = add_qs :metric, metrics, {url: :referer}
+		puts new_url
 		redirect_to root_path + new_url
 	end
 
 # Functions
-=begin
-	def backend m=nil 
-		return Backend::GenericBackend.new if m.nil?                
-		type = m.split(":").first
-                subtype = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first[:type].titleize
-                return "Backend::#{subtype}".constantize
-        end
-=end
-
 	def steps period # make 600 points per period
 		case period
 			when "10min" then; 1   # second
@@ -86,9 +76,4 @@ class GraphsController < ApplicationController
 			when "2w"    then; 2016 # ~33.6 minutes
 		end
 	end
-
-	def init_backend name, settings
-		"Backend::#{name.titleize}".constantize.new settings.to_hash
-	end
-
 end
