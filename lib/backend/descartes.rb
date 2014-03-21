@@ -7,6 +7,7 @@ require 'net/http'
 class Backend::Descartes < Backend::GenericBackend
 
         def initialize params={}
+		@alias = params[:alias] || self.class.name.split("::").last
                 @base_url = params[:url]
                 raise Backend::Error, "Must provide a url value" if @base_url.nil?
                 @origin = params[:origin]
