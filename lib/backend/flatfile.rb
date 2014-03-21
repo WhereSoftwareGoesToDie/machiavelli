@@ -20,6 +20,7 @@
 
 class Backend::Flatfile < Backend::GenericBackend
 	def initialize params={}
+		@alias = params[:alias] || self.class.name.split("::").last
 		@file      = params[:file_name]
 		@metric    = params[:metric]
 		@delimiter = params[:delimiter]  || ","
