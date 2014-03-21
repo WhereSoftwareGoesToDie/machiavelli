@@ -63,8 +63,6 @@ class Backend::Descartes < Backend::GenericBackend
 			points = metric.select{|p| p[:x].between?(i, i+step-1)}
 			if points.length == 1 then
 				padded << points.first
-			elsif points.length > 1 then
-				binding.pry
 			elsif points.length == 0 then
 				padded << {x: i, y: (0.0/0.0)}
 			end
