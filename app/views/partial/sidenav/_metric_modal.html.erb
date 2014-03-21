@@ -1,11 +1,5 @@
 <%= stylesheet_link_tag "select2" %>
 <%= javascript_include_tag "select2" %>
-<script>
-$(document).ready(function() { 
-		$("#filter_metrics_select").select2({width: "100%", placeholder: "Select a metric"});
-	$(".select2-results").css("overflow-x","auto");
-})
-</script>
 <div class="modal fade" id="filter_metrics" role="dialog" aria-labelledby="filter_metrics" aria-hidden="true">
 <div class="modal-dialog"><div class="modal-content">
 	<div class="modal-header">
@@ -14,7 +8,9 @@ $(document).ready(function() {
 	</div>
 	<%= form_for "filter", url: modal_filter_submit_path do |f| %>
 	<div class="modal-body"> 
-		<%= f.select(:metrics_select, @available_metrics.sort.map{|a| [(pretty_metric a),a]}, {prompt: nil},{ multiple: true, size: 10, class: "filter"}) %>
+		<%= f.select(:backend, backends.map{|a| [a,a]}) %>
+		<%= f.hidden_field(:metrics_select, style:"width: 100%") %>
+	
 		<div class="modal-footer">
 		<%= f.submit "Filter", class: "btn btn-default" %>
 		</div>
@@ -22,3 +18,43 @@ $(document).ready(function() {
 	<% end %>
 </div></div>
 </div>
+<script>
+
+ function formatResult(data) {
+        return data.metric ;
+    };
+
+    function formatSelection(data) {
+        return data.metric;
+    };
+
+
+    function MultiAjaxAutoComplete(element, url) {
+        $(element).select2({
+            placeholder: "Search for a metric",
+            minimumInputLength: 3,
+            multiple: true,
+            id: function(d){ return d.metric},
+            ajax: {
+                url: url, 
+                dataType: 'jsonp',
+                data: function(term, page) {
+                        return { q: "*"+term+"*", backend: $("#filter_backend")[0].value };
+                },
+                results: function(data, page) {
+                        return { results: data.metrics};
+                }
+            },
+            formatResult: formatResult,
+            formatSelection: formatSelection,
+        });
+    };
+
+
+
+    MultiAjaxAutoComplete('#filter_metrics_select', '/source/');
+
+$(document).ready(function() { 
+	$(".select2-results").css("overflow-x","auto");
+	})
+</script>
