@@ -13,18 +13,21 @@ class Backend::Descartes < Backend::GenericBackend
                 raise Backend::Error, "Must provide an origin value" if @origin.nil?
         end
 
+	# Descartes don't need no storage
         def get_metrics_list
-		begin
-			uri = "#{@base_url}/simple/search?origin=#{@origin}"
-			get_json uri
-		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenURI::HTTPError => e
-			raise Backend::Error, "Error retreiving descartes metrics list: #{e} -- #{uri}"
-		end
+		return []
         end
 
-        def get_metric m, start=nil, stop=nil, step=nil
+	# Descartes is dynamic, yo
+	def search_metric_list q
+		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}"
+		result = get_json uri
+		result.map{|x| "#{@alias}:#{x}"}
+	end
+
+        def get_metric m, start, stop, step
 		query = []
-		query << "start=#{start}"
+		query << "start=#{start}" 
 		query << "end=#{stop}"
 		query << "interval=#{step}"
 		query << "origin=#{@origin}"
@@ -54,9 +57,6 @@ class Backend::Descartes < Backend::GenericBackend
 			metric << {x: node[0], y: node[1]}
 		end
 
-		metric
-=begin
-
 		padded = []
 		(start..stop).step(step).each do |i|
 			points = metric.select{|p| p[:x].between?(i, i+step-1)}
@@ -70,7 +70,6 @@ class Backend::Descartes < Backend::GenericBackend
 		end
 
 		padded
-=end
         end
 
 	def get_json url 
