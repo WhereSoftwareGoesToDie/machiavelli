@@ -11,7 +11,20 @@ class Backend::GenericBackend
 	def get_metrics_list
 		raise NotImplementedError
 	end
-	
+
+	def sep 
+		#URI.decode("\u00BB")
+		":"
+	end
+
+	def search_metric_list q
+		r = redis_conn
+		keys = r.keys "#{REDIS_KEY}:#{backend_key}#{q}"
+		keys.map!{|x|x.split(":").last}
+		keys.map!{|x| "#{@alias}#{sep}#{x}"}
+		keys 
+	end
+
 	# Pre-condition: a metric name (an element of the `get_all_metrics` array)
 	# Post-condition: a valid json hash of: 
 	#    [ 
@@ -36,7 +49,7 @@ class Backend::GenericBackend
 
 # Parent class functionality after this point
 
-	REDIS_KEY = Settings.metrics_key || "Machiavelli.Backend.Metrics"
+	REDIS_KEY = Settings.metrics_key || "Machiavelli.Metrics"
 	
 	def redis_conn
 		host = Settings.redis_host || "127.0.0.1"
@@ -45,23 +58,26 @@ class Backend::GenericBackend
 	end
 
 	def get_cached_metrics_list
-		redis_conn.smembers REDIS_KEY 
+		redis_conn.keys "#{REDIS_KEY}*"
 	end
 
 	def delete_metrics_cache
-		redis_conn.del REDIS_KEY
+		r = redis_conn
+		keys = r.keys REDIS_KEY
+		keys.each { |k| r.del k } 
 	end
-	
+
+	def backend_key 
+		@alias 
+	end
+
 	def refresh_metrics_cache _alias=nil
 		metrics = self.get_metrics_list
-		key = REDIS_KEY
 
-		prefix = _alias || self.class.name.split("::").last
 		r = redis_conn
 		
 		metrics.each {|m|
-			#r.sadd key, URI.unescape("#{prefix}:#{m}")
-			r.sadd key, "#{prefix}:#{m}"
+			r.set "#{REDIS_KEY}:#{backend_key}:#{m}", 1
 		}
 	end
 
