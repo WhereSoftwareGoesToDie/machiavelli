@@ -32,7 +32,6 @@
     function MultiAjaxAutoComplete(element, url) {
         $(element).select2({
             placeholder: "Search for a metric",
-            minimumInputLength: 3,
             multiple: true,
             id: function(d){ return d.metric},
             ajax: {
