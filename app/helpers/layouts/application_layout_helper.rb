@@ -11,7 +11,6 @@ module Layouts
 		def ui_message msg
 			case msg
 			when :no_graphs_selected; "Select a metric from the list to graph"
-			when :no_metrics_available; "No metrics available. Check error notification, or #{link_to "refresh", refresh_path} to try again.".html_safe
 			when :no_backends; "No backends configured. Check your config/settings/{ENV}.yml file."
 			else "UI MESSAGE VARIABLE NOT FOUND: #{msg}"
 			end
