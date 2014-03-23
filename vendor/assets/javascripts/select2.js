@@ -3214,7 +3214,7 @@ the specific language governing permissions and limitations under the Apache Lic
         matcher: function(term, text) {
             return stripDiacritics(''+text).toUpperCase().indexOf(stripDiacritics(''+term).toUpperCase()) >= 0;
         },
-        separator: ",",
+        separator: ";",//",",
         tokenSeparators: [],
         tokenizer: defaultTokenizer,
         escapeMarkup: defaultEscapeMarkup,

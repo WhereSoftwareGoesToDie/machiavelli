@@ -56,6 +56,7 @@ class GraphsController < ApplicationController
 
 	def modal_filter_submit # from big metrics listing modal
 		metrics = params[:filter][:metrics_select]
+		metrics = metrics.split(";") # select2 modal separator: ";", changed purposefully. Will break if metrics contain semicolon. 
 		add_metrics metrics
 	end
 
