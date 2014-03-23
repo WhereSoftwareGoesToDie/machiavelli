@@ -8,8 +8,9 @@
 	</div>
 	<%= form_for "filter", url: modal_filter_submit_path do |f| %>
 	<div class="modal-body"> 
-		<%= f.select(:backend, backends.map{|a| [a,a]}) %>
-		<%= f.hidden_field(:metrics_select, style:"width: 100%") %>
+		<%= f.select(:backend, backends.map{|a| [a,a]}, style: "width: 20%") %>
+
+		<%= f.hidden_field(:metrics_select, style:"width: 80%") %>
 	
 		<div class="modal-footer">
 		<%= f.submit "Filter", class: "btn btn-default" %>
