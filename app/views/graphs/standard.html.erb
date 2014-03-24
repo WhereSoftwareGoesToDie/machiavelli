@@ -7,10 +7,10 @@
 	var color = []
 	var palette = new Rickshaw.Color.Palette({scheme: "munin"})
 </script>
-<div class="slider" id="multi_slider" ></div>
+<div class="slider" id="multi_slider"></div>
 <% @metrics.each_with_index do |metric, index| %>
 	
-<div style="padding-left: 100px">
+<div class="graph_title">
 	<h4><a href="#" data-toggle="tooltip-always-metric" data-html="true" data-original-title="<%= style_metric :table, metric%>" class="plaid"><%= style_metric :pretty, metric %></a></h4>
 </div>
 <div id="chart_container">
