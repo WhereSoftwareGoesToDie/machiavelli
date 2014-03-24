@@ -9,7 +9,7 @@ $(document).ready(function() {
 	<div class="sidebar-collapse">
 		<ul class="nav side-menu" id="search">
 			<li class="header-text">
-				<span><i class="icon-th-list"></i>Choose from Available Metrics
+				<span>Choose from Available Metrics
 				<span class="refresh"><a href="<%= refresh_path %>" data-toggle="tooltip" data-original-title="Click to refresh available metrics" 
 				onClick="$(this).addClass('icon-spin')"><i class="icon-refresh"></i></span></a>
 				</span>
@@ -20,7 +20,7 @@ $(document).ready(function() {
 		</ul>
 
 		<ul class="nav side-menu" id="graphed_metrics">
-			<li class="header-text"><i class="icon-bar-chart"></i>Graphed Metrics</li>
+			<li class="header-text">Graphed Metrics</li>
 			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
 			<li class="hover-li sortable"><div>
 				<a href="<%= rem_qs :metric, metric %>" data-html="true" data-toggle="tooltip-always-metric" data-original-title="<%=style_metric :table, metric%>"
