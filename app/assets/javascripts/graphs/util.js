@@ -45,7 +45,7 @@ function metric_sort() {
                 stop: function(event, ui) { 
                         var metrics = [], params = []
                         $(".sortable").each(function(i,el){
-                                metrics.push("metric="+$(el).text().trim())
+                                metrics.push("metric="+$(el).find("span.metric")[0].dataset.metric)
                         })
                         $.each(location.search.split("&"), function(i, d) {
                                 if(d.indexOf("metric") == -1) { params.push(d) }
@@ -54,4 +54,4 @@ function metric_sort() {
                         window.location.href= new_url
                 }
         })
-}
+/}
