@@ -23,7 +23,7 @@ $(document).ready(function() {
 			<li class="header-text"><i class="icon-bar-chart"></i>Graphed Metrics</li>
 			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
 			<li class="hover-li sortable"><div>
-				<a href="<%= rem_qs :metric, metric %>" data-toggle="tooltip-always" data-original-title="<%=metric%>"
+				<a href="<%= rem_qs :metric, metric %>" data-html="true" data-toggle="tooltip-always-metric" data-original-title="<%=style_metric :table, metric%>"
 				onClick="this.href = this.href+window.location.hash"	>
 				<span class="hover hover-left drag"><i class="icon-reorder"></i></span>
 				<span class="metric"><%= style_metric :pretty, metric %></span>
