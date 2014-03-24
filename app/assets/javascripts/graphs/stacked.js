@@ -172,7 +172,9 @@ function renderStacked(data) {
 	});
 
 	/////
+	dynamicWidth(graph);
 	graph.render();
+
 
 	// X-axis slider for zooming
 	new Rickshaw.Graph.RangeSlider({

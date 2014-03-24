@@ -1,4 +1,13 @@
+function rickshawFitToWindow(graph) { 
+	if (window.innerWidth < 768) { r = 200 } else { r = 500 }
+	graph.configure({ width: window.innerWidth - r });
+	graph.render();
+}
 
+function dynamicWidth(graph) { 
+	rickshawFitToWindow(graph); // do it naow
+	$(window).on('resize', function(){ rickshawFitToWindow(graph) });
+} 
 function renderWaiting(element) { 
 	document.getElementById(element).innerHTML = "<i class='icon-spinner icon-spin'>"
 }

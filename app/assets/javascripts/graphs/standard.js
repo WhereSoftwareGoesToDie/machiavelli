@@ -38,6 +38,7 @@ function renderStandard(index) {
 			timeFixture: new Rickshaw.Fixtures.Time.Local()
 		});
 
+		dynamicWidth(graph[index]);
 		graph[index].render()
 		
 		new Rickshaw.Graph.HoverDetail({
