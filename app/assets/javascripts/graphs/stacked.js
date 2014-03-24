@@ -172,7 +172,7 @@ function renderStacked(data) {
 	});
 
 	/////
-	dynamicWidth(graph);
+//	dynamicWidth(graph);
 	graph.render();
 
 
