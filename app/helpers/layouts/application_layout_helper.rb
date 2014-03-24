@@ -33,7 +33,7 @@ module Layouts
 		def navbar_buttons param, buttons
 			a = []
 			buttons.each do |b|
-				html = "<a type='button' class='btn btn-xs btn-default "
+				html = "<a type='button' class='btn btn-default "
 				p = chk_qs(param,b) 
 
 				html += "active" if (p || p.nil? && UI_DEFAULTS[param] == b)
