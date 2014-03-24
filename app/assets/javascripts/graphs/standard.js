@@ -19,7 +19,7 @@ function renderStandard(index) {
 			height: 200,
 			min: 'auto',
 			renderer: 'line',
-			series: [{data: data, color: palette.color()}   ]
+			series: [{data: data, color: color[index]}   ]
 		})
 
 		chart = "chart_"+index
