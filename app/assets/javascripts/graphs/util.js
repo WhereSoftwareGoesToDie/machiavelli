@@ -1,7 +1,9 @@
 function rickshawFitToWindow(graph) { 
-	if (window.innerWidth < 768) { r = 200 } else { r = 500 }
-	graph.configure({ width: window.innerWidth - r });
+	if (window.innerWidth < 768) { r = 160 } else { r = 440 }
+	new_width = window.innerWidth - r;
+	graph.configure({ width: new_width});
 	graph.render();
+	$(".slider").width(new_width-20)
 }
 
 function dynamicWidth(graph) { 
