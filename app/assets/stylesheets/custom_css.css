@@ -55,6 +55,20 @@
 	 padding-bottom: 40px
 } 
 
+/* "Mobile" view overrides - under 768px (collapsed navbar) */
+@media (max-width: 767px) {
+	#navbar-buttons { 
+		padding:10px; 
+		float:right;
+	}
+	.btn-group {
+		padding-top:5px;
+		padding-bottom: 5px;
+	}
+	.side-menu .metric { 
+		max-width: 80%
+	} 
+}
 
 /*
  * http://getbootstrap.com/docs-assets/css/docs.css
