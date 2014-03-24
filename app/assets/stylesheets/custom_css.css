@@ -5,9 +5,11 @@
 
 .tooltip-inner { max-width: 800px} 
 
+
+
 /* Font-awesome search */
 .hover { opacity: 0.5; visibility: hidden}
-.drag{ cursor: move}
+.drag{ cursor: move; padding-right: 5px}
 .header-text { font-weight: bold; padding: 5px}
 .header-text i { padding-right: 2px } 
 .hover-li { padding: 5px }
@@ -46,7 +48,7 @@
 
 .side-menu .metric { 
 	display:inline-block;
-	width: 215px;
+	width: 200px;
 	overflow: hidden; 
 	text-overflow: ellipsis
 } 
