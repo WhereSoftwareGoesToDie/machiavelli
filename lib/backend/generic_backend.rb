@@ -45,7 +45,7 @@ class Backend::GenericBackend
 	def style_metric style, metric
 		if style == :pretty then
 			metric.gsub(sep, " - ")
-		elsif style == :nice then
+		elsif style == :table then
 			'<p align="left">'+metric.gsub(sep, "<br>")+"</p>"
 		else
 			metric

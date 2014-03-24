@@ -114,7 +114,7 @@ class Backend::Descartes < Backend::GenericBackend
 			else
 				return metric
 			end
-		elsif style == :nice then
+		elsif style == :table then
 			ret = metric.strip
 			sep = [["~","</td></tr><tr><td>"],[":","</td><td> - "],[",","</td></tr><tr><td>"]]
 			sep.each {|a| ret.gsub!(a[0],a[1])}
