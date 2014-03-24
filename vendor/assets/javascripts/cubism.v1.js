@@ -466,7 +466,7 @@ cubism_contextPrototype.machiavelli= function(host) {
   source.metric = function(target) {
 
     var metric = context.metric(function(start, stop, step, callback) {
-	feed = host + "/metrics/?metric="
+	feed = host + "/metric/?metric="
 	      + target
 	      + "&start=" + cubism_machiavelliFormatDate(start - 2 * step)
 	      + "&end=" + cubism_machiavelliFormatDate(stop - 1000)
