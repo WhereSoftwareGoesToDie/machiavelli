@@ -41,9 +41,15 @@ class Backend::GenericBackend
 		true
 	end
 
-	# Define any rules to make a metric name pretty. Default, do nothing. 
-	def pretty_metric metric
-		metric
+	# Define any rules to make a metric name stylized. Default, do nothing. 
+	def style_metric style, metric
+		if style == :pretty then
+			metric.gsub(sep, " - ")
+		elsif style == :nice then
+			'<p align="left">'+metric.gsub(sep, "<br>")+"</p>"
+		else
+			metric
+		end
 	end
 
 # Parent class functionality after this point

@@ -44,8 +44,8 @@ module Layouts
 		end
 
 
-		def pretty_metric metric
-			(init_backend metric).pretty_metric metric
+		def style_metric style, metric
+			(init_backend metric).style_metric style, metric
 		end
 
 		# Backend intialization 

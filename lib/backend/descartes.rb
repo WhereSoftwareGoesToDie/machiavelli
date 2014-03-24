@@ -82,36 +82,46 @@ class Backend::Descartes < Backend::GenericBackend
 		JSON.parse(result.body, :symbolize_names => true)
 	end
 
-	def pretty_metric metric
-		if @origin == "LMRH8C" || @origin ==  "R82KX1" then
-			type, x = URI.decode(metric).split("~")
+	def style_metric style, metric
+		if style == :pretty then
+			if @origin == "LMRH8C" || @origin ==  "R82KX1" then
+				type, x = URI.decode(metric).split("~")
 
-			keys = Hash[*x.split(",").map{|y| y.split(":")}.flatten]
+				keys = Hash[*x.split(",").map{|y| y.split(":")}.flatten]
+				
+				nice = [type]
+				nice << keys["hostname"]
+				nice << keys["service_name"] unless keys["service_name"] == "host"
+				nice << keys["metric"]
 			
-			nice = [type]
-			nice << keys["hostname"]
-			nice << keys["service_name"] unless keys["service_name"] == "host"
-			nice << keys["metric"]
-		
-			unit = case keys["uom"]
-				when "Invalid", "NullUnit"; ""
-				else " (#{keys["uom"]})"
-			end
+				unit = case keys["uom"]
+					when "Invalid", "NullUnit"; ""
+					else " (#{keys["uom"]})"
+				end
 
-			return URI.decode(nice.join(" - ") + unit)
+				return URI.decode(nice.join(" - ") + unit)
 
-		elsif @origin == "4HXR1F" then
-			type, x = metric.split(":")
-			keys = Hash[*x.split(",").map{|y| y.split("~")}.flatten]
-			nice = [type]
-			nice << keys["ip"]
-			nice << case keys["bytes"]
-				when "rx"; " bytes received"
-				else keys["bytes"]
+			elsif @origin == "4HXR1F" then
+				type, x = metric.split(":")
+				keys = Hash[*x.split(",").map{|y| y.split("~")}.flatten]
+				nice = [type]
+				nice << keys["ip"]
+				nice << case keys["bytes"]
+					when "rx"; " bytes received"
+					else keys["bytes"]
+				end
+				return URI.decode(nice.join(" - "))
+			else
+				return metric
 			end
-			return URI.decode(nice.join(" - "))
-		else
-			return metric
+		elsif style == :nice then
+			ret = metric.strip
+			sep = [["~","</td></tr><tr><td>"],[":","</td><td> - "],[",","</td></tr><tr><td>"]]
+			sep.each {|a| ret.gsub!(a[0],a[1])}
+			'<table style="text-align: left"><tr><td colspan=2>'+ret+'</table>'
+		else 
+			metric
 		end
+
 	end
 end
