@@ -54,4 +54,4 @@ function metric_sort() {
                         window.location.href= new_url
                 }
         })
-/}
+}
