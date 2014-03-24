@@ -473,7 +473,8 @@ cubism_contextPrototype.machiavelli= function(host) {
 	      + "&step="+ step/1000
 	d3.json(feed
           , function(data) {
-          if (!data) return callback(new Error("unable to load data"));
+          if (!data || data.length == 0) return callback(new Error("error loading data - no data returned"));
+	  if (data.error) return callback(new Error("machiavelli error: "+data.error));
           callback(null, data.map(function(d) { return d.y} ))
       });
     }, target += "");
