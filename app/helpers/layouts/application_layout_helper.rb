@@ -69,7 +69,7 @@ module Layouts
 		def backends 
 			list = []
 			Settings.backends.each {|b|
-				list << b.alias || b.type
+				list << (b.alias || b.type)
 			}
 			list
 		end
