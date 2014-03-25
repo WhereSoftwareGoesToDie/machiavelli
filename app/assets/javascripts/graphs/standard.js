@@ -50,7 +50,7 @@ function renderStandard(index) {
 
 		graph[index].render()
 
-		unrenderWaiting();
+		unrenderWaiting("chart_"+index);
 		renderSlider();
 	}) 
 }

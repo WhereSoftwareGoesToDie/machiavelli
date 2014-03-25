@@ -14,8 +14,9 @@ function renderWaiting(element) {
 	document.getElementById(element).innerHTML = "<i class='icon-spinner icon-spin'>"
 }
 
-function unrenderWaiting() {
-	$(".icon-spinner").hide()
+function unrenderWaiting(element) {
+	if (element) { $("#"+element).find(".icon-spinner").hide() } 
+	else { $(".icon-spinner").hide() }
 }
 
 function renderError(element, error, detail) { 
