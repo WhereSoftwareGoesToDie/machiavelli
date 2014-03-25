@@ -69,8 +69,8 @@ function updateStandard(){
 				if (d.length == 0) { 
 					renderError("flash", "no data returned from endpoint", update); stopAll(); return false
 				}
-				new_data = {data: d[d.length-1].y}
-				graph[i].series.addData(new_data); 
+				graph[i].series[0].data.shift() //addData(new_data); 
+				graph[i].series[0].data.push(d.pop())
 				graph[i].render()
 			})
 			}
