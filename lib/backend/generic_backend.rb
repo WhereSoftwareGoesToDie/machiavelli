@@ -68,7 +68,7 @@ class Backend::GenericBackend
 
 	def delete_metrics_cache
 		r = redis_conn
-		keys = r.keys REDIS_KEY
+		keys = r.keys REDIS_KEY+'*'
 		keys.each { |k| r.del k } 
 	end
 
