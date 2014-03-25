@@ -33,7 +33,7 @@ class Backend::Descartes < Backend::GenericBackend
 		query = []
 		m = to_des(m)
 		query << "start=#{start - 200}" 
-		query << "end=#{stop}"
+		query << "end=#{stop + 10}"
 		query << "interval=#{step}"
 		query << "origin=#{@origin}"
 
@@ -60,6 +60,12 @@ class Backend::Descartes < Backend::GenericBackend
 		metric = []
 		data.each do |node|
 			metric << {x: node[0], y: node[1]}
+		end
+
+
+		if stop - start == step then
+			# only one point required so get next closest to start
+			return [metric.select{|a| a[:x] >= start}.first]
 		end
 
 		padded = []
