@@ -60,6 +60,7 @@ module Layouts
 				name = name.split("~").first if name.include? "~" ##TODO SEP
 				
 				backend = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(name) == 0}.first
+				raise StandardError, "backend #{name} doesn't exist" if backend.nil?
 				name = backend[:type]
 				settings = backend[:settings].to_hash.merge({alias: backend[:alias] || backend[:type]})
 			end

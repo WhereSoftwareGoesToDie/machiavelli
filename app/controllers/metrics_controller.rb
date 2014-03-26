@@ -25,7 +25,7 @@ class MetricsController < ApplicationController
 		begin
 			metric = get_metric(m, start, stop, step)
 			render json: metric	
-		rescue Backend::Error => e
+		rescue StandardError, Backend::Error => e
 			render json: { error: e.to_s } 
 			return
 		end
