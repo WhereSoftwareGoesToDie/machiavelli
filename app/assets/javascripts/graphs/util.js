@@ -19,13 +19,20 @@ function unrenderWaiting(element) {
 	else { $(".icon-spinner").hide() }
 }
 
-function renderError(element, error, detail) { 
-	error_alert = "<div class='alert alert-danger'>"+error
-	if (detail) { error_alert += "<br/>"+detail }
+function renderError(element, error, detail) {
+	error_alert = "<div class='alert alert-danger'>" + error
+
+	if (detail) { 
+		error_alert +=  "<a class='detail_toggle alert-link' href='javascript:void(0);'> (details)</a>"
+			+"<div class='detail' style='display:none'>"
+			+ detail
+			+"</div>"
+	} 
 	error_alert += "</div>"
 	document.getElementById(element).innerHTML = error_alert
-}
 
+	$('.detail_toggle').click(function() { $(this).parent().find(".detail").toggle()})
+}
 function metricURL(base, start, stop, step){ 
 	return base+"&start="+start+"&stop="+stop+"&step="+step		
 }
