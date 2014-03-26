@@ -22,9 +22,8 @@ $(document).ready(function() {
 		<ul class="nav side-menu" id="graphed_metrics">
 			<li class="header-text">Graphed Metrics</li>
 			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
-			<li class="hover-li sortable"><div>
-				<a href="<%= rem_qs :metric, metric %>" data-html="true" data-toggle="tooltip-always-metric" data-original-title="<%=style_metric :table, metric%>"
-				onClick="this.href = this.href+window.location.hash"	>
+			<li class="hover-li sortable" data-html="true" data-toggle="tooltip-always-metric" data-original-title="<%=style_metric :table, metric%>"><div>
+				<a href="<%= rem_qs :metric, metric %>"	onClick="this.href = this.href+window.location.hash">
 				<span class="hover hover-left drag"><i class="icon-reorder"></i></span>
 				<span class="metric" data-metric="<%=metric%>"><%= style_metric :pretty, metric %></span>
 				<span class="hover hover-right"><i class="icon-remove"></i></span>
