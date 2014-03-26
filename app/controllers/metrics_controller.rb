@@ -32,16 +32,17 @@ class MetricsController < ApplicationController
 	end
 
 	def list 
-		backend = params[:backend]
-		search = params[:q] || "*"
+		b = [params[:backend] || backends].flatten
 
-		unless backend
-			render json: {error: "must provide a backend origin"}
-			return
-		end
+		search = params[:q] || "*"
+		
+		list = []
 
 		begin
-			list = (init_backend backend).search_metric_list search
+			b.each do |x|
+				list << ((init_backend x).search_metric_list search)
+			end
+			list.flatten!
 			if params[:callback] then
 				render json: "#{params[:callback]}({metrics:#{list.map{|x| {metric: x}}.to_json}});"
 			else
