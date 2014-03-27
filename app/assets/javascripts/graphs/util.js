@@ -3,7 +3,10 @@ function rickshawFitToWindow(graph) {
 	new_width = window.innerWidth - r;
 	graph.configure({ width: new_width});
 	graph.render();
-	$(".slider").width(new_width-20)
+	fitSlider();
+} 
+function fitSlider() {
+	if (typeof slider != "undefined" ) { slider.configure({width : new_width}); slider.render()} 
 }
 
 function dynamicWidth(graph) { 

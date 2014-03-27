@@ -8,7 +8,7 @@
 }
 .slider {
        display: inline-block;
-        margin-left: 60px; /* yaxis */
+        margin-left: 40px; /* yaxis -20*/
 	padding-left: 15px;
 }
 .chart {

@@ -177,9 +177,9 @@ function renderStacked(data) {
 
 
 	// X-axis slider for zooming
-	new Rickshaw.Graph.RangeSlider({
+	new Rickshaw.Graph.RangeSlider.Preview({
 		graph: graph,
-		element: $('#slider')
+		element: $('#slider')[0]
 	});
 
 

@@ -97,14 +97,17 @@ function clean (arr, deleteValue) {
 
 
 var complete = 0;
+var slider; 
 function renderSlider() { 
         complete++;
 
         // Render the multiple graph slider only when all the graphing operations have been completed.
-        if (complete = gon.metrics.length) { 
-        new Rickshaw.Graph.RangeSlider({ 
-                graph: clean(graph, undefined), 
-                element: $("#multi_slider")
+        if (complete == gon.metrics.length) { 
+	slider = new Rickshaw.Graph.RangeSlider.Preview({ 
+                graphs: clean(graph, undefined), 
+                height: 50,
+		element: document.getElementById("multi_slider")//$("#multi_slider")
                 });
         }
+	fitSlider(); 
 }
