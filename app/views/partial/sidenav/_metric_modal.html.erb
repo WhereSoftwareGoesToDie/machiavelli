@@ -31,6 +31,7 @@
         $(element).select2({
             placeholder: "Search for a metric",
 	    openOnEnter: false,
+	    quietMillis: 500,
 	    multiple: true,
             id: function(d){ return d.metric},
             ajax: {
