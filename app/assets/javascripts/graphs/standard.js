@@ -22,6 +22,10 @@ function renderStandard(index) {
 			series: [{data: data, color: color[index]}   ]
 		})
 
+		if (gon.metrics[index].metric.indexOf("uom:c") != -1 ) 	{ 
+			graph[index].configure({interpolation: 'step'})
+		}
+
 		chart = "chart_"+index
 		yaxis = "y_axis_"+index
 
