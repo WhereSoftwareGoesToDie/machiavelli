@@ -17,9 +17,14 @@ function renderStandard(index) {
 			element: document.getElementById("chart_"+index),
 			width: 700,
 			height: 200,
+			min: 'auto',
 			renderer: 'line',
-			series: [{data: data, color: palette.color()}   ]
+			series: [{data: data, color: color[index]}   ]
 		})
+
+		if (gon.metrics[index].metric.indexOf("uom:c") != -1 ) 	{ 
+			graph[index].configure({interpolation: 'step'})
+		}
 
 		chart = "chart_"+index
 		yaxis = "y_axis_"+index
@@ -27,15 +32,17 @@ function renderStandard(index) {
 		new Rickshaw.Graph.Axis.Y( {
 			graph: graph[index],
 			orientation: 'left',
-			tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP,
+		   	pixelsPerTick: 30,
+			tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round,
 			element: document.getElementById(yaxis)
 		} );
 
 		new Rickshaw.Graph.Axis.Time({
 			graph: graph[index],
-			timeFixture: new Rickshaw.Fixtures.Time.Local()
+			timeFixture: new Rickshaw.Fixtures.Time.Precise.Local()
 		});
 
+		dynamicWidth(graph[index]);
 		graph[index].render()
 		
 		new Rickshaw.Graph.HoverDetail({
@@ -47,7 +54,7 @@ function renderStandard(index) {
 
 		graph[index].render()
 
-		unrenderWaiting();
+		unrenderWaiting("chart_"+index);
 		renderSlider();
 	}) 
 }
@@ -55,10 +62,12 @@ function renderStandard(index) {
 function updateStandard(){ 
 	id = setInterval(function() { 		
 		now = parseInt(Date.now()/1000)
+		span = (gon.stop - gon.start)
 
 		$.each(gon.metrics, function(i, metric) { 
 			if (metric.live) { 
-			update = metricURL(metric.feed,now-gon.step,now,gon.step)
+
+			update = metricURL(metric.feed,now-span,now,gon.step)
 			$.getJSON(update, function(d){ 
 				if (d.error) { 
 					renderError("flash", "error retrieving data from endpoint", d.error); stopAll(); return false
@@ -66,8 +75,7 @@ function updateStandard(){
 				if (d.length == 0) { 
 					renderError("flash", "no data returned from endpoint", update); stopAll(); return false
 				}
-				new_data = {data: d[d.length-1].y}
-				graph[i].series.addData(new_data); 
+				graph[i].series[0].data = d
 				graph[i].render()
 			})
 			}
@@ -90,14 +98,17 @@ function clean (arr, deleteValue) {
 
 
 var complete = 0;
+var slider; 
 function renderSlider() { 
         complete++;
 
         // Render the multiple graph slider only when all the graphing operations have been completed.
-        if (complete = gon.metrics.length) { 
-        new Rickshaw.Graph.RangeSlider({ 
-                graph: clean(graph, undefined), 
-                element: $("#multi_slider")
+        if (complete == gon.metrics.length) { 
+	slider = new Rickshaw.Graph.RangeSlider.Preview({ 
+                graphs: clean(graph, undefined), 
+                height: 50,
+		element: document.getElementById("multi_slider")//$("#multi_slider")
                 });
         }
+	fitSlider(); 
 }

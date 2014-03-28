@@ -1000,6 +1000,277 @@ Rickshaw.Fixtures.Time = function() {
 		return Math.ceil(time / unit.seconds) * unit.seconds;
 	};
 };
+Rickshaw.namespace('Rickshaw.Fixtures.Time.Precise');
+
+Rickshaw.Fixtures.Time.Precise = function() {
+
+        var self = this;
+
+        this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        this.units = [
+                {
+                        name: 'decade',
+                        seconds: 86400 * 365.25 * 10,
+                        formatter: function(d) { return (parseInt(d.getUTCFullYear() / 10, 10) * 10) }
+                }, {
+                        name: 'year',
+                        seconds: 86400 * 365.25,
+                        formatter: function(d) { return d.getUTCFullYear() }
+                }, {
+                        name: 'month',
+                        seconds: 86400 * 30.5,
+                        formatter: function(d) { return self.months[d.getUTCMonth()] }
+                }, {
+                        name: 'week',
+                        seconds: 86400 * 7,
+                        formatter: function(d) { return self.formatDate(d) }
+                }, {
+                        name: 'day',
+                        seconds: 86400,
+                        formatter: function(d) { return d.getUTCDate() }
+                }, {
+                        name: '6 hour',
+                        seconds: 3600 * 6,
+                        formatter: function(d) { return self.formatTime(d) }
+                }, {
+                        name: 'hour',
+                        seconds: 3600,
+                        formatter: function(d) { return self.formatTime(d) }
+                }, {
+                        name: '15 minute',
+                        seconds: 60 * 15,
+                        formatter: function(d) { return self.formatTime(d) }
+                }, {
+                        name: '5 minute',
+                        seconds: 60 * 5,
+                        formatter: function(d) { return self.formatTime(d) }
+                }, {
+                        name: 'minute',
+                        seconds: 60,
+                        formatter: function(d) { return self.formatTime(d) }
+                }, {
+                        name: '15 second',
+                        seconds: 15,
+                        formatter: function(d) { return self.formatTimeSeconds(d) }
+                }, {
+                        name: '5 second',
+                        seconds: 5,
+                        formatter: function(d) { return self.formatTimeSeconds(d) }
+                }, {
+                        name: 'second',
+                        seconds: 1,
+                        formatter: function(d) { return self.formatTimeSeconds(d) }
+                }, {
+                        name: 'decisecond',
+                        seconds: 1/10,
+                        formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
+                }, {
+                        name: 'centisecond',
+                        seconds: 1/100,
+                        formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
+                }
+        ];
+
+        this.unit = function(unitName) {
+                return this.units.filter( function(unit) { return unitName == unit.name } ).shift();
+        };
+
+        this.formatDate = function(d) {
+                return d3.time.format('%b %e')(d);
+        };
+
+        this.formatTime = function(d) {
+                return d.toUTCString().match(/(\d+:\d+):/)[1];
+        };
+
+        this.formatTimeSeconds = function(d) {
+                return d.toUTCString().match(/(\d+:\d+:\d+)/)[1];
+        };
+
+        this.ceil = function(time, unit) {
+
+                var date, floor, year;
+
+                if (unit.name == 'month') {
+
+                        date = new Date(time * 1000);
+
+                        floor = Date.UTC(date.getUTCFullYear(), date.getUTCMonth()) / 1000;
+                        if (floor == time) return time;
+
+                        year = date.getUTCFullYear();
+                        var month = date.getUTCMonth();
+
+                        if (month == 11) {
+                                month = 0;
+                                year = year + 1;
+                        } else {
+                                month += 1;
+                        }
+
+                        return Date.UTC(year, month) / 1000;
+                }
+
+                if (unit.name == 'year') {
+
+                        date = new Date(time * 1000);
+
+                        floor = Date.UTC(date.getUTCFullYear(), 0) / 1000;
+                        if (floor == time) return time;
+
+                        year = date.getUTCFullYear() + 1;
+
+                        return Date.UTC(year, 0) / 1000;
+                }
+
+                return Math.ceil(time / unit.seconds) * unit.seconds;
+        };
+};
+Rickshaw.namespace('Rickshaw.Fixtures.Time.Precise.Local');
+
+Rickshaw.Fixtures.Time.Precise.Local = function() {
+
+        var self = this;
+
+        this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        this.units = [
+                {
+                        name: 'decade',
+                        seconds: 86400 * 365.25 * 10,
+                        formatter: function(d) { return (parseInt(d.getFullYear() / 10, 10) * 10) }
+                }, {
+                        name: 'year',
+                        seconds: 86400 * 365.25,
+                        formatter: function(d) { return d.getFullYear() }
+                }, {
+                        name: 'month',
+                        seconds: 86400 * 30.5,
+                        formatter: function(d) { return self.months[d.getMonth()] }
+                }, {
+                        name: 'week',
+                        seconds: 86400 * 7,
+                        formatter: function(d) { return self.formatDate(d) }
+                }, {
+                        name: 'day',
+                        seconds: 86400,
+                        formatter: function(d) { return d.getDate() }
+                }, {
+                        name: '6 hour',
+                        seconds: 3600 * 6,
+                        formatter: function(d) { return self.formatTime(d) }
+                }, {
+                        name: 'hour',
+                        seconds: 3600,
+                        formatter: function(d) { return self.formatTime(d) }
+                }, {
+                        name: '15 minute',
+                        seconds: 60 * 15,
+                        formatter: function(d) { return self.formatTime(d) }
+                }, {
+                        name: '5 minute',
+                        seconds: 60 * 5,
+                        formatter: function(d) { return self.formatTime(d) }
+                }, {
+                        name: 'minute',
+                        seconds: 60,
+                        formatter: function(d) { return self.formatTime(d) }
+                }, {
+                        name: '15 second',
+                        seconds: 15,
+                        formatter: function(d) { return self.formatTimeSeconds(d) }
+                }, {
+                        name: '5 second',
+                        seconds: 5,
+                        formatter: function(d) { return self.formatTimeSeconds(d) }
+                }, {
+                        name: 'second',
+                        seconds: 1,
+                        formatter: function(d) { return self.formatTimeSeconds(d) }
+                }, {
+                        name: 'decisecond',
+                        seconds: 1/10,
+                        formatter: function(d) { return d.getMilliseconds() + 'ms' }
+                }, {
+                        name: 'centisecond',
+                        seconds: 1/100,
+                        formatter: function(d) { return d.getMilliseconds() + 'ms' }
+                }
+        ];
+
+        this.unit = function(unitName) {
+                return this.units.filter( function(unit) { return unitName == unit.name } ).shift();
+        };
+
+        this.formatDate = function(d) {
+                return d3.time.format('%b %e')(d);
+        };
+
+        this.formatTime = function(d) {
+                return d.toString().match(/(\d+:\d+):/)[1];
+        };
+
+        this.formatTimeSeconds = function(d) {
+                return d.toString().match(/(\d+:\d+:\d+)/)[1];
+        };
+
+        this.ceil = function(time, unit) {
+
+                var date, floor, year;
+
+                if (unit.name == 'day') {
+
+                        var nearFuture = new Date((time + unit.seconds - 1) * 1000);
+
+                        var rounded = new Date(0);
+                        rounded.setMilliseconds(0);
+                        rounded.setSeconds(0);
+                        rounded.setMinutes(0);
+                        rounded.setHours(0);
+                        rounded.setDate(nearFuture.getDate());
+                        rounded.setMonth(nearFuture.getMonth());
+                        rounded.setFullYear(nearFuture.getFullYear());
+
+                        return rounded.getTime() / 1000;
+                }
+
+                if (unit.name == 'month') {
+
+                        date = new Date(time * 1000);
+
+                        floor = new Date(date.getFullYear(), date.getMonth()).getTime() / 1000;
+                        if (floor == time) return time;
+
+                        year = date.getFullYear();
+                        var month = date.getMonth();
+
+                        if (month == 11) {
+                                month = 0;
+                                year = year + 1;
+                        } else {
+                                month += 1;
+                        }
+
+                        return new Date(year, month).getTime() / 1000;
+                }
+
+                if (unit.name == 'year') {
+
+                        date = new Date(time * 1000);
+
+                        floor = new Date(date.getUTCFullYear(), 0).getTime() / 1000;
+                        if (floor == time) return time;
+
+                        year = date.getFullYear() + 1;
+
+                        return new Date(year, 0).getTime() / 1000;
+                }
+
+                return Math.ceil(time / unit.seconds) * unit.seconds;
+        };
+};
+
 Rickshaw.namespace('Rickshaw.Fixtures.Time.Local');
 
 Rickshaw.Fixtures.Time.Local = function() {
@@ -1135,17 +1406,41 @@ Rickshaw.namespace('Rickshaw.Fixtures.Number');
 
 Rickshaw.Fixtures.Number.formatKMBT = function(y) {
         var abs_y = Math.abs(y);
-        var precision = 2;
+        if (abs_y >= 1000000000000)   { return y / 1000000000000 + "T" }
+        else if (abs_y >= 1000000000) { return y / 1000000000 + "B" }
+        else if (abs_y >= 1000000)    { return y / 1000000 + "M" }
+        else if (abs_y >= 1000)       { return y / 1000 + "K" }
+        else if (abs_y < 1 && y > 0)  { return y.toFixed(2) }
+        else if (abs_y === 0)         { return 0 }
+        else                      { return y }
+};
+
+
+Rickshaw.Fixtures.Number.formatKMBT_round = function(y) { 
+        var abs_y = Math.abs(y);
+	var precision = 2;
         if (abs_y >= 1000000000000)   { return (y / 1000000000000).toFixed(precision) + "T" }
         else if (abs_y >= 1000000000) { return (y / 1000000000).toFixed(precision) + "B" }
         else if (abs_y >= 1000000)    { return (y / 1000000).toFixed(precision) + "M" }
         else if (abs_y >= 1000)       { return (y / 1000).toFixed(precision) + "K" }
         else if (abs_y < 1 && y > 0)  { return y.toFixed(precision) }
-        else if (abs_y === 0)         { return '' }
-        else                      { return y }
-};
+        else if (abs_y === 0)         { return 0 }
+        else                      { return y.toFixed(precision) }
+}; 
 
 Rickshaw.Fixtures.Number.formatBase1024KMGTP = function(y) {
+    var abs_y = Math.abs(y);
+    if (abs_y >= 1125899906842624)  { return y / 1125899906842624 + "P" }
+    else if (abs_y >= 1099511627776){ return y / 1099511627776 + "T" }
+    else if (abs_y >= 1073741824)   { return y / 1073741824 + "G" }
+    else if (abs_y >= 1048576)      { return y / 1048576 + "M" }
+    else if (abs_y >= 1024)         { return y / 1024 + "K" }
+    else if (abs_y < 1 && y > 0)    { return y.toFixed(2) }
+    else if (abs_y === 0)           { return 0 }
+    else                        { return y }
+};
+
+Rickshaw.Fixtures.Number.formatBase1024KMGTP_round = function(y) { 
     var abs_y = Math.abs(y);
     var precision = 2;
     if (abs_y >= 1125899906842624)  { return (y / 1125899906842624).toFixed(precision) + "P" }
@@ -1153,9 +1448,9 @@ Rickshaw.Fixtures.Number.formatBase1024KMGTP = function(y) {
     else if (abs_y >= 1073741824)   { return (y / 1073741824).toFixed(precision) + "G" }
     else if (abs_y >= 1048576)      { return (y / 1048576).toFixed(precision) + "M" }
     else if (abs_y >= 1024)         { return (y / 1024).toFixed(precision) + "K" }
-    else if (abs_y < 1 && y > 0)    { return y.toFixed(precision) }
-    else if (abs_y === 0)           { return '' }
-    else                        { return y }
+    else if (abs_y < 1 && y > 0)    { return y.toFixed(2) }
+    else if (abs_y === 0)           { return 0 }
+    else                      { return y.toFixed(precision) }
 };
 
 Rickshaw.namespace("Rickshaw.Color.Palette");
@@ -2586,15 +2881,17 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 	configure: function(args) {
 
-		this.config = {};
+		this.config = this.config || {};
 
 		this.configureCallbacks.forEach(function(callback) {
 			callback(args);
 		});
 
 		Rickshaw.keys(this.defaults).forEach(function(k) {
-			this.config[k] = k in args ? args[k]
-				: k in this.config ? this.config[k]
+			this.config[k] = k in args ? 
+					args[k]
+				: k in this.config 
+					? this.config[k]
 				: this.defaults[k];
 		}, this);
 
@@ -2699,8 +2996,8 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		this.svg.enter()
 			.append("svg")
 			.classed("rickshaw_range_slider_preview", true)
-			.style("height", this.config.height + "px")
-			.style("width", this.config.width + "px")
+			.attr("height", this.config.height + "px")
+			.attr("width", this.config.width + "px")
 			.style("position", "relative")
 			.style("top", -this.previewHeight + "px");
 

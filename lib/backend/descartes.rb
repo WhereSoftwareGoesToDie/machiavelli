@@ -7,25 +7,34 @@ require 'net/http'
 class Backend::Descartes < Backend::GenericBackend
 
         def initialize params={}
+		@alias = params[:alias] || self.class.name.split("::").last
                 @base_url = params[:url]
                 raise Backend::Error, "Must provide a url value" if @base_url.nil?
                 @origin = params[:origin]
                 raise Backend::Error, "Must provide an origin value" if @origin.nil?
         end
 
+	# Descartes don't need no storage
         def get_metrics_list
-		begin
-			uri = "#{@base_url}/simple/search?origin=#{@origin}"
-			get_json uri
-		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenURI::HTTPError => e
-			raise Backend::Error, "Error retreiving descartes metrics list: #{e} -- #{uri}"
-		end
+		return []
         end
 
-        def get_metric m, start=nil, stop=nil, step=nil
+	# Descartes is dynamic, yo
+	def search_metric_list q
+		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}"
+		puts uri
+		result = get_json uri
+		result.map{|x| "#{@alias}~#{to_mach(x)}"}
+	end
+
+	def to_des m;  m.gsub(":","~"); end
+	def to_mach m; m.gsub("~",":"); end 
+
+        def get_metric m, start, stop, step
 		query = []
-		query << "start=#{start}"
-		query << "end=#{stop}"
+		m = to_des(m)
+		query << "start=#{start - 200}" 
+		query << "end=#{stop + 10}"
 		query << "interval=#{step}"
 		query << "origin=#{@origin}"
 
@@ -54,23 +63,23 @@ class Backend::Descartes < Backend::GenericBackend
 			metric << {x: node[0], y: node[1]}
 		end
 
-		metric
-=begin
+
+		if stop - start == step then
+			# only one point required so get next closest to start
+			return [metric.select{|a| a[:x] >= start}.first]
+		end
 
 		padded = []
 		(start..stop).step(step).each do |i|
 			points = metric.select{|p| p[:x].between?(i, i+step-1)}
 			if points.length == 1 then
 				padded << points.first
-			elsif points.length > 1 then
-				binding.pry
 			elsif points.length == 0 then
 				padded << {x: i, y: (0.0/0.0)}
 			end
 		end
 
 		padded
-=end
         end
 
 	def get_json url 
@@ -80,36 +89,46 @@ class Backend::Descartes < Backend::GenericBackend
 		JSON.parse(result.body, :symbolize_names => true)
 	end
 
-	def pretty_metric metric
-		if @origin == "LMRH8C" || @origin ==  "R82KX1" then
-			type, x = URI.decode(metric).split(":")
+	def style_metric style, metric
+		if style == :pretty then
+			if @origin == "LMRH8C" || @origin ==  "R82KX1" then
+				type, x = URI.decode(metric).split("~")
 
-			keys = Hash[*x.split(",").map{|y| y.split("~")}.flatten]
+				keys = Hash[*x.split(",").map{|y| y.split(":")}.flatten]
+				
+				nice = [type]
+				nice << keys["hostname"]
+				nice << keys["service_name"] unless keys["service_name"] == "host"
+				nice << keys["metric"]
 			
-			nice = [type]
-			nice << keys["hostname"]
-			nice << keys["service_name"] unless keys["service_name"] == "host"
-			nice << keys["metric"]
-		
-			unit = case keys["uom"]
-				when "Invalid", "NullUnit"; ""
-				else " (#{keys["uom"]})"
-			end
+				unit = case keys["uom"]
+					when "Invalid", "NullUnit"; ""
+					else " (#{keys["uom"]})"
+				end
 
-			return URI.decode(nice.join(" - ") + unit)
+				return URI.decode(nice.join(" - ") + unit)
 
-		elsif @origin == "4HXR1F" then
-			type, x = metric.split(":")
-			keys = Hash[*x.split(",").map{|y| y.split("~")}.flatten]
-			nice = [type]
-			nice << keys["ip"]
-			nice << case keys["bytes"]
-				when "rx"; " bytes received"
-				else keys["bytes"]
+			elsif @origin == "4HXR1F" then
+				type, x = metric.split(":")
+				keys = Hash[*x.split(",").map{|y| y.split("~")}.flatten]
+				nice = [type]
+				nice << keys["ip"]
+				nice << case keys["bytes"]
+					when "rx"; " bytes received"
+					else keys["bytes"]
+				end
+				return URI.decode(nice.join(" - "))
+			else
+				return metric
 			end
-			return URI.decode(nice.join(" - "))
-		else
-			return metric
+		elsif style == :table then
+			ret = metric.strip
+			sep = [["~","</td></tr><tr><td>"],[":","</td><td> - "],[",","</td></tr><tr><td>"]]
+			sep.each {|a| ret.gsub!(a[0],a[1])}
+			'<table style="text-align: left"><tr><td colspan=2>'+ret+'</table>'
+		else 
+			metric
 		end
+
 	end
 end

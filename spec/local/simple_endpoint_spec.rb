@@ -5,7 +5,7 @@ describe "Simple backend", :js => true do
         type = "Simple"
 	name = "Clizia"
 	host = "http://localhost:4567"
-	metric = "#{type}:#{name}"
+	metric = "#{type}~#{name}"
 	
 	before :each do
 		add_config "backends: [{ type: '#{type}', settings: { url: '#{host}'}}]"

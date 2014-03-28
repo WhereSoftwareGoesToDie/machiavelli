@@ -11,7 +11,6 @@ module Layouts
 		def ui_message msg
 			case msg
 			when :no_graphs_selected; "Select a metric from the list to graph"
-			when :no_metrics_available; "No metrics available. Check error notification, or #{link_to "refresh", refresh_path} to try again.".html_safe
 			when :no_backends; "No backends configured. Check your config/settings/{ENV}.yml file."
 			else "UI MESSAGE VARIABLE NOT FOUND: #{msg}"
 			end
@@ -27,15 +26,14 @@ module Layouts
 		end
 
 		def render_sidenav
-			partial = "partial/sidenav/"
-			partial += ( @all_metrics.length > 20 ? "big_filter_metrics" : "filter_metrics")
+			partial = "partial/sidenav/big_filter_metrics"
 			render(partial: partial)
 		end
 		
 		def navbar_buttons param, buttons
 			a = []
 			buttons.each do |b|
-				html = "<a type='button' class='btn btn-xs btn-default "
+				html = "<a type='button' class='btn btn-default "
 				p = chk_qs(param,b) 
 
 				html += "active" if (p || p.nil? && UI_DEFAULTS[param] == b)
@@ -46,20 +44,36 @@ module Layouts
 		end
 
 
-		def pretty_metric metric
-			(backend metric).pretty_metric metric
+		def style_metric style, metric
+			(init_backend metric).style_metric style, metric
 		end
 
+		# Backend intialization 
+		# No Name? -> Generic
+		# Name, no settings? Search for settings in config
+		# Name, and settings? Use settings and name, as given
 
-        # TODO Why can't this method be seen by this module, when it's in the ApplicationController?
-	def backend m=nil
+		def init_backend name=nil, settings=nil
+			return Backend::GenericBackend.new if name.nil?
 
-                return Backend::GenericBackend.new if m.nil?
+			unless settings
+				name = name.split("~").first if name.include? "~" ##TODO SEP
+				
+				backend = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(name) == 0}.first
+				raise StandardError, "backend #{name} doesn't exist" if backend.nil?
+				name = backend[:type]
+				settings = backend[:settings].to_hash.merge({alias: backend[:alias] || backend[:type]})
+			end
+			return "Backend::#{name.titleize}".constantize.new settings
+		end
 
-                type = m.split(":").first
-                settings = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(type) == 0}.first
-                return "Backend::#{settings[:type].titleize}".constantize.new settings[:settings]
-        end
+		def backends 
+			list = []
+			Settings.backends.each {|b|
+				list << (b.alias || b.type)
+			}
+			list
+		end
 
 		# Query string manipulation functions
 		def chk_qs k,v,p={}; alter_qs :chk, k,v,p; end
@@ -75,19 +89,19 @@ module Layouts
 				when p[:url].is_a?(String)
 					p[:url]
 				else 
-					request.url
+						request.url
 				end
 
 			query = URI::parse(url).query
-                        query.gsub!("metric=","metric[]=") if query
+			query.gsub!("metric=","metric[]=") if query
 
-                        Rack::Utils.parse_nested_query(query) || {} 
+			Rack::Utils.parse_nested_query(query) || {} 
 		end
 
 		def hash_query hash
 			x = []
-                        hash.each {|l,m| Array(m).each {|a| x << "#{l}=#{a}"}}
-                        "?#{x.join("&")}"
+			hash.each {|l,m| Array(m).each {|a| x << "#{l}=#{a}"}}
+			"?#{x.join("&")}"
 		end
 
 		def alter_qs method, k, v, p={}
@@ -105,7 +119,6 @@ module Layouts
 					end
 				when :chg 
 					hash[k] = v
-					hash.delete("metric") if k == "backend"
 				when :rem #ove
 					x = Array(hash[k])
 					x.delete(v)

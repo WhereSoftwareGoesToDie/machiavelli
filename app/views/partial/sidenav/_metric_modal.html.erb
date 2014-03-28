@@ -1,20 +1,14 @@
 <%= stylesheet_link_tag "select2" %>
 <%= javascript_include_tag "select2" %>
-<script>
-$(document).ready(function() { 
-		$("#filter_metrics_select").select2({width: "100%", placeholder: "Select a metric"});
-	$(".select2-results").css("overflow-x","auto");
-})
-</script>
-<div class="modal fade" id="filter_metrics" role="dialog" aria-labelledby="filter_metrics" aria-hidden="true">
-<div class="modal-dialog"><div class="modal-content">
+<div class="modal" id="filter_metrics" role="dialog" aria-labelledby="filter_metrics" aria-hidden="true">
+<div class="modal-dialog modal-lg"><div class="modal-content">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 		<h4 class="modal-title" id="myModalLabel">Filter metrics</h4>
 	</div>
 	<%= form_for "filter", url: modal_filter_submit_path do |f| %>
 	<div class="modal-body"> 
-		<%= f.select(:metrics_select, @available_metrics.sort.map{|a| [(pretty_metric a),a]}, {prompt: nil},{ multiple: true, size: 10, class: "filter"}) %>
+		<%= f.hidden_field(:metrics_select, style:"width: 100%", value: "0000") %>
 		<div class="modal-footer">
 		<%= f.submit "Filter", class: "btn btn-default" %>
 		</div>
@@ -22,3 +16,80 @@ $(document).ready(function() {
 	<% end %>
 </div></div>
 </div>
+<script>
+
+function fillSelect() { 
+        var metrics = []
+        $(".sortable").each(function(i,el){
+                metrics.push($(el).find("span.metric")[0].dataset.metric)
+        });
+        $("#filter_metrics_select").val(metrics.join(";"));
+}       
+
+ function formatResult(data) {
+        return decodeURI(data.metric);
+    };
+
+    function formatSelection(data,a,b) {
+	if (data.text) { return data.text} 
+	if (data.metric) { return data.metric}
+    };
+
+    function prefill() { 
+         var data = []
+         $(".sortable").each(function(i,el){
+              m = $(el).find("span.metric")[0].dataset.metric
+              data.push({id: m, text: m})     
+         });
+         return data;
+    } 
+
+    function MultiAjaxAutoComplete(element, url) {
+	
+        $(element).select2({
+            placeholder: "Search for a metric",
+	    openOnEnter: false,
+	    quietMillis: 500,
+	    multiple: true,
+	    initSelection: function(element,callback) { 
+		val = $(element).val()
+		if (val != "") { 
+			data = []
+			$.each(val.split(";"), function(i,d) { 
+				data.push({id: d, text: d})
+			})
+			callback(data);
+		}
+            },
+            id: function(d){
+			if (d.metric) { return d.metric } 
+			if (d.id) { return d.id}  
+		},
+            ajax: {
+                url: url, 
+                dataType: 'jsonp',
+                data: function(term, page) {
+                  if (term.length == 0) { 
+                    return { q:"*"}
+                  } else { 
+                    return { q: "*"+term+"*" };
+                  }
+                 },
+                 results: function(data, page) {
+                        return { results: data.metrics};
+                }
+            },
+            formatResult: formatResult,
+            formatSelection: formatSelection,
+        });
+    };
+
+
+
+    fillSelect(); 
+    MultiAjaxAutoComplete('#filter_metrics_select', '/source/');
+
+$(document).ready(function() { 
+	$(".select2-results").css("overflow-x","auto");
+	})
+</script>

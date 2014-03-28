@@ -23,7 +23,7 @@
 			$("[data-toggle='tooltip-down']").tooltip({ placement: "bottom", container: "body", delay: { show: 500}}) 
 		<% end %> 
 			$("[data-toggle='tooltip-always']").tooltip({ placement: "right", container: "body", delay: { show: 500}}) 
-			$("[data-toggle='tooltip-always-top']").tooltip({ placement: "top", container: "body", delay: { show: 500}}) 
+			$("[data-toggle='tooltip-always-metric']").tooltip({ placement: "right", container: "body", delay: { show: 500}}) 
 		})
 		</script>
 	<div id="wrapper">
@@ -37,9 +37,11 @@
 				</button>
 				<%= link_to root_path, class: "navbar-brand" do %> Machiavelli	<%end%>
 			</div>
-			<ul class="nav navbar-top-links navbar-right" style="margin-top:10px; margin-right: 10px">
-				<%= render partial: "partial/navbar/timescales" %>
-			</ul>
+			<div id="navbar-buttons">
+				<ul class="nav navbar-top-links navbar-right" style="margin-top:10px; margin-right: 10px">
+					<%= render partial: "partial/navbar/timescales" %>
+				</ul>
+			</div>
 		</nav>
 
 		<%= render_sidenav %>

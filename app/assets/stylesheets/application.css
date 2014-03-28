@@ -9,7 +9,7 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require jquery-ui
- *= require bootstrap.min
+ *= require bootstrap
  *= require custom_css
  *= require sb-admin
  *= require font-awesome.min

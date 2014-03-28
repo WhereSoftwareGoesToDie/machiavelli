@@ -8,18 +8,18 @@
 }
 .slider {
        display: inline-block;
-        margin-left: 100px;
+        margin-left: 40px; /* yaxis -20*/
 	padding-left: 15px;
 }
 .chart {
        display: inline-block;
-        margin-left: 100px;
+        margin-left: 60px; /* yaxis */
 }
 .y_axis {
         position: absolute;
         top: 0;
         bottom: 0;
-        width: 100px;
+        width: 60px;
 }
 .legend {
         position: absolute;
@@ -28,12 +28,12 @@
         vertical-align: top;
         margin: 0 0 0 10px;
         background: transparent;
-        color: black;                                                                                                                                                               
-}                                                                                                                                                                                   
+        color: black;
+}
 .x_axis { 
-        position: relative;                                                                                                                                                         
-        left: 100px;                                                                                                                                                                 
-        height: 10px;                                                                                                                                                               
+        position: relative;
+        left: 60px; /* yaxis */
+        height: 10px;
 }  
 .axis0 {
         position: absolute;
@@ -45,7 +45,7 @@
         position: absolute;
         top: 0;
         bottom: 0;
-        left: 800px; /* Chart width + y-axis:width */
+        left: 760px; /* Chart width + y-axis:width */
         width: 100px;
 }
 
@@ -57,4 +57,6 @@
         margin-left: -4px;
         margin-top: -4px;
 }
-
+.graph_title { 
+	padding-left: 60px; /*yaxis*/
+}

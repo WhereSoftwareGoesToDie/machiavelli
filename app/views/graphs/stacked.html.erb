@@ -4,21 +4,23 @@
 <%= stylesheet_link_tag    "graphs_stacked" %>
 <script src="/assets/graphs/stacked.js"></script>
 
-<div class="col-md-10" style="padding-bottom: 10px; padding-top: 40px">
-        <div id="chart_container">
+<div class="col-md-10">
+	<div class="slider" id="slider"></div>
+</div>
+<div class="col-md-10">
+	<div id="chart_container">
 		<div class="axis0" id="axis0">
 			<div class="stub stub_left" id="axis0_stub"></div>
 		</div>
 		<div class="chart"  id="chart"></div>
 		<% (1..@metrics.length-1).each do |n| %>
-			<div class="axis1" id="axis<%=n%>" style="left: <%= 700 + 100 * n %>px" >
-				<div class="stub stub_right" id="axis<%=n%>_stub"></div>
-			</div>
+		<div class="axis1" id="axis<%=n%>" style="left: <%= 700 + 60 * n %>px" >
+			<div class="stub stub_right" id="axis<%=n%>_stub"></div>
+		</div>
 		<% end %>
 		<div class="x_axis" id="x_axis"></div>
-		<div class="slider" id="slider"></div>
 		<div class="legend legend-indent" id="legend"></div>
-        </div>
+	</div>
 </div>
 
 <script>
