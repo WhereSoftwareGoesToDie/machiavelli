@@ -1,13 +1,20 @@
 require 'spec_helper'
+require 'open-uri'
 describe "Graphite", :js => true do
 
 	type = "Graphite"
 	name = "carbon.agents.graphite-a.cache.queues"
-	graphite_host = "192.168.122.219"
+	graphite_host = "http://192.168.122.219"
 	metric = "#{type}~#{name}" 
 
+	begin
+                URI.parse(graphite_host).read
+        rescue Errno::ECONNREFUSED,Errno::EHOSTUNREACH => e
+                raise StandardError, "\n\nYou can't test the Graphite endpoint at #{graphite_host} unless it's live, dummy. \n\n#{e}\n\n"
+        end
+
 	before :each do 
-		add_config "backends: [{ type: '#{type}', settings: {url: 'http://#{graphite_host}'}}]"
+		add_config "backends: [{ type: '#{type}', settings: {url: '#{graphite_host}'}}]"
 		test_config type
 	end
 
