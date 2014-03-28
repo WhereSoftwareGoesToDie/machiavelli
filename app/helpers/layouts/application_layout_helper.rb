@@ -119,7 +119,6 @@ module Layouts
 					end
 				when :chg 
 					hash[k] = v
-					hash.delete("metric") if k == "backend"
 				when :rem #ove
 					x = Array(hash[k])
 					x.delete(v)
