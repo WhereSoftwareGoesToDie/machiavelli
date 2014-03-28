@@ -62,10 +62,12 @@ function renderStandard(index) {
 function updateStandard(){ 
 	id = setInterval(function() { 		
 		now = parseInt(Date.now()/1000)
+		span = (gon.stop - gon.start)
 
 		$.each(gon.metrics, function(i, metric) { 
 			if (metric.live) { 
-			update = metricURL(metric.feed,now-gon.step,now,gon.step)
+
+			update = metricURL(metric.feed,now-span,now,gon.step)
 			$.getJSON(update, function(d){ 
 				if (d.error) { 
 					renderError("flash", "error retrieving data from endpoint", d.error); stopAll(); return false
@@ -73,8 +75,7 @@ function updateStandard(){
 				if (d.length == 0) { 
 					renderError("flash", "no data returned from endpoint", update); stopAll(); return false
 				}
-				graph[i].series[0].data.shift() //addData(new_data); 
-				graph[i].series[0].data.push(d.pop())
+				graph[i].series[0].data = d
 				graph[i].render()
 			})
 			}
