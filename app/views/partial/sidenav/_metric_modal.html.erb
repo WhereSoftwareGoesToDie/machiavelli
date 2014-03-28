@@ -8,7 +8,7 @@
 	</div>
 	<%= form_for "filter", url: modal_filter_submit_path do |f| %>
 	<div class="modal-body"> 
-		<%= f.hidden_field(:metrics_select, style:"width: 100%") %>
+		<%= f.hidden_field(:metrics_select, style:"width: 100%", value: "0000") %>
 		<div class="modal-footer">
 		<%= f.submit "Filter", class: "btn btn-default" %>
 		</div>
@@ -18,29 +18,64 @@
 </div>
 <script>
 
+function fillSelect() { 
+        var metrics = []
+        $(".sortable").each(function(i,el){
+                metrics.push($(el).find("span.metric")[0].dataset.metric)
+        });
+        $("#filter_metrics_select").val(metrics.join(";"));
+}       
+
  function formatResult(data) {
-        return data.metric ;
+        return decodeURI(data.metric);
     };
 
-    function formatSelection(data) {
-        return data.metric;
+    function formatSelection(data,a,b) {
+	if (data.text) { return data.text} 
+	if (data.metric) { return data.metric}
     };
 
+    function prefill() { 
+         var data = []
+         $(".sortable").each(function(i,el){
+              m = $(el).find("span.metric")[0].dataset.metric
+              data.push({id: m, text: m})     
+         });
+         return data;
+    } 
 
     function MultiAjaxAutoComplete(element, url) {
+	
         $(element).select2({
             placeholder: "Search for a metric",
 	    openOnEnter: false,
 	    quietMillis: 500,
 	    multiple: true,
-            id: function(d){ return d.metric},
+	    initSelection: function(element,callback) { 
+		val = $(element).val()
+		if (val != "") { 
+			data = []
+			$.each(val.split(";"), function(i,d) { 
+				data.push({id: d, text: d})
+			})
+			callback(data);
+		}
+            },
+            id: function(d){
+			if (d.metric) { return d.metric } 
+			if (d.id) { return d.id}  
+		},
             ajax: {
                 url: url, 
                 dataType: 'jsonp',
                 data: function(term, page) {
-                        return { q: "*"+term+"*" };
-                },
-                results: function(data, page) {
+                  if (term.length == 0) { 
+                    return { q:"*"}
+                  } else { 
+                    return { q: "*"+term+"*" };
+                  }
+                 },
+                 results: function(data, page) {
                         return { results: data.metrics};
                 }
             },
@@ -51,6 +86,7 @@
 
 
 
+    fillSelect(); 
     MultiAjaxAutoComplete('#filter_metrics_select', '/source/');
 
 $(document).ready(function() { 

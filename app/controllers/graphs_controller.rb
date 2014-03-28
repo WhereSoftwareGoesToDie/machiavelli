@@ -51,19 +51,19 @@ class GraphsController < ApplicationController
 	def graph_filter_submit # from "filter metrics" search bar
 		available_metrics = all_metrics - selected_metrics(request.referer) || []
 		metrics = available_metrics.select{|m| m.downcase.include? params[:search][:filter].downcase }
-		add_metrics metrics
+		redirect_to root_path + add_qs(:metric, metrics, {url: :referer})
 	end
 
 	def modal_filter_submit # from big metrics listing modal
 		metrics = params[:filter][:metrics_select]
 		metrics = metrics.split(";") # select2 modal separator: ";", changed purposefully. Will break if metrics contain semicolon. 
-		add_metrics metrics
+		metrics.reject! { |c| c.empty? }
+		#add_metrics metrics
+		redirect_to root_path + chg_qs(:metric, metrics, {url: :referer})
+
 	end
 
 	def add_metrics metrics
-		new_url = add_qs :metric, metrics, {url: :referer}
-		puts new_url
-		redirect_to root_path + new_url
 	end
 
 # Functions
