@@ -35,7 +35,8 @@ class MetricsController < ApplicationController
 		b = [params[:backend] || backends].flatten
 
 		search = params[:q] || "*"
-		
+	
+		search.gsub!(" ","*") 
 		list = []
 
 		begin
