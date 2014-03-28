@@ -1211,7 +1211,7 @@ Rickshaw.Fixtures.Time.Precise.Local = function() {
                 return d.toString().match(/(\d+:\d+):/)[1];
         };
 
-        this.formatTime = function(d) {
+        this.formatTimeSeconds = function(d) {
                 return d.toString().match(/(\d+:\d+:\d+)/)[1];
         };
 
