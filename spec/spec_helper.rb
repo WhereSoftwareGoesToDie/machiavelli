@@ -18,24 +18,24 @@ require 'redis'
 
 
 TEMP_YML = "temp_settings.yml"
-REDIS_METRIC_KEY = "Machiavelli.Backend.Metrics"
+REDIS_METRIC_KEY = "Machiavelli.Metrics"
 
 Capybara.javascript_driver = :webkit unless ENV["BROWSER"] == "firefox"
 
 RSpec.configure do |config|
 	config.include Capybara::DSL
 	config.mock_with :rspec
-	config.fail_fast = true
+#	config.fail_fast = true
 #	config.order = "random"
 end
 
 shared_examples 'a graph' do |type, metric|
 	it "should present a valid #{type} graph for #{metric}" do
-		visit "/"
-		click_on metric
+		visit "/?metric=#{metric}"
 		click_on type
+		nice_metric = metric.split("~").join(" - ")
 		
-		expect(page).to have_content metric
+		expect(page).to have_content nice_metric
 		
 		if type == "standard" then
 			css = ["#multi_slider","#chart_0",".x_tick"]
@@ -63,26 +63,28 @@ shared_examples 'refresh metrics' do |type|
 	it "can refresh metrics of type #{type}" do
 		r = Redis.new()
 
-		metric_key = REDIS_METRIC_KEY
+		metric_key = REDIS_METRIC_KEY+"*"
 
-                r.del metric_key
+		keys = r.keys metric_key
+		keys.each { |k| r.del k }
 
                 visit "/"
                 expect(page).to have_link "Machiavelli"
 
-                metrics = r.smembers metric_key
+                metrics = r.keys metric_key
                 expect(metrics).to eq []
 
                 visit current_path
 
                 expect(page).not_to have_content type
 
-                click_on "refresh"
+		visit "/refresh"
 
 		expect(page).not_to have_css "div#alert-danger"
+		visit "/source/"
                 expect(page).to have_content type
 
-                metrics = r.smembers metric_key
+                metrics = r.keys metric_key
                 expect(metrics.length).to be > 0 
 	end
 end
@@ -98,5 +100,6 @@ end
 
 def test_config type
 	expect(page).not_to have_css "div#alert-danger"
+	visit "/source/"
 	expect(page).to have_content type
 end

@@ -4,7 +4,7 @@ describe "Graphite", :js => true do
 	type = "Graphite"
 	name = "carbon.agents.graphite-a.cache.queues"
 	graphite_host = "192.168.122.219"
-	metric = "#{type}:#{name}" 
+	metric = "#{type}~#{name}" 
 
 	before :each do 
 		add_config "backends: [{ type: '#{type}', settings: {url: 'http://#{graphite_host}'}}]"
@@ -28,7 +28,7 @@ describe "Graphite", :js => true do
         end
 
 	it "returns valid graphite errors if provoked" do
-		visit "/metrics/?metric=#{metric}&start=-1337"
+		visit "/metric/?metric=#{metric}&start=-1337"
 		json = JSON.parse(page.text)
 		expect(json).to include "error"
 		expect(json["error"]).to include "Graphite Exception raised"
