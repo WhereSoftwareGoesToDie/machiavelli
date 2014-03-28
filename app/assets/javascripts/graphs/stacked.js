@@ -168,7 +168,7 @@ function renderStacked(data) {
 	// One X-axis for time
 	new Rickshaw.Graph.Axis.Time({
 		graph: graph,
-		timeFixture: new Rickshaw.Fixtures.Time.Local()
+		timeFixture: new Rickshaw.Fixtures.Time.Precise.Local()
 	});
 
 	/////

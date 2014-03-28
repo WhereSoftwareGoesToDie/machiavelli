@@ -39,7 +39,7 @@ function renderStandard(index) {
 
 		new Rickshaw.Graph.Axis.Time({
 			graph: graph[index],
-			timeFixture: new Rickshaw.Fixtures.Time.Local()
+			timeFixture: new Rickshaw.Fixtures.Time.Precise.Local()
 		});
 
 		dynamicWidth(graph[index]);
