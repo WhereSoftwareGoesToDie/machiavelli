@@ -146,7 +146,7 @@ function renderStacked(data) {
 		graph: graph,
 		orientation: 'left',
 		scale: uniq_d3_scale[0],
-		tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP
+		tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round
 	});
 
 
@@ -160,7 +160,7 @@ function renderStacked(data) {
 				grid: false,
 				orientation: 'right',
 				scale: uniq_d3_scale[n],
-				tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP
+				tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round
 			});
 		}
 	}
@@ -259,13 +259,13 @@ function updateStacked() {
 	intervalID = setInterval(function (d) {
 
 		now = parseInt(Date.now() / 1000)
+		span = (gon.stop - gon.start)
 
 		$.each(gon.metrics, function (i, metric) {
 			if (metric.live) {
-				update = metricURL(metric.feed, now - gon.step, now, gon.step)
+	                        update = metricURL(metric.feed,now-span,now,gon.step)
 
 				$.getJSON(update, function (d) {
-
 					if (d.error) {
 						renderError("flash", "update returned an error on update", d.error);
 						stopUpdates();
@@ -276,8 +276,7 @@ function updateStacked() {
 						stopUpdates();
 						return false
 					}
-					graph.series[i].data.shift()
-					graph.series[i].data.push(d.slice(-1)[0])
+					graph.series[i].data = d
 					graph.render()
 				})
 			}
