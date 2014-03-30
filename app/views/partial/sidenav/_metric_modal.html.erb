@@ -18,35 +18,13 @@
 </div>
 <script>
 
-function fillSelect() { 
-        var metrics = []
-        $(".sortable").each(function(i,el){
-                metrics.push($(el).find("span.metric")[0].dataset.metric)
-        });
-        $("#filter_metrics_select").val(metrics.join(";"));
-}       
+     var metrics = []
+     $(".sortable").each(function(i,el){
+         metrics.push($(el).find("span.metric")[0].dataset.metric)
+     });
+     $("#filter_metrics_select").val(metrics.join(";"));
 
- function formatResult(data) {
-        return decodeURI(data.metric);
-    };
-
-    function formatSelection(data,a,b) {
-	if (data.text) { return data.text} 
-	if (data.metric) { return data.metric}
-    };
-
-    function prefill() { 
-         var data = []
-         $(".sortable").each(function(i,el){
-              m = $(el).find("span.metric")[0].dataset.metric
-              data.push({id: m, text: m})     
-         });
-         return data;
-    } 
-
-    function MultiAjaxAutoComplete(element, url) {
-	
-        $(element).select2({
+        $('#filter_metrics_select').select2({
             placeholder: "Search for a metric",
 	    openOnEnter: false,
 	    quietMillis: 500,
@@ -55,41 +33,25 @@ function fillSelect() {
 		val = $(element).val()
 		if (val != "") { 
 			data = []
-			$.each(val.split(";"), function(i,d) { 
+			$.each(val.split(";"), function(i,d) {
 				data.push({id: d, text: d})
 			})
 			callback(data);
 		}
             },
-            id: function(d){
-			if (d.metric) { return d.metric } 
-			if (d.id) { return d.id}  
-		},
             ajax: {
-                url: url, 
+                url: '/source/', 
                 dataType: 'jsonp',
                 data: function(term, page) {
-                  if (term.length == 0) { 
-                    return { q:"*"}
-                  } else { 
-                    return { q: "*"+term+"*" };
-                  }
-                 },
-                 results: function(data, page) {
-                        return { results: data.metrics};
+                  if (term.length == 0) { return { q:"*"}
+                  } else {                return { q: "*"+term+"*" };
+                  } },
+		results: function(data, page) {  return { results: data.metrics  };
                 }
             },
-            formatResult: formatResult,
-            formatSelection: formatSelection,
+	    formatResult:    function(d){return decodeURIComponent(d.text)},
+	    formatSelection: function(d){return decodeURIComponent(d.id)},
         });
-    };
 
-
-
-    fillSelect(); 
-    MultiAjaxAutoComplete('#filter_metrics_select', '/source/');
-
-$(document).ready(function() { 
-	$(".select2-results").css("overflow-x","auto");
-	})
+     $(document).ready(function() { $(".select2-results").css("overflow-x","auto"); })
 </script>
