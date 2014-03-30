@@ -109,12 +109,13 @@ class Backend::Descartes < Backend::GenericBackend
 				return URI.decode(nice.join(" - ") + unit)
 
 			elsif @origin == "4HXR1F" then
-				type, x = metric.split(":")
-				keys = Hash[*x.split(",").map{|y| y.split("~")}.flatten]
+				type, x = metric.split("~")
+				keys = Hash[*x.split(",").map{|y| y.split(":")}.flatten]
 				nice = [type]
 				nice << keys["ip"]
 				nice << case keys["bytes"]
 					when "rx"; " bytes received"
+					when "tx"; " bytes transmitted"
 					else keys["bytes"]
 				end
 				return URI.decode(nice.join(" - "))
