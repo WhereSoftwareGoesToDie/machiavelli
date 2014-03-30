@@ -46,7 +46,11 @@
                   if (term.length == 0) { return { q:"*"}
                   } else {                return { q: "*"+term+"*" };
                   } },
-		results: function(data, page) {  return { results: data.metrics  };
+		results: function(data, page) {	 ret = [];
+		  $.each(data.metrics, function(i, d) {  
+		    ret.push({id: decodeURIComponent(d.id), text: decodeURIComponent(d.text)})
+		  }) 
+		  return { results: ret };
                 }
             },
 	    formatResult:    function(d){return decodeURIComponent(d.text)},
