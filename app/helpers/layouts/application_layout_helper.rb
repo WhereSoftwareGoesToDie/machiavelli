@@ -77,6 +77,7 @@ module Layouts
 
 		# Query string manipulation functions
 		def chk_qs k,v,p={}; alter_qs :chk, k,v,p; end
+		def que_qs k,  p={}; alter_qs :que, k, false, p; end
 		def chg_qs k,v,p={}; alter_qs :chg, k,v,p; end
 		def add_qs k,v,p={}; alter_qs :add, k,v,p; end
 		def rem_qs k,v,p={}; alter_qs :rem, k,v,p; end
@@ -107,10 +108,11 @@ module Layouts
 		def alter_qs method, k, v, p={}
 			k = k.to_s
 			hash = query_hash p
-		
 			case method
 				when :chk
 					return (hash[k] ? (hash[k] == v ? true : false) : nil)
+				when :que #ry
+					return Array(hash[k]) || []
 				when :add
 					if v.is_a? Array 
 						hash[k] ? hash[k] += v : hash[k] = v
