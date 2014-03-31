@@ -5,7 +5,6 @@ function rickshawFitToWindow(graph) {
 	graph.render();
 	if ($("#y_axis_right")) { 
 		$("#y_axis_right").attr("style","left: "+(new_width+60)+"px")
-		console.log("adix")
 	}
 	fitSlider();
 } 
@@ -82,3 +81,14 @@ function getQueryVariable(variable)
        }
        return(false);
 }
+
+
+function clean (arr, deleteValue) {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] == deleteValue) { 
+      arr.splice(i, 1);
+      i--;
+    }
+  }
+  return arr;
+};
