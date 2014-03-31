@@ -26,8 +26,7 @@ module Layouts
 		end
 
 		def render_sidenav
-		#	partial = "partial/sidenav/big_filter_metrics"
-			partial = "partial/sidenav/stacked_filter_metrics"
+			partial = "partial/sidenav/big_filter_metrics"
 			render(partial: partial)
 		end
 		
