@@ -95,7 +95,7 @@ function renderSlider() {
         if (complete == gon.metrics.length) { 
 	slider = new Rickshaw.Graph.RangeSlider.Preview({ 
                 graphs: clean(graph, undefined), 
-                height: 50,
+                height: 30,
 		element: document.getElementById("multi_slider")//$("#multi_slider")
                 });
         }
