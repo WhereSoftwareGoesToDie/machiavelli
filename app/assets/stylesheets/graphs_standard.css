@@ -23,6 +23,7 @@
 }
 .legend {
         position: absolute;
+	font-size: small;
         top: 350px;
         left: 0px;
         vertical-align: top;

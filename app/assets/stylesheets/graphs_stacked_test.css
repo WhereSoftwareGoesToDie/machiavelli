@@ -1,0 +1,27 @@
+/*= require graphs_standard  */
+.swatch {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin: 0 8px 0 0;
+}
+
+.swatch_line { 
+	float: left;
+	width:3px; 
+	height:300px 
+} 
+
+.right_axis { 
+	position:absolute; 
+	left: 760px;
+} 
+
+.legend-indent {
+	padding-left: 30px;  
+} 
+
+.legend { width: 300px } 
+.legend_right { 
+	left: 400px
+} 

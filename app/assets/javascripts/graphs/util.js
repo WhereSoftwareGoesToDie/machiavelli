@@ -1,8 +1,12 @@
 function rickshawFitToWindow(graph) { 
-	if (window.innerWidth < 768) { r = 160 } else { r = 440 }
+	if (window.innerWidth < 768) { r = 180 } else { r = 460 }
 	new_width = window.innerWidth - r;
 	graph.configure({ width: new_width});
 	graph.render();
+	if ($("#y_axis_right")) { 
+		$("#y_axis_right").attr("style","left: "+(new_width+60)+"px")
+		console.log("adix")
+	}
 	fitSlider();
 } 
 function fitSlider() {
@@ -67,4 +71,14 @@ function metric_sort() {
                         window.location.href= new_url
                 }
         })
+}
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
 }
