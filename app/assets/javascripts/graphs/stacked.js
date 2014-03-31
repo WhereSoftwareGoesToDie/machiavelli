@@ -38,96 +38,53 @@ function flagComplete() {
 		unrenderWaiting()
 	}
 }
+var slider; 
+function isRight(d) { 
+	return right_id.indexOf(gon.metrics[d].metric) >= 0 
+} 
 
+function noRight() { 
+	return clean(right_id, "").length == 0		
+} 
 function renderStacked(data) {
 
 	var palette = new Rickshaw.Color.Palette({
 		scheme: "munin"
 	})
 
-	colours = [];
-	scales = [];
+	colours = []
 
-	// Get domain for each scale - the max and min y point
-	for (_k = 0, _len1 = data.length; _k < _len1; _k++) {
-		series = data[_k].data
-		min = Number.MAX_VALUE;
-		max = Number.MIN_VALUE;
-		for (_l = 0, _len2 = series.length; _l < _len2; _l++) {
-			point = series[_l];
-			min = Math.min(min, point.y);
-			max = Math.max(max, point.y);
-		}
-		colours.push(palette.color())
-		scales.push([min, max]);
+	min = Number.MAX_VALUE; max = Number.MIN_VALUE;
+
+	left_range = [min,max]
+	right_range = [min,max]
+	for (n = 0; n < data.length; n++) {
+		min = Number.MAX_VALUE; max = Number.MIN_VALUE;
+		for (i = 0; i < data[n].data.length; i++) {
+			min = Math.min(min, data[n].data[i].y)
+			max = Math.max(max, data[n].data[i].y)
+		} 
+		if (isRight(n)) { 
+			right_range = [ Math.min(min, right_range[0]) , Math.max(max, right_range[1]) ] 
+		} else { 
+			left_range = [ Math.min(min, left_range[0]) , Math.max(max, left_range[1]) ] 
+		} 
 	}
 
-	// Attempt consolidation of scales
-	// Generate a unique set of scales, and a set of scales in a 1-to-1 array for
-	// each metric
-	function overlap(a, b) {
-		return (Math.max(a[0], b[0]) < Math.min(a[1], b[1]))
-	}
-
-	function merge_ranges(a, b) {
-		return [Math.min(a[0], b[0]), Math.max(a[1], b[1])]
-	}
-
-	_new = [];
-	_copy = scales.slice(0) /*copy*/ ;
-	uniq_scales = scales
-
-	if (scales.length > 2) {
-		for (i = 0; i < scales.length - 1; i++) {
-			for (j = 1; j < scales.length; j++) {
-				if (i != j) {
-					a = scales[i];
-					b = scales[j]
-					if (overlap(a, b)) {
-						c = merge_ranges(a, b)
-						scales[i] = c
-						scales[j] = c
-						_copy[i] = null;
-						_copy[j] = null;
-						_new.push(c)
-					}
-				}
-			}
-		}
-
-		// Workout a set of unique scales
-		_copy = _.compact(_copy)
-		_new2 = _.map(_new, function (d) {
-			return "" + d[0] + "|" + d[1]
-		})
-		_cpy2 = _.map(_copy, function (d) {
-			return "" + d[0] + "|" + d[1]
-		})
-
-		uniq_scales = _.map(_.unique(_.compact(_new2.concat(_cpy2))), function (d) {
-			return d.split("|")
-		})
-	}
-
-	// Make d3 scales for each scale array
-	d3_scale = [];
-	$.each(scales, function (i, d) {
-		d3_scale.push(d3.scale.linear().domain([d[0], d[1]]).nice())
-	})
-	uniq_d3_scale = [];
-	$.each(uniq_scales, function (i, d) {
-		uniq_d3_scale.push(d3.scale.linear().domain([d[0], d[1]]).nice())
-	})
-
+	if (!noRight()) { right_scale = d3.scale.linear().domain(right_range) };//.range(right_range); )
+	left_scale = d3.scale.linear().domain(left_range);//.range(left_range); 
 
 	// Push scales and their metrics into a rickshaw-eatable array
 	series = []
 	for (n = 0; n < data.length; n++) {
+		colours[n] = palette.color()
+		scale = left_scale
+		if (isRight(n)) { scale = right_scale}
 		series.push({
 			color: colours[n],
 			data: data[n].data,
 			name: data[n].name,
-			scale: d3_scale[n],
+			scale: scale
 		})
 	}
 
@@ -141,29 +98,26 @@ function renderStacked(data) {
 	});
 
 	// Left Y-Axis will always be around
-	axis0 = new Rickshaw.Graph.Axis.Y.Scaled({
-		element: document.getElementById('axis0'),
+	left_axis = new Rickshaw.Graph.Axis.Y.Scaled({
+		element: document.getElementById('y_axis'),
 		graph: graph,
 		orientation: 'left',
-		scale: uniq_d3_scale[0],
-		tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round
+		tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round,
+		scale: left_scale
 	});
 
 
-	// Make a right y-axis for each other metric
-	if (uniq_scales.length > 1) {
-		for (n = 1; n < uniq_scales.length; n++) {
-			axis = "axis" + n
-			new Rickshaw.Graph.Axis.Y.Scaled({
-				element: document.getElementById(axis),
-				graph: graph,
-				grid: false,
-				orientation: 'right',
-				scale: uniq_d3_scale[n],
-				tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round
-			});
-		}
-	}
+	// Right Y-Axis will sometimes be here
+	if (!noRight()) { 
+	right_axis = new Rickshaw.Graph.Axis.Y.Scaled({
+		element: document.getElementById('y_axis_right'),
+		graph: graph,
+		grid: false,
+		orientation: 'right',
+		tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round,
+		scale: right_scale
+	})
+	};
 
 	// One X-axis for time
 	new Rickshaw.Graph.Axis.Time({
@@ -172,26 +126,40 @@ function renderStacked(data) {
 	});
 
 	/////
-//	dynamicWidth(graph);
+	dynamicWidth(graph);
 	graph.render();
 
 
 	// X-axis slider for zooming
-	new Rickshaw.Graph.RangeSlider.Preview({
+	slider = new Rickshaw.Graph.RangeSlider.Preview({
 		graph: graph,
+	        height: 30,
 		element: $('#slider')[0]
 	});
 
 
 	// Custom Legend
 	var legend = document.querySelector("#legend")
+	var legend_right = document.querySelector("#legend_right")
 
-		function generate_legend(date, v) {
-			legend.innerHTML = "<table><tr><td colspan=3>" + date + "</td></tr>" + $.map(v, function (d) {
-				return "<tr><td><div class='swatch' style='background-color: " + d[2] + "'></div></td>" + "</td><td>" + d[0] + "</td><td> " + d[1] + "</td></tr>"
-			}).join("</td></tr>")
+	function generate_legend(date, v) {
 
+		header  = "<table>"//<tr><td colspan=3>" + date + "</td></tr>"
+		left = []; 
+		right = [];
+		
+		for (var i = 0; i < v.length; i++) { 
+			d = v[i]
+			swatch = "<div class='swatch' style='background-color: " + d[2] + "'></div>"
+			d[0] = d[0].split("~").join("<br/>").split(",").join("<br/>")
+			isRight(i) ?
+				right.push("<tr><td>"+[swatch, d[0], d[1], left_links[i]].join("</td><td>") + "</td></tr>")
+				: left.push("<tr><td>"+[swatch, d[0], d[1], right_links[i]].join("</td><td>") + "</td></tr>")
+			
 		}
+		legend.innerHTML = header + left.join("</td></tr>") + "</table>"
+		legend_right.innerHTML = header + right.join("</td></tr>") + "</table>"
+	}
 
 		// Initial Labels with no values
 	fake_label = []
@@ -200,16 +168,14 @@ function renderStacked(data) {
 	}
 	generate_legend("&nbsp;", fake_label)
 
-
 	// Overload HoverDetail so it populates our legend dynamically
 	var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
 		render: function (args) {
 
 			date = d3.time.format("%a, %d %b %Y %H:%M:%S")(new Date(args.domainX * 1000)) //args.formattedXValue;
 			v = []
-			args.detail.sort(function (a, b) {
-				return a.order - b.order
-			}).forEach(function (d) {
+		/*sort(function (a, b) {return a.order - b.order})*/
+			args.detail.forEach(function (d) {
 				v.push([d.name, d.formattedYValue, d.series.color])
 
 				// Highlight selected datapoints
@@ -230,28 +196,6 @@ function renderStacked(data) {
 	var hover = new Hover({
 		graph: graph
 	});
-	pad = []
-	for (i = 0; i < uniq_scales.length; i++) {
-		pad.push(1)
-	}
-
-	// For each metric scale, check which unique -- and visible -- scale it matches
-	// Then, make a matching swatch of the line colour, for readability
-	for (i = 0; i < scales.length; i++) {
-		for (j = 0; j < uniq_scales.length; j++) {
-			res = scales[i][0] + "|" + scales[i][1] == uniq_scales[j][0] + "|" + uniq_scales[j][1]
-			if (res) {
-				ax = document.getElementById("axis" + j + "_stub")
-				ax.innerHTML += "<div class='swatch_line' style='background-color: " + colours[i] + "; left: " + (pad[j] * 3 - 3) + "px'></div>"
-				pad[j]++
-			}
-		}
-	}
-	document.getElementById("axis0").setAttribute("style", "left: -" + (pad[0] * 3 - 6) + "px")
-
-	for (j = 1; j < uniq_scales.length; j++) {
-		document.getElementById("axis" + j).lastChild.setAttribute("style", "left: " + (pad[j] * 3 - 3) + "px")
-	}
 
 }
 
