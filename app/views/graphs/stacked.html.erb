@@ -15,14 +15,19 @@
 		<div class="x_axis" id="x_axis"></div>
 		<div class="legend legend-indent" id="legend"></div>
 		<div class="legend legend-indent legend_right" id="legend_right"></div>
+		<a href="<%= obl_qs :right%>">Reset Left/Right Axis</a>
 	</div>
 </div>
-
 <script>
 	var data = []
 	metrics =  []
+	right_links = []
+	left_links = []
+	right_id = ["<%= (que_qs :right).join('","').html_safe%>"]
 	<% @metrics.each do |m| %>
 		metrics.push("<%= m %>")
+		right_links.push("<a href='<%= add_qs :right, m%>'> &gt;&gt; </a>")
+		left_links.push("<a href='<%= rem_qs :right, m%>'> &lt;&lt; </a>")
 	<%end%>
 
 	var graph;

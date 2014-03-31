@@ -39,6 +39,13 @@ function flagComplete() {
 	}
 }
 var slider; 
+function isRight(d) { 
+	return right_id.indexOf(gon.metrics[d].metric) >= 0 
+} 
+
+function noRight() { 
+	return clean(right_id, "").length == 0		
+} 
 function renderStacked(data) {
 
 	var palette = new Rickshaw.Color.Palette({
@@ -46,12 +53,6 @@ function renderStacked(data) {
 	})
 
 	colours = []
-	
-
-	right_id = []
-	r = getQueryVariable("right") 
-	if (r) { right_id = r.split(',')}
-	
 
 	min = Number.MAX_VALUE; max = Number.MIN_VALUE;
 
@@ -63,21 +64,22 @@ function renderStacked(data) {
 			min = Math.min(min, data[n].data[i].y)
 			max = Math.max(max, data[n].data[i].y)
 		} 
-		if (n in right_id) { 
+		if (isRight(n)) { 
 			right_range = [ Math.min(min, right_range[0]) , Math.max(max, right_range[1]) ] 
 		} else { 
 			left_range = [ Math.min(min, left_range[0]) , Math.max(max, left_range[1]) ] 
 		} 
 	}
 
-	right_scale = d3.scale.linear().domain(right_range);//.range(right_range); 
+	if (!noRight()) { right_scale = d3.scale.linear().domain(right_range) };//.range(right_range); )
 	left_scale = d3.scale.linear().domain(left_range);//.range(left_range); 
 
 	// Push scales and their metrics into a rickshaw-eatable array
 	series = []
 	for (n = 0; n < data.length; n++) {
 		colours[n] = palette.color()
-		scale = ((n in right_id) ? right_scale : left_scale)
+		scale = left_scale
+		if (isRight(n)) { scale = right_scale}
 		series.push({
 			color: colours[n],
 			data: data[n].data,
@@ -106,7 +108,7 @@ function renderStacked(data) {
 
 
 	// Right Y-Axis will sometimes be here
-	if (right_scale) { 
+	if (!noRight()) { 
 	right_axis = new Rickshaw.Graph.Axis.Y.Scaled({
 		element: document.getElementById('y_axis_right'),
 		graph: graph,
@@ -147,11 +149,11 @@ function renderStacked(data) {
 		
 		for (var i = 0; i < v.length; i++) { 
 			d = v[i]
-			console.log(d[0] + " right -> "+ right_id +":" + i)
 			swatch = "<div class='swatch' style='background-color: " + d[2] + "'></div>"
-			i in right_id ?
-				right.push("<tr><td>"+[d[1], d[0], swatch].join("</td><td>") + "</td></tr>")
-				: left.push("<tr><td>"+[swatch, d[0], d[1]].join("</td><td>") + "</td></tr>")
+			d[0] = d[0].split("~").join("<br/>").split(",").join("<br/>")
+			isRight(i) ?
+				right.push("<tr><td>"+[swatch, d[0], d[1], left_links[i]].join("</td><td>") + "</td></tr>")
+				: left.push("<tr><td>"+[swatch, d[0], d[1], right_links[i]].join("</td><td>") + "</td></tr>")
 			
 		}
 		legend.innerHTML = header + left.join("</td></tr>") + "</table>"
