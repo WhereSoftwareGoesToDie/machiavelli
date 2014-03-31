@@ -95,6 +95,7 @@ module Layouts
 
 			query = URI::parse(url).query
 			query.gsub!("metric=","metric[]=") if query
+			query.gsub!("right=","right[]=") if query
 
 			Rack::Utils.parse_nested_query(query) || {} 
 		end
