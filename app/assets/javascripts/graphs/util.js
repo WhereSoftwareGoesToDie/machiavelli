@@ -40,9 +40,12 @@ function renderError(element, error, detail) {
 	error_alert += "</div>"
 	document.getElementById(element).innerHTML = error_alert
 
-
-	$('.detail_toggle').click(function() { $(this).parent().find(".detail").toggle(100) })
+	
+	$("#"+element+" .detail_toggle").click(function() {
+		$(this).parent().find(".detail").toggle(100) 
+	})
 }
+
 function metricURL(base, start, stop, step){ 
 	return base+"&start="+start+"&stop="+stop+"&step="+step		
 }
