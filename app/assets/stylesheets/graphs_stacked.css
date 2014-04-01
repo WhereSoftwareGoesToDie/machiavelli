@@ -1,27 +1,29 @@
 /*= require graphs_standard  */
-.swatch {
+.legend-swatch {
         display: inline-block;
-        width: 10px;
+        width: 5px;
         height: 10px;
         margin: 0 8px 0 0;
 }
-
-.swatch_line { 
-	float: left;
-	width:3px; 
-	height:300px 
+.legend-indent { 
+        width: 50%;
+        float: left;
 } 
 
-.right_axis { 
-	position:absolute; 
-	left: 760px;
+.legend-metric, .legend-data, .legend-shuffle { 
+        display: inline-block;
 } 
-
-.legend-indent {
-	padding-left: 30px;  
+.legend-metric { 
+	width: 80% 
 } 
-
-.legend { width: 300px } 
-.legend_right { 
-	left: 400px
+.legend-shuffle { 
+	float: right;
+	padding-right: 10px
+}
+.legend-label {
+	display: table; 
+	width: 100%
+}
+.legend { 
+	width: 800px;
 } 
