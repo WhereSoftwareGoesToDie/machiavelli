@@ -173,15 +173,17 @@ function renderStacked(data) {
 			if (isRight(i)) { 
 				icon = "icon-arrow-left"
 				el = right
+				tip = "Jump metric to the left axis"
 				ref = left_links[i]
 			} else { 
 				icon = "icon-arrow-right"
 				el = left
+				tip = "Step metric to the right axis"
 				ref = right_links[i]
 			}
 			
 			//link = "<a href='"+ref+"'> "+ "<i class='"+icon+"'></i>" +"</a>"
-			link = "<a href='"+ref+"'> <i class='"+icon+"'> </a>"
+			link = "<a href='"+ref+"' data-toggle='tooltip-always' data-original-title='"+tip+"'> <i class='"+icon+"'> </a>"
 			shuffle = divme("legend-shuffle",link)
 			label.appendChild(shuffle)
 			el.push(label)
