@@ -13,9 +13,8 @@
 		<div class="chart"  id="chart"></div>
 		<div class="y_axis right_axis" id="y_axis_right"></div>
 		<div class="x_axis" id="x_axis"></div>
-		<div class="legend legend-indent" id="legend"></div>
-		<div class="legend legend-indent legend_right" id="legend_right"></div>
-		<a href="<%= obl_qs :right%>">Reset Left/Right Axis</a>
+		<div class="legend" id="legend-dual"></div>
+		<div><a href="<%= obl_qs :right%>">Reset Left/Right Axis</a></div>
 	</div>
 </div>
 <script>
@@ -26,8 +25,8 @@
 	right_id = ["<%= (que_qs :right).join('","').html_safe%>"]
 	<% @metrics.each do |m| %>
 		metrics.push("<%= m %>")
-		right_links.push("<a href='<%= add_qs :right, m%>'> &gt;&gt; </a>")
-		left_links.push("<a href='<%= rem_qs :right, m%>'> &lt;&lt; </a>")
+		right_links.push("<%= add_qs :right, m%>")
+		left_links.push("<%= rem_qs :right, m%>")
 	<%end%>
 
 	var graph;
