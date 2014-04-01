@@ -1,4 +1,4 @@
-/*= require graphs_standard  */
+/*= require graphs/standard  */
 .legend-swatch {
         display: inline-block;
         width: 5px;
@@ -14,7 +14,7 @@
         display: inline-block;
 } 
 .legend-metric { 
-	width: 80% 
+	width: 80%
 } 
 .legend-shuffle { 
 	float: right;
