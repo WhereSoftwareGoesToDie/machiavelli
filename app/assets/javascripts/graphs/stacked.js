@@ -2,8 +2,9 @@
 //
 //
 var dataChart = []
-
+var i;
 	function getMetrics(metrics) {
+		dataChart = new Array(metrics.length)
 		$.each(metrics, function (i, d) {
 
 			feed = metricURL(gon.metrics[i].feed, gon.start, gon.stop, gon.step)
@@ -19,11 +20,9 @@ var dataChart = []
 					stopUpdates();
 					return false
 				}
+				i = $.map(gon.metrics,function(d){ return d.metric}).indexOf(d)
 
-				dataChart.push({
-					data: data,
-					name: d
-				})
+				dataChart[i] = {data: data, name: d}
 				flagComplete()
 			})
 		})
@@ -80,10 +79,12 @@ function renderStacked(data) {
 		colours[n] = palette.color()
 		scale = left_scale
 		if (isRight(n)) { scale = right_scale}
+		if (data[n].name.indexOf("uom:c") != -1 ) { inter = "step"} else { inter = "cardinal" }
 		series.push({
 			color: colours[n],
 			data: data[n].data,
 			name: data[n].name,
+			interpolation: inter,
 			scale: scale
 		})
 	}
@@ -139,29 +140,71 @@ function renderStacked(data) {
 
 
 	// Custom Legend
-	var legend = document.querySelector("#legend")
-	var legend_right = document.querySelector("#legend_right")
+	var legend = document.querySelector("#legend-dual")
+
+	function divme(className, inner) { 
+		var x = document.createElement("div")
+		x.className = className
+		x.innerHTML = inner
+		return x
+	} 
 
 	function generate_legend(date, v) {
+		legend.innerHTML = ""
 
-		header  = "<table>"//<tr><td colspan=3>" + date + "</td></tr>"
+		date = divme("legend-date", date)
+		
 		left = []; 
 		right = [];
 		
 		for (var i = 0; i < v.length; i++) { 
 			d = v[i]
-			swatch = "<div class='swatch' style='background-color: " + d[2] + "'></div>"
-			d[0] = d[0].split("~").join("<br/>").split(",").join("<br/>")
-			isRight(i) ?
-				right.push("<tr><td>"+[swatch, d[0], d[1], left_links[i]].join("</td><td>") + "</td></tr>")
-				: left.push("<tr><td>"+[swatch, d[0], d[1], right_links[i]].join("</td><td>") + "</td></tr>")
+
+			label = divme("legend_label", "")
+			swatch = divme("legend-swatch","")
+			swatch.style.backgroundColor = d[2]
+			metric = divme("legend-metric",d[0])
+			data = divme("legend-data",d[1])
 			
+			label.appendChild(swatch)
+			label.appendChild(metric)
+			label.appendChild(data)
+			
+			if (isRight(i)) { 
+				icon = "icon-arrow-left"
+				el = right
+				ref = left_links[i]
+			} else { 
+				icon = "icon-arrow-right"
+				el = left
+				ref = right_links[i]
+			}
+			
+			//link = "<a href='"+ref+"'> "+ "<i class='"+icon+"'></i>" +"</a>"
+			link = "<a href='"+ref+"'> <i class='"+icon+"'> </a>"
+			shuffle = divme("legend-shuffle",link)
+			label.appendChild(shuffle)
+			el.push(label)
+	
 		}
-		legend.innerHTML = header + left.join("</td></tr>") + "</table>"
-		legend_right.innerHTML = header + right.join("</td></tr>") + "</table>"
+
+		legend.appendChild(date)
+
+		a = divme("legend-indent","")
+		for (var i = 0; i < left.length; i++) { 
+			a.appendChild(left[i])
+		} 
+		legend.appendChild(a)
+
+		b = divme("legend-indent","")
+		for (var i = 0; i < right.length; i++) { 
+			b.appendChild(right[i])
+		} 
+		legend.appendChild(b)
+
 	}
 
-		// Initial Labels with no values
+	// Initial Labels with no values
 	fake_label = []
 	for (i = 0; i < metrics.length; i++) {
 		fake_label.push([metrics[i], "", colours[i]])
