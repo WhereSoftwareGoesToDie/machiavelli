@@ -22,7 +22,6 @@ class Backend::Descartes < Backend::GenericBackend
 	# Descartes is dynamic, yo
 	def search_metric_list q
 		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}"
-		puts uri
 		result = get_json uri
 		result.map{|x| "#{@alias}~#{to_mach(x)}"}
 	end
@@ -45,7 +44,6 @@ class Backend::Descartes < Backend::GenericBackend
 	
 		uri = "#{@base_url}/interpolated/#{m}#{query_string}"
 
-		puts uri
 		begin
 			data = get_json uri
 		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError => e
