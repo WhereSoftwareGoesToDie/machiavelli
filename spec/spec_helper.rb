@@ -42,7 +42,7 @@ shared_examples 'a graph' do |type, metric|
 		if type == "standard" then
 			css = ["#multi_slider","#chart_0",".x_tick"]
 		elsif type == "stacked" then
-			css = [".rickshaw_graph","#chart_container","#axis0_stub"]
+			css = [".rickshaw_graph","#chart_container",".legend-indent",".y_axis"]
 		elsif type == "horizon" then
 		 	css = [".horizon","#horizon_graph",".axis"]
 		end
