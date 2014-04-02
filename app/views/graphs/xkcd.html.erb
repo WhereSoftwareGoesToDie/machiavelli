@@ -2,6 +2,22 @@
 <%= javascript_include_tag "underscore.min" %>
 
 <%= stylesheet_link_tag    "graphs/stacked" %>
+<style>
+ @font-face{
+font-family:'xkcd';
+src:url('/assets/xkcd-Regular.eot?') format('eot'),url('assets/xkcd-Regular.otf') format('opentype')
+ }
+body {
+	font-family: "xkcd", sans-serif;
+	font-size: 16px;
+	color: #333;
+}
+.rickshaw_graph .x_tick .title, .rickshaw_graph .y_ticks text, .modal-title, .legend { 
+	font-family: "xkcd", sans-serif;
+}
+.legend { font-size: medium }
+</style>
+
 <script src="/assets/graphs/stacked.js"></script>
 
 <div class="col-md-10">
@@ -14,9 +30,9 @@
 		<div class="y_axis right_axis" id="y_axis_right"></div>
 		<div class="x_axis" id="x_axis"></div>
 		<div class="legend" id="legend-dual"></div>
-		<div><a href="<%= obl_qs :right%>">Reset Left/Right Axis</a></div>
 	</div>
 </div>
+
 <script>
 	var data = []
 	metrics =  []
@@ -31,9 +47,12 @@
 
 	var graph;
 	renderWaiting("chart")
-	data = getMetrics(metrics)
+	data = getMetrics(metrics, "xkcd")
 
 	var intervalID;
 	function startUpdates(){ intervalID = updateStacked() } 
 	function stopUpdates() { clearInterval(intervalID) } 
 </script>
+<!---
+Prior Art: dan.iel.fm/xkcd/ for the d3, http://bl.ocks.org/noahgibbs/5066710 for the rickshaw
+-->

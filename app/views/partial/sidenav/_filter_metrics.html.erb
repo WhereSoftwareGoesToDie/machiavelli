@@ -8,24 +8,11 @@ $(document).ready(function() {
 	});
 
 
-	$("#graphed_metrics").sortable({
-		stop: function(event, ui) { 
-			var metrics = [], params = []
-			$(".sortable").each(function(i,el){
-				metrics.push("metric="+$(el).text().trim())
-			})
-			$.each(location.search.split("&"), function(i, d) {
-				if(d.indexOf("metric") == -1) { params.push(d) }
-				} )
-			new_url = location.origin + location.pathname +"?"+ params.join("&").replace("?","") +"&"+metrics.join("&")
-			window.location.href= new_url
-		}
-	})
+	metric_sort(); 
 	$(".hover-li").hover(function(){$(this).find(".hover").css("visibility","visible") }, function(){$(this).find(".hover").css("visibility","hidden")})
 
 })
 </script>
-
 <nav class="navbar-default navbar-static-side" role="navigation">
 	<div class="sidebar-collapse">
 		<ul class="nav side-menu" id="graphed_metrics">
@@ -33,7 +20,7 @@ $(document).ready(function() {
 
 			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
 			<li class="hover-li sortable"><div>
-				<a href="<%= rem_qs :metric, metric %>" data-toggle="tooltip" data-original-title="Drag to re-order. Click to remove."
+				<a href="<%= rem_qs :metric, metric %>" data-toggle="tooltip-always" data-original-title="<%=metric%>"
 				onClick="this.href = this.href+window.location.hash"	>
 				<span class="hover hover-left drag"><i class="icon-reorder"></i></span>
 				<span class="metric"><%= metric %></span>
@@ -60,14 +47,19 @@ $(document).ready(function() {
 			<% end %>
 		</ul>
 		<ul class="nav filter_list side-menu" id="available_metrics">
-			<% @available_metrics.sort.each do |metric| %>
+			<% @available_metrics.sort[0,20].each do |metric| %>
 			<li class="hover-li">
 			<div>
-				<a href="<%= add_qs :metric, metric%>" data-toggle="tooltip" data-original-title="Click to add"
+				<a href="<%= add_qs :metric, metric%>" data-toggle="tooltip-always" data-original-title="<%=metric%>"
 				onClick="this.href = this.href+window.location.hash">
 					<span class="hover hover-left"><i class="icon-plus"></i></span>
 					<span class="metric"><%= metric %></span>
 				</a></div>
+			</li>
+			<% end %>
+			<% if @available_metrics.length > 20 %>
+			<li class="header-text" style="font-weight: normal; font-size: small;" align="center">
+				<a href="#">(filter for more results)</a>
 			</li>
 			<% end %>
 		</ul>

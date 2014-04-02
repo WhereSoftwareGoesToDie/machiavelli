@@ -7,7 +7,7 @@ describe "Flatfiles backend", :js => true do
 
         type = "Flatfile"
 	name = "Metric"
-	metric = "#{type}:#{name}"
+	metric = "#{type}~#{name}"
 	
 	before :each do
 		add_config "backends: [{ type: '#{type}', settings: { file_name: 'public/flatfile_1s.csv', metric: '#{name}'}}]"
@@ -38,7 +38,7 @@ describe "Broken Filefiles Backend", :js => true do
 	it "test fallback functionality" do
 
 		add_config "backends: [{ type: 'flatfile', settings: { file_name: 'this_does_not_exist/nope.csv', metric: 'potato'}}]"
-		visit "/metrics/?metric=Flatfile:potato"
+		visit "/metric/?metric=Flatfile:potato"
 		json = JSON.parse(page.text)
 		expect(json).to include "error"
 		

@@ -1,0 +1,63 @@
+/*
+ *= require rickshaw
+ */
+#chart_container {
+        position: relative;
+        display: inline-block;
+        font-family: Arial, Helvetica, sans-serif;
+}
+.slider {
+       display: inline-block;
+        margin-left: 40px; /* yaxis -20*/
+	padding-left: 15px;
+}
+.chart {
+       display: inline-block;
+        margin-left: 60px; /* yaxis */
+}
+.y_axis {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 60px;
+}
+.legend {
+        position: absolute;
+	font-size: small;
+        top: 350px;
+        left: 0px;
+        vertical-align: top;
+        margin: 0 0 0 10px;
+        background: transparent;
+        color: black;
+}
+.x_axis { 
+        position: relative;
+        left: 60px; /* yaxis */
+        height: 10px;
+}  
+.axis0 {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100px;
+}
+.axis1 {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 760px; /* Chart width + y-axis:width */
+        width: 100px;
+}
+
+/* Rickshaw Customizations */
+/* Increase hover value dot for ease of visibility */
+.rickshaw_graph .detail .dot {
+        width: 8px;
+        height: 8px;
+        margin-left: -4px;
+        margin-top: -4px;
+}
+.graph_title { 
+	padding-left: 60px; /*yaxis*/
+}

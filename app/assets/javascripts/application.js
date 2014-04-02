@@ -15,3 +15,4 @@
 //= require bootstrap.min
 //= require sb-admin
 //= require jquery.metisMenu
+//= require graphs/util

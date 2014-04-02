@@ -1,0 +1,61 @@
+<%= stylesheet_link_tag "select2" %>
+<%= javascript_include_tag "select2" %>
+<div class="modal" id="filter_metrics" role="dialog" aria-labelledby="filter_metrics" aria-hidden="true">
+<div class="modal-dialog modal-lg"><div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title" id="myModalLabel">Filter metrics</h4>
+	</div>
+	<%= form_for "filter", url: modal_filter_submit_path do |f| %>
+	<div class="modal-body"> 
+		<%= f.hidden_field(:metrics_select, style:"width: 100%", value: "0000") %>
+		<div class="modal-footer">
+		<%= f.submit "Filter", class: "btn btn-default" %>
+		</div>
+	</div>
+	<% end %>
+</div></div>
+</div>
+<script>
+
+     var metrics = []
+     $(".sortable").each(function(i,el){
+         metrics.push($(el).find("span.metric")[0].dataset.metric)
+     });
+     $("#filter_metrics_select").val(metrics.join(";"));
+
+        $('#filter_metrics_select').select2({
+            placeholder: "Search for a metric",
+	    openOnEnter: false,
+	    quietMillis: 500,
+	    multiple: true,
+	    initSelection: function(element,callback) { 
+		val = $(element).val()
+		if (val != "") { 
+			data = []
+			$.each(val.split(";"), function(i,d) {
+				data.push({id: d, text: d})
+			})
+			callback(data);
+		}
+            },
+            ajax: {
+                url: '/source/', 
+                dataType: 'jsonp',
+                data: function(term, page) {
+                  if (term.length == 0) { return { q:"*"}
+                  } else {                return { q: "*"+term+"*" };
+                  } },
+		results: function(data, page) {	 ret = [];
+		  $.each(data.metrics, function(i, d) {  
+		    ret.push({id: decodeURIComponent(d.id), text: decodeURIComponent(d.text)})
+		  }) 
+		  return { results: ret };
+                }
+            },
+	    formatResult:    function(d){return decodeURIComponent(d.text)},
+	    formatSelection: function(d){return decodeURIComponent(d.id)},
+        });
+
+     $(document).ready(function() { $(".select2-results").css("overflow-x","auto"); })
+</script>

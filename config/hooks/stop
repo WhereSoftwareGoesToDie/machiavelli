@@ -2,4 +2,4 @@
 
 set -e
 
-sudo allah stop machiavelli_unicorn
+sudo allah stop machiavelli_${APP_ENV}_unicorn

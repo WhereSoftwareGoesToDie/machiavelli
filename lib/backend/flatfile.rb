@@ -20,12 +20,13 @@
 
 class Backend::Flatfile < Backend::GenericBackend
 	def initialize params={}
+		@alias = params[:alias] || self.class.name.split("::").last
 		@file      = params[:file_name]
 		@metric    = params[:metric]
 		@delimiter = params[:delimiter]  || ","
 	end
 
-	def self.live?
+	def live?
 		false # Flat files don't auto update, therefore cannot be assumed to be live
 	end
 

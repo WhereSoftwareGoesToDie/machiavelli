@@ -1,0 +1,38 @@
+<script>
+$(document).ready(function() { 
+		metric_sort()
+		$(".hover-li").hover(function(){$(this).find(".hover").css("visibility","visible") }, function(){$(this).find(".hover").css("visibility","hidden")})
+
+})
+</script>
+<nav class="navbar-default navbar-static-side" role="navigation">
+	<div class="sidebar-collapse">
+		<ul class="nav side-menu" id="search">
+			<li class="header-text">
+				<span>Choose from Available Metrics
+				<span class="refresh"><a href="<%= refresh_path %>" data-toggle="tooltip" data-original-title="Click to refresh available metrics" 
+				onClick="$(this).addClass('icon-spin')"><i class="icon-refresh"></i></span></a>
+				</span>
+			</li>
+			<li>
+			<li><a href="#filter_metrics" role="button" data-toggle="modal" data-target="#filter_metrics">Select metrics</a></li>
+			</li>
+		</ul>
+
+		<ul class="nav side-menu">
+			<li class="header-text">Graphed Metrics</li>
+		</ul>
+		<ul class="nav side-menu" id="graphed_metrics">
+			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
+			<li class="hover-li sortable" data-html="true" data-toggle="tooltip-always-metric" data-original-title="<%=style_metric :table, metric%>"><div>
+				<a href="<%= rem_qs :metric, metric %>"	onClick="this.href = this.href+window.location.hash">
+				<span class="hover hover-left drag"><i class="icon-reorder"></i></span>
+				<span class="metric" data-metric="<%=metric%>"><%= style_metric :pretty, metric %></span>
+				<span class="hover hover-right"><i class="icon-remove"></i></span>
+			</a>
+			</div></li>
+			<% end %>
+		</ul>
+	</div>
+</nav>
+<%= render partial: "partial/sidenav/metric_modal"%>
