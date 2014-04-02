@@ -87,7 +87,9 @@ shared_examples 'refresh metrics' do |type|
                 expect(page).to have_content type
 
                 metrics = r.keys metric_key
-                expect(metrics.length).to be > 0 
+		if type != "Descartes" then
+			expect(metrics.length).to be > 0 
+		end
 	end
 end
 
