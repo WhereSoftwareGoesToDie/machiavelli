@@ -183,7 +183,7 @@ function renderStacked(data) {
 			}
 			
 			//link = "<a href='"+ref+"'> "+ "<i class='"+icon+"'></i>" +"</a>"
-			link = "<a href='"+ref+"' data-toggle='tooltip-always' data-original-title='"+tip+"'> <i class='"+icon+"'> </a>"
+			link = "<a href='"+ref+"' data-toggle='tooltip-shuffle' data-original-title='"+tip+"'> <i class='"+icon+"'> </a>"
 			shuffle = divme("legend-shuffle",link)
 			label.appendChild(shuffle)
 			el.push(label)
@@ -204,7 +204,9 @@ function renderStacked(data) {
 		} 
 		legend.appendChild(b)
 
+		$("[data-toggle='tooltip-shuffle']").tooltip({ placement: "bottom", container: "body", delay: { show: 500}}) 
 	}
+
 
 	// Initial Labels with no values
 	fake_label = []
