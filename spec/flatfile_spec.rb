@@ -10,7 +10,7 @@ describe "Flatfiles backend", :js => true do
 	metric = "#{type}~#{name}"
 	
 	before :each do
-		add_config "backends: [{ type: '#{type}', settings: { file_name: 'public/flatfile_1s.csv', metric: '#{name}'}}]"
+		add_config "backends: [{ type: '#{type}', settings: { file_name: 'public/flatfile_15s.csv', metric: '#{name}'}}]"
 		test_config type
 	end
 
