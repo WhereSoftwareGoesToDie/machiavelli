@@ -3,7 +3,9 @@
 //
 var dataChart = []
 var i;
-	function getMetrics(metrics) {
+var flag; 
+	function getMetrics(metrics,_flag) {
+		flag = _flag
 		dataChart = new Array(metrics.length)
 		$.each(metrics, function (i, d) {
 
@@ -90,10 +92,13 @@ function renderStacked(data) {
 	}
 
 	// Finally, make the chart
+	interpolate = "cardinal"
+	if (flag = "xkcd") { interpolate = "xkcd" }
 	graph = new Rickshaw.Graph({
 		element: document.querySelector("#chart"),
 		width: 700,
 		height: 300,
+		interpolation: interpolate,
 		renderer: 'line',
 		series: series
 	});
