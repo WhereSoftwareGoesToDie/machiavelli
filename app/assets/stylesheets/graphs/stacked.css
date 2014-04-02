@@ -21,6 +21,10 @@
 	float: right;
 	padding-right: 10px
 }
+.legend-shuffle a, .legend-shuffle a:hover { 
+	text-decoration: none;
+	color: black;
+}
 .legend-label {
 	display: table; 
 	width: 100%
