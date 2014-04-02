@@ -22,8 +22,14 @@ require 'redis'
 TEMP_YML = "temp_settings.yml"
 REDIS_METRIC_KEY = "Machiavelli.Metrics"
 
+if ENV["TRAVIS"] then
+	Capybara.default_wait_time = 30
+else 
+	Capybara.server_port = 31337
+end
+
 Capybara.javascript_driver = :webkit unless ENV["BROWSER"] == "firefox"
-Capybara.server_port = 31337
+
 RSpec.configure do |config|
 	config.include Capybara::DSL
 	config.mock_with :rspec
@@ -110,7 +116,7 @@ end
 
 def wait_for_ajax *args
 
-        wait_time = 20
+        wait_time = Capybara.default_wait_time
         counter = 0
 
 	while page.evaluate_script("$.active").to_i > 0
