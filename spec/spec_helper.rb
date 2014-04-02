@@ -51,7 +51,7 @@ shared_examples 'a graph' do |type, metric|
 
 		["10min","1h","3h","1d","1w","2w"].each do |time|
 			click_on time
-
+			wait_for_ajax
 			css.each do |c|
 				expect(page).to have_css "div#{c}"
 			end
@@ -104,4 +104,18 @@ def test_config type
 	expect(page).not_to have_css "div#alert-danger"
 	visit "/source/"
 	expect(page).to have_content type
+end
+
+def wait_for_ajax
+
+        wait_time = 20
+        counter = 0
+
+	while page.evaluate_script("$.active").to_i > 0
+                counter += 0.1
+                sleep(0.1)
+                if counter >= wait_time then
+                        raise "AJAX request took longer than #{wait_time} seconds."
+                end
+        end
 end
