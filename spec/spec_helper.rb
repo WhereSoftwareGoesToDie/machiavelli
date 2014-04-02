@@ -23,7 +23,7 @@ TEMP_YML = "temp_settings.yml"
 REDIS_METRIC_KEY = "Machiavelli.Metrics"
 
 Capybara.javascript_driver = :webkit unless ENV["BROWSER"] == "firefox"
-
+Capybara.server_port = 31337
 RSpec.configure do |config|
 	config.include Capybara::DSL
 	config.mock_with :rspec
