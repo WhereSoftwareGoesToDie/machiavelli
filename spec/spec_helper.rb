@@ -9,6 +9,7 @@ end
 require 'rubygems'
 
 ENV["RAILS_ENV"] ||= 'test'
+
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
@@ -25,6 +26,7 @@ REDIS_METRIC_KEY = "Machiavelli.Metrics"
 if ENV["TRAVIS"] then
 	Capybara.default_wait_time = 30
 else 
+	Capybara.default_wait_time = 20
 	Capybara.server_port = 31337
 end
 
@@ -37,33 +39,26 @@ RSpec.configure do |config|
 #	config.order = "random"
 end
 
-shared_examples 'a graph' do |type, metric|
-	it "should present a valid #{type} graph for #{metric}" do
-		visit "/?metric=#{metric}"
-		click_on type
-		nice_metric = metric.split("~").join(" - ")
-		
-		expect(page).to have_content nice_metric
-		
-		if type == "standard" then
-			css = ["#multi_slider","#chart_0",".x_tick"]
-		elsif type == "stacked" then
-			css = [".rickshaw_graph","#chart_container",".legend-indent",".y_axis"]
-		elsif type == "horizon" then
-		 	css = [".horizon","#horizon_graph",".axis"]
-		end
+shared_examples 'a graph' do |metric|
+	["10min","1h","3h","1d","1w","2w"].each do |t|
+		time_css_button metric, "standard", t, ["#multi_slider","#chart_0",".x_tick"]
+		time_css_button metric, "stacked",  t, [".rickshaw_graph","#chart_container",".legend-indent",".y_axis"]
+		time_css_button metric, "horizon",  t, [".horizon","#horizon_graph",".axis"]
+	end
+end
 
+
+def time_css_button metric, type, time, css
+	it "and should generate valid css for #{metric}, type #{type} for time #{time}" do
+		visit "/?metric=#{metric}&graph=#{type}&start=#{time}"  
+		wait_for_ajax type, metric, time
+		
 		expect(page).not_to have_css "div#alert-danger"
+		expect(page).to have_content metric.split("~").join(" - ") 
 
-		["10min","1h","3h","1d","1w","2w"].each do |time|
-			click_on time
-			wait_for_ajax type, metric, time
-			css.each do |c|
-				expect(page).to have_css "div#{c}"
-			end
+		css.each do |c|
+			expect(page).to have_css "div#{c}"
 		end
-
-		
 	end
 end
 
