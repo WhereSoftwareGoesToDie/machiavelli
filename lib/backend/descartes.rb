@@ -118,7 +118,8 @@ class Backend::Descartes < Backend::GenericBackend
 				end
 				return URI.decode(nice.join(" - "))
 			else
-				return metric
+				return metric.gsub(sep, " - ") #metric
+				
 			end
 		elsif style == :table then
 			ret = metric.strip
