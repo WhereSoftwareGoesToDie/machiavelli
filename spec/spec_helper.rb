@@ -1,8 +1,10 @@
 require 'simplecov'
 SimpleCov.start 'rails'
 
-require 'coveralls'
-Coveralls.wear!
+if ENV["TRAVIS"] then
+	require 'coveralls'
+	Coveralls.wear!
+end
 
 require 'rubygems'
 
