@@ -21,7 +21,7 @@ module Layouts
 			if Rails.env.production?
 				v.start_with?("v0.") ? "Alpha" : ""
 			else
-				v
+				link_to v, "https://github.com/anchor/machiavelli/commit/#{v[-7..-1]}", target: "blank"
 			end
 		end
 
