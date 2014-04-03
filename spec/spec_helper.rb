@@ -9,6 +9,7 @@ end
 require 'rubygems'
 
 ENV["RAILS_ENV"] ||= 'test'
+
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
@@ -18,12 +19,13 @@ require 'capybara/webkit'
 require 'binding_of_caller'
 require 'redis'
 
-
 TEMP_YML = "temp_settings.yml"
 REDIS_METRIC_KEY = "Machiavelli.Metrics"
 
+Capybara.default_wait_time = 10
+
 Capybara.javascript_driver = :webkit unless ENV["BROWSER"] == "firefox"
-Capybara.server_port = 31337
+
 RSpec.configure do |config|
 	config.include Capybara::DSL
 	config.mock_with :rspec
@@ -31,33 +33,26 @@ RSpec.configure do |config|
 #	config.order = "random"
 end
 
-shared_examples 'a graph' do |type, metric|
-	it "should present a valid #{type} graph for #{metric}" do
-		visit "/?metric=#{metric}"
-		click_on type
-		nice_metric = metric.split("~").join(" - ")
-		
-		expect(page).to have_content nice_metric
-		
-		if type == "standard" then
-			css = ["#multi_slider","#chart_0",".x_tick"]
-		elsif type == "stacked" then
-			css = [".rickshaw_graph","#chart_container",".legend-indent",".y_axis"]
-		elsif type == "horizon" then
-		 	css = [".horizon","#horizon_graph",".axis"]
-		end
+shared_examples 'a graph' do |metric|
+	["10min","1h","3h","1d","1w","2w"].each do |t|
+		time_css_button metric, "standard", t, ["#multi_slider","#chart_0",".x_tick"]
+		time_css_button metric, "stacked",  t, [".rickshaw_graph","#chart_container",".y_axis"]
+		time_css_button metric, "horizon",  t, [".horizon","#horizon_graph",".axis"]
+	end
+end
 
+
+def time_css_button metric, type, time, css
+	it "and should generate valid css for #{metric}, type #{type} for time #{time}" do
+		visit "/?metric=#{metric}&graph=#{type}&start=#{time}"  
+		wait_for_ajax type, metric, time
+		
 		expect(page).not_to have_css "div#alert-danger"
+		expect(page).to have_content metric.split("~").join(" - ") 
 
-		["10min","1h","3h","1d","1w","2w"].each do |time|
-			click_on time
-			wait_for_ajax type, metric, time
-			css.each do |c|
-				expect(page).to have_css "div#{c}"
-			end
+		css.each do |c|
+			expect(page).to have_css "div#{c}"
 		end
-
-		
 	end
 end
 
@@ -110,14 +105,17 @@ end
 
 def wait_for_ajax *args
 
-        wait_time = 20
-        counter = 0
+        wait_time = Capybara.default_wait_time
 
-	while page.evaluate_script("$.active").to_i > 0
-                counter += 0.1
-                sleep(0.1)
-                if counter >= wait_time then
-                        raise "AJAX request took longer than #{wait_time} seconds. Args used: #{args}"
-                end
+	unless ENV["TRAVIS"] then
+		counter = 0
+
+		while page.evaluate_script("$.active").to_i > 0
+			counter += 0.1
+			sleep(0.1)
+			if counter >= wait_time then
+				raise "AJAX request took longer than #{wait_time} seconds. Args used: #{args}"
+			end
+		end
         end
 end

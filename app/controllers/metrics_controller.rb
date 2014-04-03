@@ -60,11 +60,6 @@ class MetricsController < ApplicationController
 	end
 	
 # Functions
-	def available_metrics
-		backend.get_cached_metrics_list.map{|x| URI.decode(x)}
-	end
-
-
 	def get_metric m, start, stop, step
 		metric = m.split("~").last
 		(init_backend m).get_metric metric, start, stop, step
