@@ -15,7 +15,16 @@ module Layouts
 			else "UI MESSAGE VARIABLE NOT FOUND: #{msg}"
 			end
 		end
-			
+
+		def version
+			v = %x[git describe --tags --always].strip()
+			if Rails.env.production?
+				v.start_with?("v0.") ? "Alpha" : ""
+			else
+				v
+			end
+		end
+
 		def flash_class(level)
 		    case level
 			when :notice  then "alert alert-info"
