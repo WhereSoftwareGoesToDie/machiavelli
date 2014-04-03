@@ -18,18 +18,18 @@
 </div>
 <script>
 
-     var metrics = []
-     $(".sortable").each(function(i,el){
-         metrics.push($(el).find("span.metric")[0].dataset.metric)
-     });
-     $("#filter_metrics_select").val(metrics.join(";"));
+var metrics = []
+$(".sortable").each(function(i,el){
+	metrics.push($(el).find("span.metric")[0].dataset.metric)
+});
+$("#filter_metrics_select").val(metrics.join(";"));
 
-        $('#filter_metrics_select').select2({
-            placeholder: "Search for a metric",
-	    openOnEnter: false,
-	    quietMillis: 500,
-	    multiple: true,
-	    initSelection: function(element,callback) { 
+$('#filter_metrics_select').select2({
+	placeholder: "Search for a metric",
+	openOnEnter: false,
+	quietMillis: 500,
+	multiple: true,
+	initSelection: function(element,callback) { 
 		val = $(element).val()
 		if (val != "") { 
 			data = []
@@ -38,24 +38,40 @@
 			})
 			callback(data);
 		}
-            },
-            ajax: {
-                url: '/source/', 
-                dataType: 'jsonp',
-                data: function(term, page) {
-                  if (term.length == 0) { return { q:"*"}
-                  } else {                return { q: "*"+term+"*" };
-                  } },
-		results: function(data, page) {	 ret = [];
-		  $.each(data.metrics, function(i, d) {  
-		    ret.push({id: decodeURIComponent(d.id), text: decodeURIComponent(d.text)})
-		  }) 
-		  return { results: ret };
-                }
-            },
-	    formatResult:    function(d){return decodeURIComponent(d.text)},
-	    formatSelection: function(d){return decodeURIComponent(d.id)},
-        });
+	},
+	ajax: {
+		url: '/source/', 
+		dataType: 'jsonp',
+		data: function(term, page) {
+			if (term.length == 0) { 
+				q = "*" 
+			} else { 
+				q = "*"+term+"*"
+			};
+			return {
+				q: q,
+				page_limit: 64,
+				page: page, 
+			}
+		},
+		results: function(data, page) {	 
+			ret = [];
 
-     $(document).ready(function() { $(".select2-results").css("overflow-x","auto"); })
+			more = true; 
+			$.each(data.metrics, function(i, d) {  
+				ret.push({id: decodeURIComponent(d.id), text: decodeURIComponent(d.text)})
+				}) 
+			if (ret.length == 0 || ret.length < 64) { more = false }
+			return { results: ret, more: more};
+		 }, 
+	 }, 
+	formatResult:    function(d){
+		 return decodeURIComponent(d.text)
+	 }, 
+	formatSelection: function(d){
+		 return decodeURIComponent(d.id)
+	 }
+});
+
+$(document).ready(function() { $(".select2-results").css("overflow-x","auto"); })
 </script>
