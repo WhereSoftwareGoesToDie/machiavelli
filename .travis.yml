@@ -1,7 +1,6 @@
 language: ruby
 rvm:
   - "1.9.3"
-  - "2.0.0"
 services: redis-server
 bundler_args: --without debugging production 
 script: xvfb-run --server-args="-screen 0 1024x768x24"  bundle exec rspec spec/*_spec.rb 

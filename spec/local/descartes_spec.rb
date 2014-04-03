@@ -25,18 +25,10 @@ describe "Descartes", :js => true do
                 include_examples "refresh metrics", type
         end
 
-        context "standard" do
-                it_behaves_like "a graph", "standard", metric
+        context "graphs" do
+                it_behaves_like "a graph", metric
         end
-
-        context "stacked" do
-                it_behaves_like "a graph", "stacked", metric
-        end
-
-        context "horizon" do
-                it_behaves_like "a graph", "horizon", metric
-        end
-
+	
 	it "returns valid errors if provoked" do
 		visit "/metric/?metric=#{metric}&start=-1337"
 		json = JSON.parse(page.text)

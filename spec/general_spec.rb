@@ -24,5 +24,13 @@ describe "Basic Machiavelli Functionality", :js => true do
 		expect(current_url).to include "graph=stacked"
 
 	end
+
+	it "has a metrics API that errors if no metric supplied" do
+		visit "/metric/"
+		json = JSON.parse(page.text)
+		expect(json).to include "error"
+		expect(json["error"]).to include "must provide a metric"
+	end
 end
+
 
