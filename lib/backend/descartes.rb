@@ -20,8 +20,8 @@ class Backend::Descartes < Backend::GenericBackend
         end
 
 	# Descartes is dynamic, yo
-	def search_metric_list q
-		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}"
+	def search_metric_list q, page
+		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}&page=#{page - 1}"
 		result = get_json uri
 		result.map{|x| "#{@alias}~#{to_mach(x)}"}
 	end

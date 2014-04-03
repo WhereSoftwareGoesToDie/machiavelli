@@ -35,13 +35,16 @@ class MetricsController < ApplicationController
 		b = [params[:backend] || backends].flatten
 
 		search = params[:q] || "*"
+
+		page = params[:page]
+		page ||= 1
 	
 		search.gsub!(" ","*") 
 		list = []
 
 		begin
 			b.each do |x|
-				list << ((init_backend x).search_metric_list search)
+				list << ((init_backend x).search_metric_list search, page.to_i)
 			end
 			list.flatten!
 			if params[:callback] then
