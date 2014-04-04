@@ -61,7 +61,7 @@ class MetricsController < ApplicationController
 	
 # Functions
 	def get_metric m, start, stop, step
-		metric = m.split("~").last
+		metric = m.split(SEP).last
 		(init_backend m).get_metric metric, start, stop, step
 	end
 

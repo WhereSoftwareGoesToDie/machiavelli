@@ -66,7 +66,7 @@ module Layouts
 			return Backend::GenericBackend.new if name.nil?
 
 			unless settings
-				name = name.split("~").first if name.include? "~" ##TODO SEP
+				name = name.split(SEP).first if name.include? SEP
 				
 				backend = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(name) == 0}.first
 				raise StandardError, "backend #{name} doesn't exist" if backend.nil?

@@ -12,16 +12,12 @@ class Backend::GenericBackend
 		raise NotImplementedError
 	end
 
-	def sep 
-		"~"
-	end
-
 	def search_metric_list q, page
 		return [] if page.to_i > 1
 		r = redis_conn
 		keys = r.keys "#{REDIS_KEY}:#{backend_key}#{q}"
 		keys.map!{|x|x.split(":").last}
-		keys.map!{|x| "#{@alias}#{sep}#{x}"}
+		keys.map!{|x| "#{@alias}#{SEP}#{x}"}
 		keys 
 	end
 
@@ -45,9 +41,9 @@ class Backend::GenericBackend
 	# Define any rules to make a metric name stylized. Default, do nothing. 
 	def style_metric style, metric
 		if style == :pretty then
-			metric.gsub(sep, " - ")
+			metric.gsub(SEP, " - ")
 		elsif style == :table then
-			'<p align="left">'+metric.gsub(sep, "<br>")+"</p>"
+			'<p align="left">'+metric.gsub(SEP, "<br>")+"</p>"
 		else
 			metric
 		end

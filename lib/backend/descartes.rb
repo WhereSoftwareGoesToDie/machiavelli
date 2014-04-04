@@ -23,11 +23,11 @@ class Backend::Descartes < Backend::GenericBackend
 	def search_metric_list q, page
 		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}&page=#{page - 1}"
 		result = get_json uri
-		result.map{|x| "#{@alias}~#{to_mach(x)}"}
+		result.map{|x| "#{@alias}#{SEP}#{to_mach(x)}"}
 	end
 
-	def to_des m;  m.gsub(":","~"); end
-	def to_mach m; m.gsub("~",":"); end 
+	def to_des m;  m.gsub(":",SEP); end
+	def to_mach m; m.gsub(SEP,":"); end 
 
         def get_metric m, start, stop, step
 		query = []
@@ -90,9 +90,9 @@ class Backend::Descartes < Backend::GenericBackend
 	def style_metric style, metric
 		if style == :pretty then
 			if @origin == "LMRH8C" || @origin ==  "R82KX1" then
-				type, x = URI.decode(metric).split("~")
+				type, x = URI.decode(metric).split(SEP)
 
-				keys = Hash[*x.split(",").map{|y| y.split(":")}.flatten]
+				keys = Hash[*x.split(DELIM).map{|y| y.split(KVP)}.flatten]
 				
 				nice = [type]
 				nice << keys["hostname"]
@@ -107,8 +107,8 @@ class Backend::Descartes < Backend::GenericBackend
 				return URI.decode(nice.join(" - ") + unit)
 
 			elsif @origin == "4HXR1F" then
-				type, x = metric.split("~")
-				keys = Hash[*x.split(",").map{|y| y.split(":")}.flatten]
+				type, x = metric.split(SEP)
+				keys = Hash[*x.split(DELIM).map{|y| y.split(KVP)}.flatten]
 				nice = [type]
 				nice << keys["ip"]
 				nice << case keys["bytes"]
@@ -118,12 +118,12 @@ class Backend::Descartes < Backend::GenericBackend
 				end
 				return URI.decode(nice.join(" - "))
 			else
-				return metric.gsub(sep, " - ") #metric
+				return metric.gsub(SEP, " - ") #metric
 				
 			end
 		elsif style == :table then
 			ret = metric.strip
-			sep = [["~","</td></tr><tr><td>"],[":","</td><td> - "],[",","</td></tr><tr><td>"]]
+			sep = [[SEP,"</td></tr><tr><td>"],[KVP,"</td><td> - "],[DELIM,"</td></tr><tr><td>"]]
 			sep.each {|a| ret.gsub!(a[0],a[1])}
 			'<table style="text-align: left"><tr><td colspan=2>'+ret+'</table>'
 		else 
