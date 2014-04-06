@@ -1,34 +1,18 @@
 /*= require graphs/standard  */
-.legend-swatch {
-        display: inline-block;
-        width: 5px;
-        height: 10px;
-        margin: 0 8px 0 0;
-}
-.legend-indent { 
-        width: 50%;
-        float: left;
+.legend { 
+	margin-left: 60px;
 } 
-
 .legend-metric, .legend-data, .legend-shuffle { 
         display: inline-block;
 } 
 .legend-metric { 
-	width: 80%;
+	width: 100%;
 	word-wrap: break-word;
-} 
-.legend-shuffle { 
-	float: right;
-	padding-right: 10px
 }
-.legend-shuffle a, .legend-shuffle a:hover { 
+.legend-metric a, .legend-metric a:hover { 
 	text-decoration: none;
 	color: black;
 }
-.legend-label {
-	display: table; 
-	width: 100%
+.borderless td {
+	border: none !important;
 }
-.legend { 
-	width: 800px;
-} 

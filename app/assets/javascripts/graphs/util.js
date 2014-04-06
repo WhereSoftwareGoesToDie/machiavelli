@@ -7,7 +7,7 @@ function rickshawFitToWindow(graph) {
 		$("#y_axis_right").attr("style","left: "+(new_width+60)+"px")
 	}
 	if ($("#legend-dual")) { 
-		$("#legend-dual").attr("style","width: "+(new_width+60)+"px")
+		$("#legend-dual").attr("style","width: "+(new_width)+"px")
 	}
 	fitSlider();
 } 

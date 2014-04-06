@@ -154,71 +154,67 @@ function renderStacked(data) {
 		return x
 	} 
 
-	function generate_legend(date, v) {
+	function generate_legend(date, v) { 
 		legend.innerHTML = ""
 
-		date = divme("legend-date", date)
-		
-		left = []; 
+		left = [];
 		right = [];
-		
+
 		for (var i = 0; i < v.length; i++) { 
 			d = v[i]
-
-			label = divme("legend_label", "")
-			swatch = divme("legend-swatch","")
-			swatch.style.backgroundColor = d[2]
-			metric = divme("legend-metric",d[0])
-			data = divme("legend-data",d[1])
-			
-			label.appendChild(swatch)
-			label.appendChild(metric)
-			label.appendChild(data)
-			
+			obj = {}
+			obj.metric = d[0].split(",").join(", ").split("~").join(" - ")
+			obj.data = d[1]
+			obj.colour = d[2]
 			if (isRight(i)) { 
-				icon = "icon-arrow-left"
-				el = right
-				tip = "Jump metric to the left axis"
-				ref = left_links[i]
+				obj.link = left_links[i]
+				obj.tooltip = "Move metric to the left y-axis"
+				right.push(obj)
 			} else { 
-				icon = "icon-arrow-right"
-				el = left
-				tip = "Step metric to the right axis"
-				ref = right_links[i]
+				obj.link = right_links[i]
+				obj.tooltip = "Move metric to the right y-axis"
+				left.push(obj)
 			}
-			
-			//link = "<a href='"+ref+"'> "+ "<i class='"+icon+"'></i>" +"</a>"
-			link = "<a href='"+ref+"' data-toggle='tooltip-shuffle' data-original-title='"+tip+"'> <i class='"+icon+"'> </a>"
-			shuffle = divme("legend-shuffle",link)
-			label.appendChild(shuffle)
-			el.push(label)
-	
 		}
 
-		legend.appendChild(date)
-
-		a = divme("legend-indent","")
-		for (var i = 0; i < left.length; i++) { 
-			a.appendChild(left[i])
+		arr = []
+		len = Math.max(left.length, right.length) 
+		for (var i = 0; i < len; i++) { 
+			arr.push([left[i],right[i]])
 		} 
-		legend.appendChild(a)
 
-		b = divme("legend-indent","")
-		for (var i = 0; i < right.length; i++) { 
-			b.appendChild(right[i])
-		} 
-		legend.appendChild(b)
+		table = ["<table class='table table-condensed borderless' width='100%'>"]
+		table.push("<tr><td colspan=6>"+date+"</td></tr>")
 
+		arr.forEach(function(d) { 
+			table.push("<tr>")
+			d.forEach(function(e) {
+				if (typeof(e) == "object") { 
+					el = ["<td style='background-color: "+e.colour+"'>&nbsp</td>"]
+					el.push("<td class='legend-metric'><a href='"+e.link+"' data-toggle='tooltip-shuffle' data-original-title='"+e.tooltip+"'>"+e.metric+"</td>")
+					el.push("<td align='right'>"+e.data+"</td>")
+					table.push(el.join(""))
+				} else { 
+					table.push("<td colspan=3>&nbsp;</td>")
+				} 
+			})
+			table.push("</tr>")
+		})
+
+		table.push("<tr><td colspan=6><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>")
+		table.push("<table>")
+
+		legend.innerHTML = table.join("\n")
+	
 		$("[data-toggle='tooltip-shuffle']").tooltip({ placement: "bottom", container: "body", delay: { show: 500}}) 
-	}
-
+	} 
 
 	// Initial Labels with no values
 	fake_label = []
 	for (i = 0; i < metrics.length; i++) {
 		fake_label.push([metrics[i], "", colours[i]])
 	}
-	generate_legend("&nbsp;", fake_label)
+	generate_legend("Hover over graph for details", fake_label)
 
 	// Overload HoverDetail so it populates our legend dynamically
 	var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
