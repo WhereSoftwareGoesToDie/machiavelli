@@ -8,10 +8,10 @@ function renderStandard(index) {
                 
 	$.getJSON(update, function(data) {
 		if (data.error) { 
-			renderError("chart_"+index, "error retreiving data from endpoint", data.error); stopAll(); return false
+			renderError("chart_"+index, errorMessage.endpointError, data.error); stopAll(); return false
 		} 
 		if (data.length == 0) { 
-			renderError("chart_"+index, "no data returned from endpoint", metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step)); stopAll(); return false
+			renderError("chart_"+index, errorMessage.noData, metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step)); stopAll(); return false
 		}
 		graph[index] = new Rickshaw.Graph({
 			element: document.getElementById("chart_"+index),
@@ -70,10 +70,10 @@ function updateStandard(){
 			update = metricURL(metric.feed,now-span,now,gon.step)
 			$.getJSON(update, function(d){ 
 				if (d.error) { 
-					renderError("flash", "error retrieving data from endpoint", d.error); stopAll(); return false
+					renderError("flash", errorMessage.endpointError + " on update", d.error); stopAll(); return false
 				} 
 				if (d.length == 0) { 
-					renderError("flash", "no data returned from endpoint", update); stopAll(); return false
+					renderError("flash", errorMessage.noData + " on update", update); stopAll(); return false
 				}
 				graph[i].series[0].data = d
 				graph[i].render()

@@ -1,3 +1,8 @@
+var errorMessage = { 
+	'noData': "No data returned from endpoint",
+	'endpointError': "Error retrieving data from endpoint",
+} 
+
 function rickshawFitToWindow(graph) { 
 	if (window.innerWidth < 768) { r = 180 } else { r = 460 }
 	new_width = window.innerWidth - r;
