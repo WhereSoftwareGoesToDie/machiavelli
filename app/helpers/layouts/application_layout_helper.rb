@@ -17,7 +17,16 @@ module Layouts
 		end
 
 		def version
-			v = %x[git describe --tags --always].strip()
+			config = "config/version"
+			if Rails.env.development?
+				v = %x[git describe --tags --always].strip()
+				File.open(config, "w") do |file|
+					file.write(v)
+				end
+			end
+			
+			v ||= File.read(config)
+
 			if Rails.env.production?
 				v.start_with?("v0.") ? "Alpha" : ""
 			else
