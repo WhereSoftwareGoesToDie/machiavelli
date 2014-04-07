@@ -11,8 +11,8 @@ colours = safe_array Graph::Horizon.get_colours
 %>
 
 <script>
-	function stopUpdates() { context.stop() }
-	function startUpdates() { context.start() } 
+	function stopUpdates() { context.stop(); }
+	function startUpdates() { context.start(); } 
 
 	var context = cubism.context()
 		.serverDelay(0)
@@ -21,12 +21,12 @@ colours = safe_array Graph::Horizon.get_colours
 		.size(<%=width%>)
 		.stop();
 
-	datum = []
+	datum = [];
 
-	machiavelli = context.machiavelli(window.location.origin)
+	machiavelli = context.machiavelli(window.location.origin);
 	$.each(gon.metrics, function(i,m) {
-		datum.push(machiavelli.metric(m.metric))
-	})
+		datum.push(machiavelli.metric(m.metric));
+	});
 
 	// Erectin' a dispenser
 	d3.select("#horizon_graph").call(function(div) {

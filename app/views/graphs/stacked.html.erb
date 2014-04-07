@@ -15,23 +15,20 @@
 	</div>
 </div>
 <script>
-	var data = []
-	metrics =  []
-	right_links = []
-	left_links = []
-	reset = "<%= obl_qs :right%>"
-	right_id = ["<%= (que_qs :right).join('","').html_safe%>"]
-	<% @metrics.each do |m| %>
-		metrics.push("<%= m %>")
-		right_links.push("<%= add_qs :right, m%>")
-		left_links.push("<%= rem_qs :right, m%>")
-	<%end%>
+var data = [], metrics =  [], right_links = [], left_links = [];
+var reset = "<%= obl_qs :right%>";
+var right_id = ["<%= (que_qs :right).join('","').html_safe%>"];
+<% @metrics.each do |m| %>
+	metrics.push("<%= m %>");
+	right_links.push("<%= add_qs :right, m%>");
+	left_links.push("<%= rem_qs :right, m%>");
+<%end%>
 
-	var graph;
-	renderWaiting("chart")
-	data = getMetrics(metrics)
+var graph;
+renderWaiting("chart");
+data = getMetrics(metrics);
 
-	var intervalID;
-	function startUpdates(){ intervalID = updateStacked() } 
-	function stopUpdates() { clearInterval(intervalID) } 
+var intervalID;
+function startUpdates() { intervalID = updateStacked(); } 
+function stopUpdates()  { clearInterval(intervalID); } 
 </script>
