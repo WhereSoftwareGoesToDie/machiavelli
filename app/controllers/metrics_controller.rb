@@ -42,20 +42,24 @@ class MetricsController < ApplicationController
 		search.gsub!(" ","*") 
 		list = []
 
-		begin
-			b.each do |x|
+		b.each do |x|
+			begin
 				list << ((init_backend x).search_metric_list search, page.to_i)
+			rescue Backend::Error => e
+				 unless  params[:callback] then
+					 render json: { error: e.to_s } 
+					 return
+				 end
 			end
-			list.flatten!
-			if params[:callback] then
-				be = init_backend list.first
-				render json: "#{params[:callback]}({metrics:#{list.map{|x| {id: x, text: (be.style_metric :pretty, x)}}.to_json}});"
-			else
-				render json: list
-			end
-		rescue Backend::Error => e
-			render json: { error: e.to_s } 
-			return
+		end
+
+		list.flatten!
+
+		if params[:callback] then
+			be = init_backend list.first
+			render json: "#{params[:callback]}({metrics:#{list.map{|x| {id: x, text: (be.style_metric :pretty, x)}}.to_json}});"
+		else
+			render json: list
 		end
 		
 	end
