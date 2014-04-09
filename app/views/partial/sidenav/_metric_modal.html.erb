@@ -74,4 +74,9 @@ $('#filter_metrics_select').select2({
 });
 
 $(document).ready(function() { $(".select2-results").css("overflow-x","auto"); })
+
+$('#filter_metrics').on('shown.bs.modal', function() {
+	$('input:visible:first').focus();
+})
+
 </script>
