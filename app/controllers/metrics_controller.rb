@@ -48,7 +48,8 @@ class MetricsController < ApplicationController
 			end
 			list.flatten!
 			if params[:callback] then
-				render json: "#{params[:callback]}({metrics:#{list.map{|x| {id: x, text: x}}.to_json}});"
+				be = init_backend list.first
+				render json: "#{params[:callback]}({metrics:#{list.map{|x| {id: x, text: (be.style_metric :pretty, x)}}.to_json}});"
 			else
 				render json: list
 			end

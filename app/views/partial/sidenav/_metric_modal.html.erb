@@ -66,10 +66,10 @@ $('#filter_metrics_select').select2({
 		 }, 
 	 }, 
 	formatResult:    function(d){
-		 return decodeURIComponent(d.text)
+		 return decodeURIComponent(d.text);
 	 }, 
 	formatSelection: function(d){
-		 return decodeURIComponent(d.id)
+		 return decodeURIComponent(d.text); 
 	 }
 });
 
