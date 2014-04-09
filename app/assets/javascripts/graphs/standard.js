@@ -27,8 +27,13 @@ function renderStandard(index) {
 			series: [{data: data, color: color[index]}]
 		});
 
-		if (gon.metrics[index].metric.indexOf("uom:c") != -1 ) 	{ 
-			graph[index].configure({interpolation: 'step'});
+		if (gon.metrics[index].metric.indexOf("uom:c") != -1 )  { 
+			min = Number.MAX_VALUE; max = Number.MIN_VALUE;
+			for (i = 0; i < data.length; i++) {
+				min = Math.min(min, data[i].y);
+				max = Math.max(max, data[i].y);
+			}
+			graph[index].configure({min: min - 0.5, max: max + 0.5, interpolation: 'step'});
 		}
 
 
