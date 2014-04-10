@@ -28,7 +28,7 @@ function renderStandard(index) {
 
 		min = Number.MAX_VALUE; max = Number.MIN_VALUE;
 		for (i = 0; i < data.length; i++) {
-			if (data[i].y) { 
+			if (typeof data[i].y === "number") { 
 				min = Math.min(min, data[i].y);
 				max = Math.max(max, data[i].y);
 			}

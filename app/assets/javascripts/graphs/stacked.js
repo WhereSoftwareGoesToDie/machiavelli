@@ -56,8 +56,10 @@ function renderStacked(data) {
 	for (n = 0; n < data.length; n++) {
 		min = Number.MAX_VALUE; max = Number.MIN_VALUE;
 		for (i = 0; i < data[n].data.length; i++) {
-			min = Math.min(min, data[n].data[i].y);
-			max = Math.max(max, data[n].data[i].y);
+			if (typeof data[n].data[i].y == "number") {
+				min = Math.min(min, data[n].data[i].y);
+				max = Math.max(max, data[n].data[i].y);
+			}
 		} 
 		if (isRight(n)) { 
 			right_range = [ Math.min(min, right_range[0]) , Math.max(max, right_range[1]) ];
