@@ -22,30 +22,30 @@ function renderStandard(index) {
 			element: document.getElementById(chart),
 			width: 700,
 			height: 200,
-			min: 'auto',
 			renderer: 'line',
 			series: [{data: data, color: color[index]}]
 		});
 
 		min = Number.MAX_VALUE; max = Number.MIN_VALUE;
 		for (i = 0; i < data.length; i++) {
-			min = Math.min(min, data[i].y);
-			max = Math.max(max, data[i].y);
+			if (data[i].y) { 
+				min = Math.min(min, data[i].y);
+				max = Math.max(max, data[i].y);
+			}
 		}
-		console.log("min: "+min+", max: "+max)
-		
+		if (min == Number.MAX_VALUE) { min=0; max=0; }
+
 		graph[index].configure({min: min - 0.5, max: max + 0.5});
 		
 		if (gon.metrics[index].metric.indexOf("uom:c") != -1 )  { 
 			graph[index].configure({interpolation: 'step'});
 		}
 
-
 		new Rickshaw.Graph.Axis.Y( {
 			graph: graph[index],
 			orientation: 'left',
 		   	pixelsPerTick: 30,
-			tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round,
+			tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
 			element: document.getElementById(yaxis)
 		} );
 
