@@ -19,10 +19,11 @@
 <script>
 
 var metrics = []
+
 $(".sortable").each(function(i,el){
-	metrics.push($(el).find("span.metric")[0].dataset.metric)
+	m = $(el).find("span.metric")[0].dataset	
+	metrics.push({id: m.metric, text: m.prettyMetric})
 });
-$("#filter_metrics_select").val(metrics.join(";"));
 
 $('#filter_metrics_select').select2({
 	placeholder: "Search for a metric",
@@ -30,14 +31,7 @@ $('#filter_metrics_select').select2({
 	quietMillis: 500,
 	multiple: true,
 	initSelection: function(element,callback) { 
-		val = $(element).val()
-		if (val != "") { 
-			data = []
-			$.each(val.split(";"), function(i,d) {
-				data.push({id: d, text: d})
-			})
-			callback(data);
-		}
+		callback(metrics);
 	},
 	ajax: {
 		url: '/source/', 

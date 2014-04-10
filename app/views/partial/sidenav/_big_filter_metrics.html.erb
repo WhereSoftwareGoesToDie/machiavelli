@@ -27,7 +27,7 @@ $(document).ready(function() {
 			<li class="hover-li sortable" data-html="true" data-toggle="tooltip-always-metric" data-original-title="<%=style_metric :table, metric%>"><div>
 				<a href="<%= rem_qs :metric, metric %>"	onClick="this.href = this.href+window.location.hash">
 				<span class="hover hover-left drag"><i class="icon-reorder"></i></span>
-				<span class="metric" data-metric="<%=style_metric :pretty, metric%>"><%= style_metric :pretty, metric %></span>
+				<span class="metric" data-pretty-metric="<%=style_metric :pretty, metric%></span>
 				<span class="hover hover-right"><i class="icon-remove"></i></span>
 			</a>
 			</div></li>
