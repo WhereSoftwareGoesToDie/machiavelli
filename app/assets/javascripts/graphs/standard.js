@@ -36,7 +36,6 @@ function renderStandard(index) {
 		if (min == Number.MAX_VALUE) { min=0; max=0; }
 
 		graph[index].configure({min: min - 0.5, max: max + 0.5});
-		
 		if (gon.metrics[index].metric.indexOf("uom:c") != -1 )  { 
 			graph[index].configure({interpolation: 'step'});
 		}

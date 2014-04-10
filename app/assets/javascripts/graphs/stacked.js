@@ -161,7 +161,7 @@ function renderStacked(data) {
 		for (var i = 0; i < v.length; i++) { 
 			d = v[i];
 			obj = {};
-			obj.metric = format_metrics[i] //d[0].split(",").join(", ").split("~").join(" - ");
+			obj.metric = format_metrics[i];
 			obj.data = formatData(d[1]);
 			obj.colour = d[2];
 			if (isRight(i)) { 
