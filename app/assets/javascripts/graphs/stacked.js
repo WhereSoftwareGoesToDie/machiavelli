@@ -159,8 +159,8 @@ function renderStacked(data) {
 		for (var i = 0; i < v.length; i++) { 
 			d = v[i];
 			obj = {};
-			obj.metric = d[0].split(",").join(", ").split("~").join(" - ");
-			obj.data = d[1];
+			obj.metric = format_metrics[i] //d[0].split(",").join(", ").split("~").join(" - ");
+			obj.data = formatData(d[1]);
 			obj.colour = d[2];
 			if (isRight(i)) { 
 				obj.link = left_links[i];
@@ -213,8 +213,8 @@ function renderStacked(data) {
 
 	// Initial Labels with no values
 	fake_label = [];
-	for (i = 0; i < metrics.length; i++) {
-		fake_label.push([metrics[i], "", colours[i]]);
+	for (i = 0; i < format_metrics.length; i++) {
+		fake_label.push([format_metrics[i], "", colours[i]]);
 	}
 	generate_legend("Hover over graph for details", fake_label);
 
