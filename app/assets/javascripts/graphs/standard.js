@@ -56,7 +56,8 @@ function renderStandard(index) {
 		new Rickshaw.Graph.HoverDetail({
 			graph: graph[index],
 			formatter: function (series, x, y) {
-				content = "<span class='date'>"+d3.time.format("%Y-%m-%d %H:%M:%S")(new Date(x*1000)) +"</span><br/>"+y;
+				content = "<span class='date'>"+d3.time.format("%Y-%m-%d %H:%M:%S %Z")(new Date(x*1000)) +"</span><br/>"+
+					d3.format(",.02f")(y);
 				return content;
 			}
 		});
