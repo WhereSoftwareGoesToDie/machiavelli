@@ -1416,9 +1416,9 @@ Rickshaw.Fixtures.Number.formatKMBT = function(y) {
 };
 
 
-Rickshaw.Fixtures.Number.formatKMBT_round = function(y) { 
+Rickshaw.Fixtures.Number.formatKMBT_round = function(y,a,b,precision) { 
         var abs_y = Math.abs(y);
-	var precision = 2;
+	if (typeof precision === "undefined"){precision = 2;}
         if (abs_y >= 1000000000000)   { return (y / 1000000000000).toFixed(precision) + "T" }
         else if (abs_y >= 1000000000) { return (y / 1000000000).toFixed(precision) + "B" }
         else if (abs_y >= 1000000)    { return (y / 1000000).toFixed(precision) + "M" }
@@ -1440,9 +1440,9 @@ Rickshaw.Fixtures.Number.formatBase1024KMGTP = function(y) {
     else                        { return y }
 };
 
-Rickshaw.Fixtures.Number.formatBase1024KMGTP_round = function(y) { 
+Rickshaw.Fixtures.Number.formatBase1024KMGTP_round = function(y, a,b,precision) { 
     var abs_y = Math.abs(y);
-    var precision = 2;
+    if (typeof precision === "undefined"){precision = 2;}
     if (abs_y >= 1125899906842624)  { return (y / 1125899906842624).toFixed(precision) + "P" }
     else if (abs_y >= 1099511627776){ return (y / 1099511627776).toFixed(precision) + "T" }
     else if (abs_y >= 1073741824)   { return (y / 1073741824).toFixed(precision) + "G" }
