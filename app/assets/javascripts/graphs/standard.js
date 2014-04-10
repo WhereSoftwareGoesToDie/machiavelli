@@ -61,7 +61,7 @@ function renderStandard(index) {
 			graph: graph[index],
 			formatter: function (series, x, y) {
 				content = "<span class='date'>"+d3.time.format("%Y-%m-%d %H:%M:%S %Z")(new Date(x*1000)) +"</span><br/>"+
-					d3.format(",.02f")(y);
+					formatData(y);
 				return content;
 			}
 		});

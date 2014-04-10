@@ -2,6 +2,9 @@ var errorMessage = {
 	'noData': "No data returned from endpoint",
 	'endpointError': "Error retrieving data from endpoint",
 }; 
+function formatData(d) { 
+	return d3.format(",.02f")(d);
+} 
 
 function rickshawFitToWindow(graph) { 
 	if (window.innerWidth < 768) { r = 180; } else { r = 460; }
