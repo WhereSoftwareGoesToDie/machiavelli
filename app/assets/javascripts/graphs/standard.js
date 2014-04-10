@@ -45,7 +45,7 @@ function renderStandard(index) {
 			graph: graph[index],
 			orientation: 'left',
 		   	pixelsPerTick: 30,
-			tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round,
+			tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
 			element: document.getElementById(yaxis)
 		} );
 

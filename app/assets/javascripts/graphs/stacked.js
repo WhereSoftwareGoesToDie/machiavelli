@@ -104,7 +104,7 @@ function renderStacked(data) {
 		element: document.getElementById('y_axis'),
 		graph: graph,
 		orientation: 'left',
-		tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round,
+		tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
 		scale: left_scale
 	});
 
@@ -116,7 +116,7 @@ function renderStacked(data) {
 		graph: graph,
 		grid: false,
 		orientation: 'right',
-		tickFormat: Rickshaw.Fixtures.Number.formatBase1024KMGTP_round,
+		tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
 		scale: right_scale
 	});
 	}
