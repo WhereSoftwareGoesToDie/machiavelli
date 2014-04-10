@@ -3,7 +3,7 @@ var errorMessage = {
 	'endpointError': "Error retrieving data from endpoint",
 }; 
 function formatData(d) { 
-	 return Rickshaw.Fixtures.Number.formatKMBT_round(d,0,0,4);
+	return Rickshaw.Fixtures.Number.formatKMBT_round(d,0,0,4);
 } 
 
 function rickshawFitToWindow(graph) { 
