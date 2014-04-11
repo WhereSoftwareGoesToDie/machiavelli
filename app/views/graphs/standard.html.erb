@@ -4,8 +4,8 @@
 
 <script src="/assets/graphs/standard.js"></script>
 <script>
-	var color = []
-	var palette = new Rickshaw.Color.Palette({scheme: "munin"})
+	var color = [];
+	var palette = new Rickshaw.Color.Palette({scheme: "munin"});
 </script>
 <div class="slider" id="multi_slider"></div>
 <% @metrics.each_with_index do |metric, index| %>
@@ -19,15 +19,15 @@
 </div>
 
 <script>
-	color.push(palette.color())
-	renderWaiting("chart_<%=index%>")
-	renderStandard(<%=index%>)
+color.push(palette.color());
+renderWaiting("chart_<%=index%>");
+renderStandard(<%=index%>);
 </script>
 <% end %>
 
 <script>
 var intervalID; 
-function stopUpdates() { clearInterval(intervalID) } 
-function startUpdates() { intervalID = updateStandard() } 
+function stopUpdates() { clearInterval(intervalID);} 
+function startUpdates() { intervalID = updateStandard();} 
 </script>
 

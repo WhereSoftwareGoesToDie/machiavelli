@@ -22,14 +22,15 @@ require 'redis'
 TEMP_YML = "temp_settings.yml"
 REDIS_METRIC_KEY = "Machiavelli.Metrics"
 
-Capybara.default_wait_time = 10
+Capybara.default_wait_time = 2
+AJAX_WAIT_TIME = 20
 
 Capybara.javascript_driver = :webkit unless ENV["BROWSER"] == "firefox"
 
 RSpec.configure do |config|
 	config.include Capybara::DSL
 	config.mock_with :rspec
-#	config.fail_fast = true
+	config.fail_fast = true
 #	config.order = "random"
 end
 
@@ -105,11 +106,10 @@ end
 
 def wait_for_ajax *args
 
-        wait_time = Capybara.default_wait_time
+        wait_time =  AJAX_WAIT_TIME
 
 	unless ENV["TRAVIS"] then
 		counter = 0
-
 		while page.evaluate_script("$.active").to_i > 0
 			counter += 0.1
 			sleep(0.1)

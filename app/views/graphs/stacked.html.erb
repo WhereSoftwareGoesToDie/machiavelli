@@ -12,26 +12,24 @@
 		<div class="y_axis right_axis" id="y_axis_right"></div>
 		<div class="x_axis" id="x_axis"></div>
 		<div class="legend" id="legend-dual"></div>
-		<div><a href="<%= obl_qs :right%>">Reset Left/Right Axis</a></div>
 	</div>
 </div>
 <script>
-	var data = []
-	metrics =  []
-	right_links = []
-	left_links = []
-	right_id = ["<%= (que_qs :right).join('","').html_safe%>"]
-	<% @metrics.each do |m| %>
-		metrics.push("<%= m %>")
-		right_links.push("<%= add_qs :right, m%>")
-		left_links.push("<%= rem_qs :right, m%>")
-	<%end%>
+var data = [], metrics =  [], format_metrics = [], right_links = [], left_links = [];
+var reset = "<%= obl_qs :right%>";
+var right_id = ["<%= (que_qs :right).join('","').html_safe%>"];
+<% @metrics.each do |m| %>
+	metrics.push("<%= m %>");
+	format_metrics.push("<%= style_metric :pretty, m%>")
+	right_links.push("<%= add_qs :right, m%>");
+	left_links.push("<%= rem_qs :right, m%>");
+<%end%>
 
-	var graph;
-	renderWaiting("chart")
-	data = getMetrics(metrics)
+var graph;
+renderWaiting("chart");
+data = getMetrics(metrics);
 
-	var intervalID;
-	function startUpdates(){ intervalID = updateStacked() } 
-	function stopUpdates() { clearInterval(intervalID) } 
+var intervalID;
+function startUpdates() { intervalID = updateStacked(); } 
+function stopUpdates()  { clearInterval(intervalID); } 
 </script>

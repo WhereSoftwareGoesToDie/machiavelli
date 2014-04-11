@@ -27,13 +27,20 @@ describe "Broken Filefiles Backend", :js => true do
 	
 	it "test fallback functionality" do
 
-		add_config "backends: [{ type: 'flatfile', settings: { file_name: 'this_does_not_exist/nope.csv', metric: 'potato'}}]"
-		visit "/metric/?metric=Flatfile:potato"
+		bad_backend = "Flatfile~Potato"
+		file = 'this_does_not_exist/nope.csv'
+		add_config "backends: [{ type: 'flatfile', settings: { file_name: #{file}, metric: 'potato'}}]"
+		visit "/metric/?metric=#{bad_backend}"
 		json = JSON.parse(page.text)
 		expect(json).to include "error"
-		
+		expect(json["error"]).to eq "File #{file} does not exist"
+
 		visit "/refresh"
 		expect(page).to have_css "div.alert-danger"
 
+		visit "/source/"
+		json = JSON.parse(page.text)
+		expect(json).to include "error"
+		expect(json["error"]).to eq "File #{file} does not exist"
 	end
 end

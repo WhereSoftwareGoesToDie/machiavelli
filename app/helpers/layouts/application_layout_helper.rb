@@ -15,7 +15,25 @@ module Layouts
 			else "UI MESSAGE VARIABLE NOT FOUND: #{msg}"
 			end
 		end
+
+		def version
+			config = "config/version"
+			if Rails.env.development?
+				v = %x[git describe --tags --always].strip()
+				File.open(config, "w") do |file|
+					file.write(v)
+				end
+			end
 			
+			v ||= File.read(config)
+
+			if Rails.env.production?
+				v.start_with?("v0.") ? "Alpha" : ""
+			else
+				link_to v, "https://github.com/anchor/machiavelli/commit/#{v[-7..-1]}", target: "blank"
+			end
+		end
+
 		def flash_class(level)
 		    case level
 			when :notice  then "alert alert-info"
@@ -57,7 +75,7 @@ module Layouts
 			return Backend::GenericBackend.new if name.nil?
 
 			unless settings
-				name = name.split("~").first if name.include? "~" ##TODO SEP
+				name = name.split(SEP).first if name.include? SEP
 				
 				backend = Settings.backends.map{|h| h.to_hash}.select{|a| (a[:alias] || a[:type]).casecmp(name) == 0}.first
 				raise StandardError, "backend #{name} doesn't exist" if backend.nil?

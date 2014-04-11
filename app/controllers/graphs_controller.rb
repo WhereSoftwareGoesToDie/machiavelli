@@ -51,20 +51,20 @@ class GraphsController < ApplicationController
 	def modal_filter_submit
 		metrics = params[:filter][:metrics_select]
 		metrics = metrics.split(";") # select2 modal separator: ";", changed purposefully. Will break if metrics contain semicolon. 
-		metrics.reject! { |c| c.empty? }
+		metrics.reject! { |c| c.empty? or c.include?("0000") } # TODO why for the 0000? (sometimes [object Object])
 		redirect_to root_path + chg_qs(:metric, metrics, {url: :referer})
 
 	end
 
 # Functions
-	def steps period # make 600 points per period
-		case period
-			when "10min" then; 1   # second
-			when "1h"    then; 6  
-			when "3h"    then; 18 
-			when "1d"    then; 144  # ~2.4 minutes
-			when "1w"    then; 1008 # ~16.8 minutes 
-			when "2w"    then; 2016 # ~33.6 minutes
-		end
+	def steps period # take a time period, and return the seconds it represents
+		mult, time = period.split(/(\d+)/).reject!{|a| a.empty?}
+		sec = case time 
+			when "min" then; 60
+			when "h"   then; 60*60
+			when "d"   then; 60*60*24
+			when "w"   then; 60*60*24*7
+			end
+		sec * mult.to_i / 600
 	end
 end
