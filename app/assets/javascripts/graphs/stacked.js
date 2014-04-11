@@ -188,11 +188,11 @@ function renderStacked(data) {
 			table.push("<tr>");
 			d.forEach(function(e) {
 				if (typeof(e) == "object") { 
-					el = ["<td style='background-color: "+e.colour+"'>&nbsp</td>"];
+					el = ["<td style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
 					el.push("<td class='legend-metric'><a href='"+e.link +  
 						"' data-toggle='tooltip-shuffle' data-original-title='"+ 
 						e.tooltip+"'>"+e.metric+"</td>");
-					el.push("<td align='right'>"+e.data+"</td>");
+					el.push("<td class='col-xs-1' align='right'>"+e.data+"</td>");
 					table.push(el.join(""));
 				} else { 
 					table.push("<td colspan=3>&nbsp;</td>");
