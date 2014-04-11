@@ -23,14 +23,12 @@ module Layouts
 				File.open(config, "w") do |file|
 					file.write(v)
 				end
-			end
-			
-			v ||= File.read(config)
 
-			if Rails.env.production?
-				v.start_with?("v0.") ? "Alpha" : ""
-			else
 				link_to v, "https://github.com/anchor/machiavelli/commit/#{v[-7..-1]}", target: "blank"
+			else 
+				v = File.read(config)
+				t = v.split("-").first
+				link_to t, "https://github.com/anchor/machiavelli/tree/#{t}", target: "blank"
 			end
 		end
 
