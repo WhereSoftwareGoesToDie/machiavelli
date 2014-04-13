@@ -1,0 +1,17 @@
+@font-face{
+	font-family:'xkcd';
+	src:url('../xkcd-Regular.eot?') format('eot'),url('../xkcd-Regular.otf') format('opentype')
+}
+body {
+	font-family: "xkcd", sans-serif;
+	font-size: 16px;
+	color: #333;
+}
+.rickshaw_graph .x_tick .title, .rickshaw_graph .y_ticks text, .modal-title, .legend {
+	font-family: "xkcd", sans-serif;
+}
+.legend { 
+	font-size: medium;
+}
+
+// Prior Art: dan.iel.fm/xkcd/ for the d3, http://bl.ocks.org/noahgibbs/5066710 for the rickshaw. xkcd used under CC BY-NC 2.5

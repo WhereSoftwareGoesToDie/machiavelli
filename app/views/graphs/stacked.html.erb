@@ -1,7 +1,9 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= stylesheet_link_tag    "graphs/stacked" %>
 <script src="/assets/graphs/stacked.js"></script>
-
+<% if dckx %>
+<%= stylesheet_link_tag    "graphs/dckx" %>
+<%end%>
 <div class="col-md-10">
 	<div class="slider" id="slider"></div>
 </div>
@@ -18,6 +20,7 @@
 var data = [], metrics =  [], format_metrics = [], right_links = [], left_links = [];
 var reset = "<%= obl_qs :right%>";
 var right_id = ["<%= (que_qs :right).join('","').html_safe%>"];
+
 <% @metrics.each do |m| %>
 	metrics.push("<%= m %>");
 	format_metrics.push("<%= style_metric :pretty, m%>")
@@ -27,7 +30,11 @@ var right_id = ["<%= (que_qs :right).join('","').html_safe%>"];
 
 var graph;
 renderWaiting("chart");
-data = getMetrics(metrics);
+<% if dckx %>
+	data = getMetrics(metrics,"xkcd");
+<% else %>
+	data = getMetrics(metrics);
+<% end %>
 
 var intervalID;
 function startUpdates() { intervalID = updateStacked(); } 
