@@ -20,7 +20,7 @@ function rickshawFitToWindow(graph) {
 	fitSlider();
 } 
 function fitSlider() {
-	if (typeof slider != "undefined" ) { slider.configure({width : new_width}); slider.render();}
+	if (typeof slider != "undefined" ) { slider.configure({width : new_width, height: 30}); slider.render();}
 }
 
 function dynamicWidth(graph) { 
