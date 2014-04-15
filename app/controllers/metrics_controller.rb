@@ -44,7 +44,9 @@ class MetricsController < ApplicationController
 
 		b.each do |x|
 			begin
-				list << ((init_backend x).search_metric_list search, page.to_i)
+				be = init_backend x
+				ret = be.search_metric_list(search, page.to_i)
+				list << ret.map{|r| {id: r, text: be.style_metric(:pretty, r)}}
 			rescue Backend::Error => e
 				 unless  params[:callback] then
 					 render json: { error: e.to_s } 
@@ -56,10 +58,9 @@ class MetricsController < ApplicationController
 		list.flatten!
 
 		if params[:callback] then
-			be = init_backend list.first
-			render json: "#{params[:callback]}({metrics:#{list.map{|x| {id: x, text: (be.style_metric :pretty, x)}}.to_json}});"
+			render json: "#{params[:callback]}({metrics:#{list.to_json}});"
 		else
-			render json: list
+			render json: list.map{|x| x[:id]}.to_json
 		end
 		
 	end
