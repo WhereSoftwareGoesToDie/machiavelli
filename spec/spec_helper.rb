@@ -49,7 +49,13 @@ def time_css_button metric, type, time, css
 		wait_for_ajax type, metric, time
 		
 		expect(page).not_to have_css "div#alert-danger"
-		expect(page).to have_content metric.split("~").join(" - ") 
+		expect(page).to have_content metric.split("~").first # .join(" - ") 
+
+		m = metric.split(/[,:~]/)
+		if m.include? "hostname"
+			h = m[m.index("hostname")+1]
+			expect(page).to have_content h
+		end
 
 		css.each do |c|
 			expect(page).to have_css "div#{c}"
