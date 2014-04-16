@@ -463,9 +463,10 @@ cubism_contextPrototype.machiavelli= function(host) {
   var source = {},
       context = this;
 
-  source.metric = function(target) {
-
+  source.metric = function(target, metricName) {
+    metricName = metricName || target
     var metric = context.metric(function(start, stop, step, callback) {
+
 	feed = host + "/metric/?metric="
 	      + target
 	      + "&start=" + cubism_machiavelliFormatDate(start - 2 * step)
@@ -474,10 +475,10 @@ cubism_contextPrototype.machiavelli= function(host) {
 	d3.json(feed
           , function(data) {
           if (!data || data.length == 0) return callback(new Error("error loading data - no data returned"));
-	  if (data.error) return callback(new Error("machiavelli error: "+data.error));
+          if (data.error) return callback(new Error("machiavelli error: "+data.error));
           callback(null, data.map(function(d) { return d.y} ))
       });
-    }, target += "");
+    }, metricName);
     return metric;
   };
 
@@ -1220,7 +1221,7 @@ cubism_contextPrototype.comparison = function() {
   return comparison;
 };
 
-var cubism_comparisonPrimaryFormat = d3.format(".4s"),
+var cubism_comparisonPrimaryFormat = d3.format(".2s"),
     cubism_comparisonChangeFormat = d3.format("+.0%");
 
 function cubism_comparisonRoundEven(i) {

@@ -90,9 +90,10 @@ class Backend::Descartes < Backend::GenericBackend
 	def style_metric style, metric
 		if style == :pretty then
 			if @origin == "LMRH8C" || @origin ==  "R82KX1" then
-				type, x = URI.decode(metric).split(SEP)
+				type, x = metric.split(SEP) #URI.decode(metric).split(SEP)
 
 				keys = Hash[*x.split(DELIM).map{|y| y.split(KVP)}.flatten]
+				keys = Hash[keys.map{|k,v| [URI.decode(k), URI.decode(v)] }]
 				
 				nice = [type]
 				nice << keys["hostname"]
@@ -118,7 +119,7 @@ class Backend::Descartes < Backend::GenericBackend
 				end
 				return URI.decode(nice.join(" - "))
 			else
-				return metric.gsub(SEP, " - ") #metric
+				return URI.decode(metric).gsub(SEP, " - ") #metric
 				
 			end
 		elsif style == :table then

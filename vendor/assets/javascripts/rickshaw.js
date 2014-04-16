@@ -1,3 +1,14 @@
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define(['d3'], function (d3) {
+            return (root.Rickshaw = factory(d3));
+        });
+    } else if (typeof exports === 'object') {
+        module.exports = factory(require('d3'));
+    } else {
+        root.Rickshaw = factory(d3);
+    }
+}(this, function (d3) {
 /* jshint -W079 */ 
 
 var Rickshaw = {
@@ -34,12 +45,6 @@ var Rickshaw = {
 		return JSON.parse(JSON.stringify(obj));
 	}
 };
-
-if (typeof module !== 'undefined' && module.exports) {
-	var d3 = require('d3');
-	module.exports = Rickshaw;
-}
-
 /* Adapted from https://github.com/Jakobo/PTClass */
 
 /*
@@ -404,7 +409,8 @@ Rickshaw.Graph = function(args) {
 			max: undefined,
 			preserve: false,
 			xScale: undefined,
-			yScale: undefined
+			yScale: undefined,
+			stack: true
 		};
 
 		this._loadRenderers();
@@ -453,13 +459,15 @@ Rickshaw.Graph = function(args) {
 			if (!Array.isArray(s.data)) {
 				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
+			
+			if (s.data.length > 0) {
+				var x = s.data[0].x;
+				var y = s.data[0].y;
 
-			var x = s.data[0].x;
-			var y = s.data[0].y;
-
-			if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
-				throw "x and y properties of points should be numbers instead of " +
-					(typeof x) + " and " + (typeof y);
+				if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
+					throw "x and y properties of points should be numbers instead of " +
+						(typeof x) + " and " + (typeof y);
+				}
 			}
 
 			if (s.data.length >= 3) {
@@ -486,8 +494,17 @@ Rickshaw.Graph = function(args) {
 
 		var domain = this.renderer.domain();
 
-		this.x = (this.xScale || d3.scale.linear()).domain(domain.x).range([0, this.width]);
-		this.y = (this.yScale || d3.scale.linear()).domain(domain.y).range([this.height, 0]);
+		// this.*Scale is coming from the configuration dictionary
+		// which may be referenced by the Graph creator, or shared
+		// with other Graphs. We need to ensure we copy the scale
+		// so that our mutations do not change the object given to us.
+		// Hence the .copy()
+		this.x = (this.xScale || d3.scale.linear()).copy().domain(domain.x).range([0, this.width]);
+		this.y = (this.yScale || d3.scale.linear()).copy().domain(domain.y).range([this.height, 0]);
+
+		this.x.magnitude = d3.scale.linear()
+			.domain([domain.x[0] - domain.x[0], domain.x[1] - domain.x[0]])
+			.range([0, this.width]);
 
 		this.y.magnitude = d3.scale.linear()
 			.domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
@@ -642,6 +659,8 @@ Rickshaw.Graph = function(args) {
 		Rickshaw.keys(this.config).forEach( function(k) {
 			this[k] = this.config[k];
 		}, this );
+
+		if ('stack' in args) args.unstack = !args.stack;
 
 		var renderer = args.renderer || (this.renderer && this.renderer.name) || 'stack';
 		this.setRenderer(renderer, args);
@@ -1000,277 +1019,6 @@ Rickshaw.Fixtures.Time = function() {
 		return Math.ceil(time / unit.seconds) * unit.seconds;
 	};
 };
-Rickshaw.namespace('Rickshaw.Fixtures.Time.Precise');
-
-Rickshaw.Fixtures.Time.Precise = function() {
-
-        var self = this;
-
-        this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-        this.units = [
-                {
-                        name: 'decade',
-                        seconds: 86400 * 365.25 * 10,
-                        formatter: function(d) { return (parseInt(d.getUTCFullYear() / 10, 10) * 10) }
-                }, {
-                        name: 'year',
-                        seconds: 86400 * 365.25,
-                        formatter: function(d) { return d.getUTCFullYear() }
-                }, {
-                        name: 'month',
-                        seconds: 86400 * 30.5,
-                        formatter: function(d) { return self.months[d.getUTCMonth()] }
-                }, {
-                        name: 'week',
-                        seconds: 86400 * 7,
-                        formatter: function(d) { return self.formatDate(d) }
-                }, {
-                        name: 'day',
-                        seconds: 86400,
-                        formatter: function(d) { return d.getUTCDate() }
-                }, {
-                        name: '6 hour',
-                        seconds: 3600 * 6,
-                        formatter: function(d) { return self.formatTime(d) }
-                }, {
-                        name: 'hour',
-                        seconds: 3600,
-                        formatter: function(d) { return self.formatTime(d) }
-                }, {
-                        name: '15 minute',
-                        seconds: 60 * 15,
-                        formatter: function(d) { return self.formatTime(d) }
-                }, {
-                        name: '5 minute',
-                        seconds: 60 * 5,
-                        formatter: function(d) { return self.formatTime(d) }
-                }, {
-                        name: 'minute',
-                        seconds: 60,
-                        formatter: function(d) { return self.formatTime(d) }
-                }, {
-                        name: '15 second',
-                        seconds: 15,
-                        formatter: function(d) { return self.formatTimeSeconds(d) }
-                }, {
-                        name: '5 second',
-                        seconds: 5,
-                        formatter: function(d) { return self.formatTimeSeconds(d) }
-                }, {
-                        name: 'second',
-                        seconds: 1,
-                        formatter: function(d) { return self.formatTimeSeconds(d) }
-                }, {
-                        name: 'decisecond',
-                        seconds: 1/10,
-                        formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
-                }, {
-                        name: 'centisecond',
-                        seconds: 1/100,
-                        formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
-                }
-        ];
-
-        this.unit = function(unitName) {
-                return this.units.filter( function(unit) { return unitName == unit.name } ).shift();
-        };
-
-        this.formatDate = function(d) {
-                return d3.time.format('%b %e')(d);
-        };
-
-        this.formatTime = function(d) {
-                return d.toUTCString().match(/(\d+:\d+):/)[1];
-        };
-
-        this.formatTimeSeconds = function(d) {
-                return d.toUTCString().match(/(\d+:\d+:\d+)/)[1];
-        };
-
-        this.ceil = function(time, unit) {
-
-                var date, floor, year;
-
-                if (unit.name == 'month') {
-
-                        date = new Date(time * 1000);
-
-                        floor = Date.UTC(date.getUTCFullYear(), date.getUTCMonth()) / 1000;
-                        if (floor == time) return time;
-
-                        year = date.getUTCFullYear();
-                        var month = date.getUTCMonth();
-
-                        if (month == 11) {
-                                month = 0;
-                                year = year + 1;
-                        } else {
-                                month += 1;
-                        }
-
-                        return Date.UTC(year, month) / 1000;
-                }
-
-                if (unit.name == 'year') {
-
-                        date = new Date(time * 1000);
-
-                        floor = Date.UTC(date.getUTCFullYear(), 0) / 1000;
-                        if (floor == time) return time;
-
-                        year = date.getUTCFullYear() + 1;
-
-                        return Date.UTC(year, 0) / 1000;
-                }
-
-                return Math.ceil(time / unit.seconds) * unit.seconds;
-        };
-};
-Rickshaw.namespace('Rickshaw.Fixtures.Time.Precise.Local');
-
-Rickshaw.Fixtures.Time.Precise.Local = function() {
-
-        var self = this;
-
-        this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-        this.units = [
-                {
-                        name: 'decade',
-                        seconds: 86400 * 365.25 * 10,
-                        formatter: function(d) { return (parseInt(d.getFullYear() / 10, 10) * 10) }
-                }, {
-                        name: 'year',
-                        seconds: 86400 * 365.25,
-                        formatter: function(d) { return d.getFullYear() }
-                }, {
-                        name: 'month',
-                        seconds: 86400 * 30.5,
-                        formatter: function(d) { return self.months[d.getMonth()] }
-                }, {
-                        name: 'week',
-                        seconds: 86400 * 7,
-                        formatter: function(d) { return self.formatDate(d) }
-                }, {
-                        name: 'day',
-                        seconds: 86400,
-                        formatter: function(d) { return d.getDate() }
-                }, {
-                        name: '6 hour',
-                        seconds: 3600 * 6,
-                        formatter: function(d) { return self.formatTime(d) }
-                }, {
-                        name: 'hour',
-                        seconds: 3600,
-                        formatter: function(d) { return self.formatTime(d) }
-                }, {
-                        name: '15 minute',
-                        seconds: 60 * 15,
-                        formatter: function(d) { return self.formatTime(d) }
-                }, {
-                        name: '5 minute',
-                        seconds: 60 * 5,
-                        formatter: function(d) { return self.formatTime(d) }
-                }, {
-                        name: 'minute',
-                        seconds: 60,
-                        formatter: function(d) { return self.formatTime(d) }
-                }, {
-                        name: '15 second',
-                        seconds: 15,
-                        formatter: function(d) { return self.formatTimeSeconds(d) }
-                }, {
-                        name: '5 second',
-                        seconds: 5,
-                        formatter: function(d) { return self.formatTimeSeconds(d) }
-                }, {
-                        name: 'second',
-                        seconds: 1,
-                        formatter: function(d) { return self.formatTimeSeconds(d) }
-                }, {
-                        name: 'decisecond',
-                        seconds: 1/10,
-                        formatter: function(d) { return d.getMilliseconds() + 'ms' }
-                }, {
-                        name: 'centisecond',
-                        seconds: 1/100,
-                        formatter: function(d) { return d.getMilliseconds() + 'ms' }
-                }
-        ];
-
-        this.unit = function(unitName) {
-                return this.units.filter( function(unit) { return unitName == unit.name } ).shift();
-        };
-
-        this.formatDate = function(d) {
-                return d3.time.format('%b %e')(d);
-        };
-
-        this.formatTime = function(d) {
-                return d.toString().match(/(\d+:\d+):/)[1];
-        };
-
-        this.formatTimeSeconds = function(d) {
-                return d.toString().match(/(\d+:\d+:\d+)/)[1];
-        };
-
-        this.ceil = function(time, unit) {
-
-                var date, floor, year;
-
-                if (unit.name == 'day') {
-
-                        var nearFuture = new Date((time + unit.seconds - 1) * 1000);
-
-                        var rounded = new Date(0);
-                        rounded.setMilliseconds(0);
-                        rounded.setSeconds(0);
-                        rounded.setMinutes(0);
-                        rounded.setHours(0);
-                        rounded.setDate(nearFuture.getDate());
-                        rounded.setMonth(nearFuture.getMonth());
-                        rounded.setFullYear(nearFuture.getFullYear());
-
-                        return rounded.getTime() / 1000;
-                }
-
-                if (unit.name == 'month') {
-
-                        date = new Date(time * 1000);
-
-                        floor = new Date(date.getFullYear(), date.getMonth()).getTime() / 1000;
-                        if (floor == time) return time;
-
-                        year = date.getFullYear();
-                        var month = date.getMonth();
-
-                        if (month == 11) {
-                                month = 0;
-                                year = year + 1;
-                        } else {
-                                month += 1;
-                        }
-
-                        return new Date(year, month).getTime() / 1000;
-                }
-
-                if (unit.name == 'year') {
-
-                        date = new Date(time * 1000);
-
-                        floor = new Date(date.getUTCFullYear(), 0).getTime() / 1000;
-                        if (floor == time) return time;
-
-                        year = date.getFullYear() + 1;
-
-                        return new Date(year, 0).getTime() / 1000;
-                }
-
-                return Math.ceil(time / unit.seconds) * unit.seconds;
-        };
-};
-
 Rickshaw.namespace('Rickshaw.Fixtures.Time.Local');
 
 Rickshaw.Fixtures.Time.Local = function() {
@@ -1402,31 +1150,288 @@ Rickshaw.Fixtures.Time.Local = function() {
 		return Math.ceil(time / unit.seconds) * unit.seconds;
 	};
 };
+Rickshaw.namespace('Rickshaw.Fixtures.Time.Precise');
+
+Rickshaw.Fixtures.Time.Precise = function() {
+
+	var self = this;
+
+	this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+	this.units = [
+		{
+			name: 'decade',
+			seconds: 86400 * 365.25 * 10,
+			formatter: function(d) { return (parseInt(d.getUTCFullYear() / 10, 10) * 10) }
+		}, {
+			name: 'year',
+			seconds: 86400 * 365.25,
+			formatter: function(d) { return d.getUTCFullYear() }
+		}, {
+			name: 'month',
+			seconds: 86400 * 30.5,
+			formatter: function(d) { return self.months[d.getUTCMonth()] }
+		}, {
+			name: 'week',
+			seconds: 86400 * 7,
+			formatter: function(d) { return self.formatDate(d) }
+		}, {
+			name: 'day',
+			seconds: 86400,
+			formatter: function(d) { return d.getUTCDate() }
+		}, {
+			name: '6 hour',
+			seconds: 3600 * 6,
+			formatter: function(d) { return self.formatTime(d) }
+		}, {
+			name: 'hour',
+			seconds: 3600,
+			formatter: function(d) { return self.formatTime(d) }
+		}, {
+			name: '15 minute',
+			seconds: 60 * 15,
+			formatter: function(d) { return self.formatTime(d) }
+		}, {
+			name: '5 minute',
+			seconds: 60 * 5,
+			formatter: function(d) { return self.formatTime(d) }
+		}, {
+			name: 'minute',
+			seconds: 60,
+			formatter: function(d) { return self.formatTime(d) }
+		}, {
+			name: '15 second',
+			seconds: 15,
+			formatter: function(d) { return self.formatTimeSeconds(d) }
+		}, {
+			name: '5 second',
+			seconds: 5,
+			formatter: function(d) { return self.formatTimeSeconds(d) }
+		}, {
+			name: 'second',
+			seconds: 1,
+			formatter: function(d) { return self.formatTimeSeconds(d) }
+		}, {
+			name: 'decisecond',
+			seconds: 1/10,
+			formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
+		}, {
+			name: 'centisecond',
+			seconds: 1/100,
+			formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
+		}
+	];
+
+	this.unit = function(unitName) {
+		return this.units.filter( function(unit) { return unitName == unit.name } ).shift();
+	};
+
+	this.formatDate = function(d) {
+		return d3.time.format('%b %e')(d);
+	};
+
+	this.formatTime = function(d) {
+		return d.toUTCString().match(/(\d+:\d+):/)[1];
+	};
+
+	this.formatTimeSeconds = function(d) {
+		return d.toUTCString().match(/(\d+:\d+:\d+)/)[1];
+	};
+
+	this.ceil = function(time, unit) {
+
+		var date, floor, year;
+
+		if (unit.name == 'month') {
+
+			date = new Date(time * 1000);
+
+			floor = Date.UTC(date.getUTCFullYear(), date.getUTCMonth()) / 1000;
+			if (floor == time) return time;
+
+			year = date.getUTCFullYear();
+			var month = date.getUTCMonth();
+
+			if (month == 11) {
+				month = 0;
+				year = year + 1;
+			} else {
+				month += 1;
+			}
+
+			return Date.UTC(year, month) / 1000;
+		}
+
+		if (unit.name == 'year') {
+
+			date = new Date(time * 1000);
+
+			floor = Date.UTC(date.getUTCFullYear(), 0) / 1000;
+			if (floor == time) return time;
+
+			year = date.getUTCFullYear() + 1;
+
+			return Date.UTC(year, 0) / 1000;
+		}
+
+		return Math.ceil(time / unit.seconds) * unit.seconds;
+	};
+};
+Rickshaw.namespace('Rickshaw.Fixtures.Time.Precise.Local');
+
+Rickshaw.Fixtures.Time.Precise.Local = function() {
+
+	var self = this;
+
+	this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+	this.units = [
+		{
+			name: 'decade',
+			seconds: 86400 * 365.25 * 10,
+			formatter: function(d) { return (parseInt(d.getFullYear() / 10, 10) * 10) }
+		}, {
+			name: 'year',
+			seconds: 86400 * 365.25,
+			formatter: function(d) { return d.getFullYear() }
+		}, {
+			name: 'month',
+			seconds: 86400 * 30.5,
+			formatter: function(d) { return self.months[d.getMonth()] }
+		}, {
+			name: 'week',
+			seconds: 86400 * 7,
+			formatter: function(d) { return self.formatDate(d) }
+		}, {
+			name: 'day',
+			seconds: 86400,
+			formatter: function(d) { return d.getDate() }
+		}, {
+			name: '6 hour',
+			seconds: 3600 * 6,
+			formatter: function(d) { return self.formatTime(d) }
+		}, {
+			name: 'hour',
+			seconds: 3600,
+			formatter: function(d) { return self.formatTime(d) }
+		}, {
+			name: '15 minute',
+			seconds: 60 * 15,
+			formatter: function(d) { return self.formatTime(d) }
+		}, {
+			name: '5 minute',
+			seconds: 60 * 5,
+			formatter: function(d) { return self.formatTime(d) }
+		}, {
+			name: 'minute',
+			seconds: 60,
+			formatter: function(d) { return self.formatTime(d) }
+		}, {
+			name: '15 second',
+			seconds: 15,
+			formatter: function(d) { return self.formatTimeSeconds(d) }
+		}, {
+			name: '5 second',
+			seconds: 5,
+			formatter: function(d) { return self.formatTimeSeconds(d) }
+		}, {
+			name: 'second',
+			seconds: 1,
+			formatter: function(d) { return self.formatTimeSeconds(d) }
+		}, {
+			name: 'decisecond',
+			seconds: 1/10,
+			formatter: function(d) { return d.getMilliseconds() + 'ms' }
+		}, {
+			name: 'centisecond',
+			seconds: 1/100,
+			formatter: function(d) { return d.getMilliseconds() + 'ms' }
+		}
+	];
+
+	this.unit = function(unitName) {
+		return this.units.filter( function(unit) { return unitName == unit.name } ).shift();
+	};
+
+	this.formatDate = function(d) {
+		return d3.time.format('%b %e')(d);
+	};
+
+	this.formatTime = function(d) {
+		return d.toString().match(/(\d+:\d+):/)[1];
+	};
+
+	this.formatTimeSeconds = function(d) {
+		return d.toString().match(/(\d+:\d+:\d+)/)[1];
+	};
+
+	this.ceil = function(time, unit) {
+
+		var date, floor, year;
+
+		if (unit.name == 'day') {
+
+			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
+
+			var rounded = new Date(0);
+			rounded.setMilliseconds(0);
+			rounded.setSeconds(0);
+			rounded.setMinutes(0);
+			rounded.setHours(0);
+			rounded.setDate(nearFuture.getDate());
+			rounded.setMonth(nearFuture.getMonth());
+			rounded.setFullYear(nearFuture.getFullYear());
+
+			return rounded.getTime() / 1000;
+		}
+
+		if (unit.name == 'month') {
+
+			date = new Date(time * 1000);
+
+			floor = new Date(date.getFullYear(), date.getMonth()).getTime() / 1000;
+			if (floor == time) return time;
+
+			year = date.getFullYear();
+			var month = date.getMonth();
+
+			if (month == 11) {
+				month = 0;
+				year = year + 1;
+			} else {
+				month += 1;
+			}
+
+			return new Date(year, month).getTime() / 1000;
+		}
+
+		if (unit.name == 'year') {
+
+			date = new Date(time * 1000);
+
+			floor = new Date(date.getUTCFullYear(), 0).getTime() / 1000;
+			if (floor == time) return time;
+
+			year = date.getFullYear() + 1;
+
+			return new Date(year, 0).getTime() / 1000;
+		}
+
+		return Math.ceil(time / unit.seconds) * unit.seconds;
+	};
+};
 Rickshaw.namespace('Rickshaw.Fixtures.Number');
 
 Rickshaw.Fixtures.Number.formatKMBT = function(y) {
-        var abs_y = Math.abs(y);
-        if (abs_y >= 1000000000000)   { return y / 1000000000000 + "T" }
-        else if (abs_y >= 1000000000) { return y / 1000000000 + "B" }
-        else if (abs_y >= 1000000)    { return y / 1000000 + "M" }
-        else if (abs_y >= 1000)       { return y / 1000 + "K" }
-        else if (abs_y < 1 && y > 0)  { return y.toFixed(2) }
-        else if (abs_y === 0)         { return 0 }
-        else                      { return y }
+	var abs_y = Math.abs(y);
+	if (abs_y >= 1000000000000)   { return y / 1000000000000 + "T" }
+	else if (abs_y >= 1000000000) { return y / 1000000000 + "B" }
+	else if (abs_y >= 1000000)    { return y / 1000000 + "M" }
+	else if (abs_y >= 1000)       { return y / 1000 + "K" }
+	else if (abs_y < 1 && y > 0)  { return y.toFixed(2) }
+	else if (abs_y === 0)         { return '' }
+	else                      { return y }
 };
-
-
-Rickshaw.Fixtures.Number.formatKMBT_round = function(y,a,b,precision) { 
-        var abs_y = Math.abs(y);
-	if (typeof precision === "undefined"){precision = 2;}
-        if (abs_y >= 1000000000000)   { return (y / 1000000000000).toFixed(precision) + "T" }
-        else if (abs_y >= 1000000000) { return (y / 1000000000).toFixed(precision) + "B" }
-        else if (abs_y >= 1000000)    { return (y / 1000000).toFixed(precision) + "M" }
-        else if (abs_y >= 1000)       { return (y / 1000).toFixed(precision) + "K" }
-        else if (abs_y < 1 && y > 0)  { return y.toFixed(precision) }
-        else if (abs_y === 0)         { return 0 }
-        else                      { return y.toFixed(precision) }
-}; 
 
 Rickshaw.Fixtures.Number.formatBase1024KMGTP = function(y) {
     var abs_y = Math.abs(y);
@@ -1436,11 +1441,24 @@ Rickshaw.Fixtures.Number.formatBase1024KMGTP = function(y) {
     else if (abs_y >= 1048576)      { return y / 1048576 + "M" }
     else if (abs_y >= 1024)         { return y / 1024 + "K" }
     else if (abs_y < 1 && y > 0)    { return y.toFixed(2) }
-    else if (abs_y === 0)           { return 0 }
+    else if (abs_y === 0)           { return '' }
     else                        { return y }
 };
 
-Rickshaw.Fixtures.Number.formatBase1024KMGTP_round = function(y, a,b,precision) { 
+
+Rickshaw.Fixtures.Number.formatKMBT_round = function(y,a,b,precision) {
+        var abs_y = Math.abs(y);
+        if (typeof precision === "undefined"){precision = 2;}
+        if (abs_y >= 1000000000000)   { return (y / 1000000000000).toFixed(precision) + "T" }
+        else if (abs_y >= 1000000000) { return (y / 1000000000).toFixed(precision) + "B" }
+        else if (abs_y >= 1000000)    { return (y / 1000000).toFixed(precision) + "M" }
+        else if (abs_y >= 1000)       { return (y / 1000).toFixed(precision) + "K" }
+        else if (abs_y < 1 && y > 0)  { return y.toFixed(precision) }
+        else if (abs_y === 0)         { return 0 }
+        else                      { return y.toFixed(precision) }
+};
+
+Rickshaw.Fixtures.Number.formatBase1024KMGTP_round = function(y, a,b,precision) {
     var abs_y = Math.abs(y);
     if (typeof precision === "undefined"){precision = 2;}
     if (abs_y >= 1125899906842624)  { return (y / 1125899906842624).toFixed(precision) + "P" }
@@ -1452,7 +1470,6 @@ Rickshaw.Fixtures.Number.formatBase1024KMGTP_round = function(y, a,b,precision) 
     else if (abs_y === 0)           { return 0 }
     else                      { return y.toFixed(precision) }
 };
-
 Rickshaw.namespace("Rickshaw.Color.Palette");
 
 Rickshaw.Color.Palette = function(args) {
@@ -1520,7 +1537,7 @@ Rickshaw.Graph.Ajax = Rickshaw.Class.create( {
 
 	request: function() {
 
-		$.ajax( {
+		jQuery.ajax( {
 			url: this.dataURL,
 			dataType: 'json',
 			success: this.success.bind(this),
@@ -2149,21 +2166,21 @@ Rickshaw.Graph.Behavior.Series.Order = function(args) {
 
 	var self = this;
 
-	if (typeof window.$ == 'undefined') {
-		throw "couldn't find jQuery at window.$";
+	if (typeof window.jQuery == 'undefined') {
+		throw "couldn't find jQuery at window.jQuery";
 	}
 
-	if (typeof window.$.ui == 'undefined') {
-		throw "couldn't find jQuery UI at window.$.ui";
+	if (typeof window.jQuery.ui == 'undefined') {
+		throw "couldn't find jQuery UI at window.jQuery.ui";
 	}
 
-	$(function() {
-		$(self.legend.list).sortable( { 
+	jQuery(function() {
+		jQuery(self.legend.list).sortable( {
 			containment: 'parent',
 			tolerance: 'pointer',
 			update: function( event, ui ) {
 				var series = [];
-				$(self.legend.list).find('li').each( function(index, item) {
+				jQuery(self.legend.list).find('li').each( function(index, item) {
 					if (!item.series) return;
 					series.push(item.series);
 				} );
@@ -2175,7 +2192,7 @@ Rickshaw.Graph.Behavior.Series.Order = function(args) {
 				self.graph.update();
 			}
 		} );
-		$(self.legend.list).disableSelection();
+		jQuery(self.legend.list).disableSelection();
 	});
 
 	//hack to make jquery-ui sortable behave
@@ -2194,6 +2211,7 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 	var self = this;
 
 	this.addAnchor = function(line) {
+
 		var anchor = document.createElement('a');
 		anchor.innerHTML = '&#10004;';
 		anchor.classList.add('action');
@@ -2260,6 +2278,7 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
 	if (this.legend) {
 
+		var $ = jQuery;
 		if (typeof $ != 'undefined' && $(this.legend.list).sortable) {
 
 			$(this.legend.list).sortable( {
@@ -2591,7 +2610,7 @@ Rickshaw.Graph.JSONP = Rickshaw.Class.create( Rickshaw.Graph.Ajax, {
 
 	request: function() {
 
-		$.ajax( {
+		jQuery.ajax( {
 			url: this.dataURL,
 			dataType: 'jsonp',
 			success: this.success.bind(this),
@@ -2698,105 +2717,55 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		this.slideCallbacks = [];
 
 		this.build();
-		
-		if( graph.constructor === Array ) {
-			for( var i=0; i<graph.length; i++ ) {
-				graph[i].onUpdate( function() { this.update() }.bind(this) );
-			}
-		} else {
-			graph.onUpdate( function() { this.update() }.bind(this) );
-		}
+
+		graph.onUpdate( function() { this.update() }.bind(this) );
 	},
 
 	build: function() {
 
 		var element = this.element;
 		var graph = this.graph;
-		hash = window.location.hash.slice(1).split(",")
+		var $ = jQuery;
 
+		var domain = graph.dataDomain();
 		var self = this;
 
-		if( graph.constructor === Array ) {
-			$( function() {
-				$(element).slider( {
-					range: true,
-					min: graph[0].dataDomain()[0],
-					max: graph[0].dataDomain()[1],
-					values: [
-						hash[0] || graph[0].dataDomain()[0],
-						hash[1] || graph[0].dataDomain()[1]
-					],
-					slide: function( event, ui ) {
-						for( var i=0; i<graph.length; i++) {
+		$( function() {
+			$(element).slider( {
+				range: true,
+				min: domain[0],
+				max: domain[1],
+				values: [ 
+					domain[0],
+					domain[1]
+				],
+				slide: function( event, ui ) {
 
-							// If the slider gets close enough that it will end up selecting no data, stop it
-							step = graph[i].series[0].data[1].x - graph[i].series[0].data[0].x
-							if ((ui.values[0] + step) >= ui.values[1]) { return false; }
-							
-							graph[i].window.xMin = ui.values[0];
-							graph[i].window.xMax = ui.values[1];
-							graph[i].update();
+					if (ui.values[1] <= ui.values[0]) return;
 
-							// if we're at an extreme, stick there
-							if (graph[i].dataDomain()[0] == ui.values[0]) {
-								graph[i].window.xMin = undefined;
-							}
-							if (graph[i].dataDomain()[1] == ui.values[1]) {
-								graph[i].window.xMax = undefined;
-							}
-						}
-                                                
-						self.slideCallbacks.forEach(function(callback) {
-                                                        callback(graph[i], graph[i].window.xMin, graph[i].window.xMax);
-                                                });
+					graph.window.xMin = ui.values[0];
+					graph.window.xMax = ui.values[1];
+					graph.update();
+
+					var domain = graph.dataDomain();
+
+					// if we're at an extreme, stick there
+					if (domain[0] == ui.values[0]) {
+						graph.window.xMin = undefined;
 					}
-				} );
-			} );
 
-			element[0].style.width = graph[0].width + 'px';
-
-		} else {
-
-			var domain = graph.dataDomain();
-			$( function() {
-				$(element).slider( {
-					range: true,
-					min: domain[0],
-					max: domain[1],
-					values: [ 
-						hash[0] || domain[0],
-						hash[1] || domain[1]
-					],
-					slide: function( event, ui ) {
-
-						// If the slider gets close enough that it will end up selecting no data, stop it
-						step = graph.series[0].data[1].x - graph.series[0].data[0].x
-						if (ui.values[1] <= ui.values[0] + step ) return;
-
-						graph.window.xMin = ui.values[0];
-						graph.window.xMax = ui.values[1];
-						graph.update();
-
-						var domain = graph.dataDomain();
-
-						// if we're at an extreme, stick there
-						if (domain[0] == ui.values[0]) {
-							graph.window.xMin = undefined;
-						}
-
-						if (domain[1] == ui.values[1]) {
-							graph.window.xMax = undefined;
-						}
-
-						self.slideCallbacks.forEach(function(callback) {
-							callback(graph, graph.window.xMin, graph.window.xMax);
-						});
+					if (domain[1] == ui.values[1]) {
+						graph.window.xMax = undefined;
 					}
-				} );
-			} );
 
-			$(element)[0].style.width = graph.width + 'px';
-		}
+					self.slideCallbacks.forEach(function(callback) {
+						callback(graph, graph.window.xMin, graph.window.xMax);
+					});
+				}
+			} );
+		} );
+
+		$(element)[0].style.width = graph.width + 'px';
 
 	},
 
@@ -2804,12 +2773,9 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 		var element = this.element;
 		var graph = this.graph;
+		var $ = jQuery;
 
 		var values = $(element).slider('option', 'values');
-		
-		if( graph.constructor === Array ) {
-			graph = graph[0];
-		}
 
 		var domain = graph.dataDomain();
 
@@ -2822,9 +2788,6 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		if (graph.window.xMax == null) {
 			values[1] = domain[1];
 		}
-
-		baseURL = window.location.href.split("#")[0]
-		window.location.replace(baseURL + "#" + values)
 
 		$(element).slider('option', 'values', values);
 	},
@@ -2844,6 +2807,8 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		if (!args.graph && !args.graphs) throw "Rickshaw.Graph.RangeSlider.Preview needs a reference to an graph or an array of graphs";
 
 		this.element = args.element;
+		this.element.style.position = 'relative';
+
 		this.graphs = args.graph ? [ args.graph ] : args.graphs;
 
 		this.defaults = {
@@ -2854,9 +2819,11 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 			frameHandleThickness: 10,
 			frameColor: "#d4d4d4",
 			frameOpacity: 1,
-			minimumFrameWidth: 0
+			minimumFrameWidth: 0,
+			heightRatio: 0.2
 		};
 
+		this.heightRatio = args.heightRatio || this.defaults.heightRatio;
 		this.defaults.gripperColor = d3.rgb(this.defaults.frameColor).darker().toString(); 
 
 		this.configureCallbacks = [];
@@ -2864,8 +2831,17 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 		this.previews = [];
 
+		if (!args.width) this.widthFromGraph = true;
+		if (!args.height) this.heightFromGraph = true;
+
+		if (this.widthFromGraph || this.heightFromGraph) {
+			this.graphs[0].onConfigure(function () {
+				this.configure(args); this.render();
+			}.bind(this));
+		}
+
 		args.width = args.width || this.graphs[0].width || this.defaults.width;
-		args.height = args.height || this.graphs[0].height / 5 || this.defaults.height;
+		args.height = args.height || this.graphs[0].height * this.heightRatio || this.defaults.height;
 
 		this.configure(args);
 		this.render();
@@ -2888,24 +2864,34 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		});
 
 		Rickshaw.keys(this.defaults).forEach(function(k) {
-			this.config[k] = k in args ? 
-					args[k]
-				: k in this.config 
-					? this.config[k]
+			this.config[k] = k in args ? args[k]
+				: k in this.config ? this.config[k]
 				: this.defaults[k];
 		}, this);
 
-		if (args.width) {
-			this.previews.forEach(function(preview) {
-				var width = args.width - this.config.frameHandleThickness * 2;
-				preview.setSize({ width: width });
-			}, this);
-		}
+		if ('width' in args || 'height' in args) {
 
-		if (args.height) {
+			if (this.widthFromGraph) {
+				this.config.width = this.graphs[0].width;
+			}
+
+			if (this.heightFromGraph) {
+				this.config.height = this.graphs[0].height * this.heightRatio;
+				this.previewHeight = this.config.height;
+			}
+
 			this.previews.forEach(function(preview) {
-				var height = this.previewHeight / this.graphs.length;
-				preview.setSize({ height: height });
+
+				var height = this.previewHeight / this.graphs.length - this.config.frameTopThickness * 2;
+				var width = this.config.width - this.config.frameHandleThickness * 2;
+				preview.setSize({ width: width, height: height });
+
+				if (this.svg) {
+					var svgHeight = height + this.config.frameHandleThickness * 2;
+					var svgWidth = width + this.config.frameHandleThickness * 2;
+					this.svg.style("width", svgWidth + "px");
+					this.svg.style("height", svgHeight + "px");
+				}
 			}, this);
 		}
 	},
@@ -2945,6 +2931,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 			parent.onConfigure(function(args) { 
 				// don't propagate height
 				delete args.height;
+				args.width = args.width - self.config.frameHandleThickness * 2;
 				graph.configure(args);
 				graph.render();
 			});
@@ -2996,10 +2983,10 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		this.svg.enter()
 			.append("svg")
 			.classed("rickshaw_range_slider_preview", true)
-			.attr("height", this.config.height + "px")
-			.attr("width", this.config.width + "px")
-			.style("position", "relative")
-			.style("top", -this.previewHeight + "px");
+			.style("height", this.config.height + "px")
+			.style("width", this.config.width + "px")
+			.style("position", "absolute")
+			.style("top", 0);
 
 		this._renderDimming();
 		this._renderFrame();
@@ -3099,12 +3086,13 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		leftHandle.enter()
 			.append("rect")
 			.attr('width', this.config.frameHandleThickness)
-			.attr('height', this.config.height)
 			.style("cursor", "ew-resize")
 			.style("fill-opacity", "0")
 			.classed("left_handle", true);
 
-		leftHandle.attr('x', this.currentFrame[0]);
+		leftHandle
+			.attr('x', this.currentFrame[0])
+			.attr('height', this.config.height);
 
 		var rightHandle = this.svg.selectAll("rect.right_handle")
 			.data([null]);
@@ -3112,12 +3100,13 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		rightHandle.enter()
 			.append("rect")
 			.attr('width', this.config.frameHandleThickness)
-			.attr('height', this.config.height)
 			.style("cursor", "ew-resize")
 			.style("fill-opacity", "0")
 			.classed("right_handle", true);
 
-		rightHandle.attr('x', this.currentFrame[1] + this.config.frameHandleThickness);
+		rightHandle
+			.attr('x', this.currentFrame[1] + this.config.frameHandleThickness)
+			.attr('height', this.config.height);
 	},
 
 	_renderMiddle: function() {
@@ -3127,15 +3116,15 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 		middleHandle.enter()
 			.append("rect")
-			.attr('height', this.config.height)
 			.style("cursor", "move")
 			.style("fill", "white")
-			.style("fill-opacity", "0.5")
+			.style("fill-opacity", "0.3")
 			.classed("middle_handle", true);
 
 		middleHandle
 			.attr('width', Math.max(0, this.currentFrame[1] - this.currentFrame[0]))
-			.attr('x', this.currentFrame[0] + this.config.frameHandleThickness);
+			.attr('x', this.currentFrame[0] + this.config.frameHandleThickness)
+			.attr('height', this.config.height);
 	},
 
 	_registerMouseEvents: function() {
@@ -3319,19 +3308,14 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 	},
 
 	domain: function(data) {
-
+		// Requires that at least one series contains some data
 		var stackedData = data || this.graph.stackedData || this.graph.stackData();
-		var firstPoint = stackedData[0][0];
 
-		if (firstPoint === undefined) {
-			return { x: [null, null], y: [null, null] };
-		}
+		var xMin = +Infinity;
+		var xMax = -Infinity;
 
-		var xMin = firstPoint.x;
-		var xMax = firstPoint.x;
-
-		var yMin = firstPoint.y + firstPoint.y0;
-		var yMax = firstPoint.y + firstPoint.y0;
+		var yMin = +Infinity;
+		var yMax = -Infinity;
 
 		stackedData.forEach( function(series) {
 
@@ -3564,7 +3548,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 	barWidth: function(series) {
 
 		var frequentInterval = this._frequentInterval(series.stack);
-		var barWidth = this.graph.x(series.stack[0].x + frequentInterval.magnitude * (1 - this.gapSize)); 
+		var barWidth = this.graph.x.magnitude(frequentInterval.magnitude) * (1 - this.gapSize);
 
 		return barWidth;
 	},
@@ -3975,10 +3959,6 @@ Rickshaw.Graph.Renderer.LinePlot = Rickshaw.Class.create( Rickshaw.Graph.Rendere
 		} );
 	},
 
-	initialize: function($super, args) {
-		$super(args);
-	},
-
 	seriesPathFactory: function() {
 
 		var graph = this.graph;
@@ -3992,20 +3972,45 @@ Rickshaw.Graph.Renderer.LinePlot = Rickshaw.Class.create( Rickshaw.Graph.Rendere
 		return factory;
 	},
 
-	_renderDots: function() {
+	render: function(args) {
+
+		args = args || {};
 
 		var graph = this.graph;
 
-		graph.series.forEach(function(series) {
+		var series = args.series || graph.series;
+		var vis = args.vis || graph.vis;
+
+		var dotSize = this.dotSize;
+
+		vis.selectAll('*').remove();
+
+		var data = series
+			.filter(function(s) { return !s.disabled })
+			.map(function(s) { return s.stack });
+
+		var nodes = vis.selectAll("path")
+			.data(data)
+			.enter().append("svg:path")
+			.attr("d", this.seriesPathFactory());
+
+		var i = 0;
+		series.forEach(function(series) {
+			if (series.disabled) return;
+			series.path = nodes[0][i++];
+			this._styleSeries(series);
+		}, this);
+
+		series.forEach(function(series) {
 
 			if (series.disabled) return;
 
-			var nodes = graph.vis.selectAll("x")
+			var nodes = vis.selectAll("x")
 				.data(series.stack.filter( function(d) { return d.y !== null } ))
 				.enter().append("svg:circle")
 				.attr("cx", function(d) { return graph.x(d.x) })
 				.attr("cy", function(d) { return graph.y(d.y) })
-				.attr("r", function(d) { return ("r" in d) ? d.r : graph.renderer.dotSize});
+				.attr("r", function(d) { return ("r" in d) ? d.r : dotSize});
 
 			Array.prototype.forEach.call(nodes[0], function(n) {
 				if (!n) return;
@@ -4017,35 +4022,138 @@ Rickshaw.Graph.Renderer.LinePlot = Rickshaw.Class.create( Rickshaw.Graph.Rendere
 			}.bind(this));
 
 		}, this);
-	},
-
-	_renderLines: function() {
-
-		var graph = this.graph;
-
-		var nodes = graph.vis.selectAll("path")
-			.data(this.graph.stackedData)
-			.enter().append("svg:path")
-			.attr("d", this.seriesPathFactory());
-
-		var i = 0;
-		graph.series.forEach(function(series) {
-			if (series.disabled) return;
-			series.path = nodes[0][i++];
-			this._styleSeries(series);
-		}, this);
-	},
-
-	render: function() {
-
-		var graph = this.graph;
-
-		graph.vis.selectAll('*').remove();
-
-		this._renderLines();
-		this._renderDots();
 	}
 } );
+
+Rickshaw.namespace('Rickshaw.Graph.Renderer.Xkcd');
+
+Rickshaw.Graph.Renderer.Xkcd = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
+    name: 'xkcd',
+
+    defaults: function($super) {
+        return Rickshaw.extend( $super(), {
+            unstack: true,
+            fill: false,
+            stroke: true
+        } );
+    },
+
+    render: function() {
+	var graph = this.graph;
+	var strokeWidth = 3;
+
+	graph.vis.selectAll('*').remove();
+
+	var element = graph.vis.selectAll("path")
+		.data(this.graph.stackedData)
+		.enter();
+
+	var line = d3.svg.line()
+		.x( function(d) { return graph.x(d.x) } )
+		.y( function(d) { return graph.y(d.y) } )
+		.interpolate(xinterp_on_graph(graph)).tension(this.tension);
+
+	var nodes = element.append("svg:path")
+		.attr("d", line)
+		.style("stroke-width", strokeWidth + "px")
+		.style("fill", "none");
+
+	var i = 0;
+	graph.series.forEach( function(series) {
+		if (series.disabled) return;
+		series.path = nodes[0][i++];
+		this._styleSeries(series);
+	}, this );
+    },
+});
+
+function xinterp_on_graph(graph) {
+    var domain = graph.renderer.domain();
+    var wobble = graph.renderer.wobble || 0.005;
+    return function(points) {
+  return xinterp(graph.x, graph.y, domain.x, domain.y, wobble, points);
+    };
+}
+
+function xinterp (xscale, yscale, xlim, ylim, magnitude, points) {
+    // Scale the data.
+    var f = [xscale(xlim[1]) - xscale(xlim[0]),
+             yscale(ylim[1]) - yscale(ylim[0])],
+        z = [xscale(xlim[0]),
+             yscale(ylim[0])],
+        scaled = points.map(function (p) {
+            return [(p[0] - z[0]) / f[0], (p[1] - z[1]) / f[1]];
+        });
+
+    // Compute the distance along the path using a map-reduce.
+    var dists = scaled.map(function (d, i) {
+        if (i === 0) return 0.0;
+        var dx = d[0] - scaled[i - 1][0],
+            dy = d[1] - scaled[i - 1][1];
+        return Math.sqrt(dx * dx + dy * dy);
+    }),
+        dist = dists.reduce(function (curr, d) { return d + curr; }, 0.0);
+
+    // Choose the number of interpolation points based on this distance.
+    var N = Math.round(200 * dist);
+
+    // Re-sample the line.
+    var resampled = [];
+    dists.map(function (d, i) {
+        if (i === 0) return;
+        var n = Math.max(3, Math.round(d / dist * N)),
+            spline = d3.interpolate(scaled[i - 1][1], scaled[i][1]),
+            delta = (scaled[i][0] - scaled[i - 1][0]) / (n - 1);
+        for (var j = 0, x = scaled[i - 1][0]; j < n; ++j, x += delta)
+            resampled.push([x, spline(j / (n - 1))]);
+    });
+
+    // Compute the gradients.
+    var gradients = resampled.map(function (a, i, d) {
+        if (i === 0) return [d[1][0] - d[0][0], d[1][1] - d[0][1]];
+        if (i == resampled.length - 1)
+            return [d[i][0] - d[i - 1][0], d[i][1] - d[i - 1][1]];
+        return [0.5 * (d[i + 1][0] - d[i - 1][0]),
+                0.5 * (d[i + 1][1] - d[i - 1][1])];
+    });
+
+    // Normalize the gradient vectors to be unit vectors.
+    gradients = gradients.map(function (d) {
+        var len = Math.sqrt(d[0] * d[0] + d[1] * d[1]);
+        return [d[0] / len, d[1] / len];
+    });
+
+    // Generate some perturbations.
+    var perturbations = smooth(resampled.map(d3.random.normal()), 3);
+
+    // Add in the perturbations and re-scale the re-sampled curve.
+    var result = resampled.map(function (d, i) {
+        var p = perturbations[i],
+            g = gradients[i];
+        return [(d[0] + magnitude * g[1] * p) * f[0] + z[0],
+                (d[1] - magnitude * g[0] * p) * f[1] + z[1]];
+    });
+
+    return result.join("L");
+}
+
+// Smooth some data with a given window size.
+function smooth(d, w) {
+    var result = [];
+    for (var i = 0, l = d.length; i < l; ++i) {
+        var mn = Math.max(0, i - 5 * w),
+            mx = Math.min(d.length - 1, i + 5 * w),
+            s = 0.0;
+        result[i] = 0.0;
+        for (var j = mn; j < mx; ++j) {
+            var wd = Math.exp(-0.5 * (i - j) * (i - j) / w / w);
+            result[i] += wd * d[j];
+            s += wd;
+        }
+        result[i] /= s;
+    }
+    return result;
+}
 
 Rickshaw.namespace('Rickshaw.Graph.Smoother');
 
@@ -4069,6 +4177,7 @@ Rickshaw.Graph.Smoother = Rickshaw.Class.create({
 	build: function() {
 
 		var self = this;
+		var $ = jQuery;
 
 		if (this.element) {
 			$( function() {
@@ -4380,132 +4489,6 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 		return this.currentIndex;
 	}
 } );
-function xinterp_on_graph(graph) {
-    var domain = graph.renderer.domain();
-    var wobble = graph.renderer.wobble || 0.005;
-    return function(points) {
-  return xinterp(graph.x, graph.y, domain.x, domain.y, wobble, points);
-    }
-}
 
-function xinterp (xscale, yscale, xlim, ylim, magnitude, points) {
-    // Scale the data.
-    var f = [xscale(xlim[1]) - xscale(xlim[0]),
-             yscale(ylim[1]) - yscale(ylim[0])],
-        z = [xscale(xlim[0]),
-             yscale(ylim[0])],
-        scaled = points.map(function (p) {
-            return [(p[0] - z[0]) / f[0], (p[1] - z[1]) / f[1]];
-        });
-
-    // Compute the distance along the path using a map-reduce.
-    var dists = scaled.map(function (d, i) {
-        if (i == 0) return 0.0;
-        var dx = d[0] - scaled[i - 1][0],
-            dy = d[1] - scaled[i - 1][1];
-        return Math.sqrt(dx * dx + dy * dy);
-    }),
-        dist = dists.reduce(function (curr, d) { return d + curr; }, 0.0);
-
-    // Choose the number of interpolation points based on this distance.
-    var N = Math.round(200 * dist);
-
-    // Re-sample the line.
-    var resampled = [];
-    dists.map(function (d, i) {
-        if (i == 0) return;
-        var n = Math.max(3, Math.round(d / dist * N)),
-            spline = d3.interpolate(scaled[i - 1][1], scaled[i][1]),
-            delta = (scaled[i][0] - scaled[i - 1][0]) / (n - 1);
-        for (var j = 0, x = scaled[i - 1][0]; j < n; ++j, x += delta)
-            resampled.push([x, spline(j / (n - 1))]);
-    });
-
-    // Compute the gradients.
-    var gradients = resampled.map(function (a, i, d) {
-        if (i == 0) return [d[1][0] - d[0][0], d[1][1] - d[0][1]];
-        if (i == resampled.length - 1)
-            return [d[i][0] - d[i - 1][0], d[i][1] - d[i - 1][1]];
-        return [0.5 * (d[i + 1][0] - d[i - 1][0]),
-                0.5 * (d[i + 1][1] - d[i - 1][1])];
-    });
-
-    // Normalize the gradient vectors to be unit vectors.
-    gradients = gradients.map(function (d) {
-        var len = Math.sqrt(d[0] * d[0] + d[1] * d[1]);
-        return [d[0] / len, d[1] / len];
-    });
-
-    // Generate some perturbations.
-    var perturbations = smooth(resampled.map(d3.random.normal()), 3);
-
-    // Add in the perturbations and re-scale the re-sampled curve.
-    var result = resampled.map(function (d, i) {
-        var p = perturbations[i],
-            g = gradients[i];
-        return [(d[0] + magnitude * g[1] * p) * f[0] + z[0],
-                (d[1] - magnitude * g[0] * p) * f[1] + z[1]];
-    });
-
-    return result.join("L");
-}
-
-// Smooth some data with a given window size.
-function smooth(d, w) {
-    var result = [];
-    for (var i = 0, l = d.length; i < l; ++i) {
-        var mn = Math.max(0, i - 5 * w),
-            mx = Math.min(d.length - 1, i + 5 * w),
-            s = 0.0;
-        result[i] = 0.0;
-        for (var j = mn; j < mx; ++j) {
-            var wd = Math.exp(-0.5 * (i - j) * (i - j) / w / w);
-            result[i] += wd * d[j];
-            s += wd;
-        }
-        result[i] /= s;
-    }
-    return result;
-}
-
-Rickshaw.namespace('Rickshaw.Graph.Renderer.Xkcd');
-
-Rickshaw.Graph.Renderer.Xkcd = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
-    name: 'xkcd',
-
-    defaults: function($super) {
-        return Rickshaw.extend( $super(), {
-            unstack: true,
-            fill: false,
-            stroke: true
-        } );
-    },
-
-    render: function() {
-	var graph = this.graph;
-	var strokeWidth = 3;
-
-	graph.vis.selectAll('*').remove();
-
-	var element = graph.vis.selectAll("path")
-	    .data(this.graph.stackedData)
-	    .enter();
-
-	var line = d3.svg.line()
-	    .x( function(d) { return graph.x(d.x) } )
-	    .y( function(d) { return graph.y(d.y) } )
-	    .interpolate(xinterp_on_graph(graph)).tension(this.tension);
-
-	var nodes = element.append("svg:path")
-	    .attr("d", line)
-            .style("stroke-width", strokeWidth + "px")
-            .style("fill", "none");
-
-	var i = 0;
-	graph.series.forEach( function(series) {
-	    if (series.disabled) return;
-	    series.path = nodes[0][i++];
-	    this._styleSeries(series);
-	}, this );
-    },
-});
+	return Rickshaw;
+}));

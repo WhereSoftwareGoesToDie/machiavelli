@@ -10,6 +10,7 @@
        display: inline-block;
         margin-left: 40px; /* yaxis -20*/
 	padding-left: 15px;
+	padding-bottom: 20px;
 }
 .chart {
        display: inline-block;

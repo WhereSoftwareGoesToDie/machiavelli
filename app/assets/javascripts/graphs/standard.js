@@ -113,5 +113,4 @@ function renderSlider() {
 		element: document.getElementById("multi_slider")//$("#multi_slider")
                 });
         }
-	fitSlider(); 
 }
