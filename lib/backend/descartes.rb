@@ -82,6 +82,7 @@ class Backend::Descartes < Backend::GenericBackend
 
 	def get_json url 
 		uri = URI.parse(url)
+		puts uri if Rails.env.development?
 		http = Net::HTTP.new(uri.host, uri.port)
 		result = http.get uri.request_uri
 		JSON.parse(result.body, :symbolize_names => true)
