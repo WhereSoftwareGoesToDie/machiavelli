@@ -61,6 +61,9 @@ class Backend::Descartes < Backend::GenericBackend
 			metric << {x: node[0], y: node[1]}
 		end
 
+		if data.empty? then
+			raise Backend::Error, "No data returned from descartes query. URI: #{uri}"
+		end
 
 		if stop - start == step then
 			# only one point required so get next closest to start
