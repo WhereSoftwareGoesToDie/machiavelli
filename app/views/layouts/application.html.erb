@@ -18,7 +18,7 @@
 <body>
 	<script>
 		$(document).ready(function() { 
-		<% if Settings.tooltips == true %>
+		<% unless Settings.disable_tooltips %>
 			$("[data-toggle='tooltip']").tooltip({ placement: "right", container: "body", delay: { show: 500} })
 			$("[data-toggle='tooltip-down']").tooltip({ placement: "bottom", container: "body", delay: { show: 500}}) 
 		<% end %> 
