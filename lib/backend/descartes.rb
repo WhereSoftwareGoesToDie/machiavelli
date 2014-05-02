@@ -76,7 +76,7 @@ class Backend::Descartes < Backend::GenericBackend
 			if points.length == 1 then
 				padded << points.first
 			elsif points.length == 0 then
-				padded << {x: i, y: (0.0/0.0)}
+				padded << {x: i, y: nil} # (0.0/0.0)}
 			end
 		end
 

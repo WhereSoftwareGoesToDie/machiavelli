@@ -62,9 +62,9 @@ function renderStacked(data) {
 			}
 		} 
 		if (isRight(n)) { 
-			right_range = [ Math.min(min, right_range[0]) , Math.max(max, right_range[1]) ];
+			right_range = [ Math.min(min, right_range[0]) - 1 , Math.max(max, right_range[1]) + 1 ];
 		} else { 
-			left_range = [ Math.min(min, left_range[0]) , Math.max(max, left_range[1]) ];
+			left_range = [ Math.min(min, left_range[0]) - 1, Math.max(max, left_range[1]) + 1 ];
 		} 
 	}
 
