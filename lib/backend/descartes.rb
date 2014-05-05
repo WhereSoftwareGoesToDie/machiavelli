@@ -61,6 +61,9 @@ class Backend::Descartes < Backend::GenericBackend
 			metric << {x: node[0], y: node[1]}
 		end
 
+		if data.empty? then
+			raise Backend::Error, "No data returned from descartes query. URI: #{uri}"
+		end
 
 		if stop - start == step then
 			# only one point required so get next closest to start
@@ -73,7 +76,7 @@ class Backend::Descartes < Backend::GenericBackend
 			if points.length == 1 then
 				padded << points.first
 			elsif points.length == 0 then
-				padded << {x: i, y: (0.0/0.0)}
+				padded << {x: i, y: nil} # (0.0/0.0)}
 			end
 		end
 
@@ -82,6 +85,7 @@ class Backend::Descartes < Backend::GenericBackend
 
 	def get_json url 
 		uri = URI.parse(url)
+		puts uri if Rails.env.development?
 		http = Net::HTTP.new(uri.host, uri.port)
 		result = http.get uri.request_uri
 		JSON.parse(result.body, :symbolize_names => true)

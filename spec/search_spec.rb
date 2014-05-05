@@ -71,7 +71,7 @@ end
 
 def add_metric m, search=m
 	# Invoke Modal
-	click_on 'Select metrics'
+	click_on 'Find metrics'
 
 	# Fill in select2
 	fill_in "s2id_autogen1", with: search
