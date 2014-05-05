@@ -243,6 +243,10 @@ function generate_legend() {
 
 	if (!noRight()) { 
 		table.push("<tr><td colspan=6><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
+	} else {
+		if (graph.series.length >= 2) { 
+			table.push("<tr><td colspan=6>Click a metric to move it to the Right Axis</td></tr>");
+		} 
 	}
 	table.push("<table>");
 
