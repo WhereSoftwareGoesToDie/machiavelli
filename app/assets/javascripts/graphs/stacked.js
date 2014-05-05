@@ -138,13 +138,29 @@ function renderStacked(data) {
 	slider = new Rickshaw.Graph.RangeSlider.Preview({
 		graph: graph,
 	        height: 30,
-		element: $('#slider')[0]
+		element: $('#slider')[0],
+	        onChangeDo: generate_legend
+
 	});
 
-	// Custom Legend, now with series metrics
-	
-	var legend = document.querySelector("#legend-dual");
+	var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+		graph: graph,
+		formatter: function(series, x, y, fx, fy, d) {
+			var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
+			var date = '<span class="date"> '+new Date(x * 1000).toString()+'</span>';
+			var content = swatch + format_metrics[d.order - 1] + ": " + y.toFixed(4) + "<br>"+ date; 
+			return content;
+		},
+		xFormatter: function(x){ 
+			return new Date(x * 1000).toString(); 
+		}
+	} );
 
+	generate_legend();
+}
+
+function generate_legend() { 
+	var legend = document.querySelector("#legend-dual");
 	function arr_f(a) { 
 		r = {avg: 0, min: 0, max: 0, std: 0};
 		t = a.length;
@@ -153,8 +169,20 @@ function renderStacked(data) {
 		for(var m, s = 0, l = t; l--; s += a[l]);
 		for(m = r.mean = s / t, l = t, s = 0; l--; s += Math.pow(a[l] - m, 2));
 		return r.deviation = Math.sqrt(r.variance = s / t), r;
-	} 
+	}
+
 	function fix(a) { return a.toFixed(4);}
+
+	function visibleData(a) { 
+		if (graph.window.xMin === undefined) {
+			min = Number.MIN_VALUE;
+		} else { min = graph.window.xMin; }
+		if (graph.window.xMax === undefined) {
+			max = Number.MAX_VALUE;
+		} else { max = graph.window.xMax; }
+
+		return $.map(a, function(d) { if (d.x >= min && d.x <= max) { return d.y;}  });
+	} 
 
 	left = [];
 	right = [];
@@ -164,7 +192,9 @@ function renderStacked(data) {
 		obj = {};
 		obj.metric = format_metrics[i];
 		obj.colour = d.color;
-		obj.ydata = $.map(d.data, function(d) { return d.y; });
+
+		obj.ydata = visibleData(d.data);
+		
 		if (isRight(i)) { 
 			obj.link = left_links[i];
 			obj.tooltip = "Move metric to the left y-axis";
@@ -185,29 +215,30 @@ function renderStacked(data) {
 	table = ["<table class='table table-condensed borderless' width='100%'>"];
 
 	arr.forEach(function(d) { 
-	table.push("<tr>");
+		table.push("<tr>");
 
-	function databit(label, data, tooltip) { 
-		s = "<td class='table_detail' data-toggle='tooltip-shuffle' ";
-		s +="data-original-title='"+tooltip+"'> "+label+": "+ data+"</td>";
-		return s;
-	} 
-	d.forEach(function(e) {
-		if (typeof(e) == "object") { 
-			y = arr_f(e.ydata);
-			el = ["<td style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
-			el.push("<td class='legend-metric'><a href='"+e.link +  
-				"' data-toggle='tooltip-shuffle' data-original-title='"+ 
-				e.tooltip+"'>"+e.metric+"</td>");
-			el.push(databit("x̄", fix(y.mean), "average"));
-			el.push(databit("σ", fix(y.deviation), "deviation"));
-			el.push(databit("bounds", fix(y.min) + " , " + fix(y.max), "minimum and maximum"));
-			table.push(el.join(""));
-		} else { 
-			table.push("<td colspan=3>&nbsp;</td>");
+		function databit(label, data, tooltip) { 
+			s = "<td class='table_detail' align='right' data-toggle='tooltip-shuffle' ";
+			s +="data-original-title='"+tooltip+"'> "+label+": "+ data+"</td>";
+			return s;
 		} 
-	});
-	table.push("</tr>");
+
+		d.forEach(function(e) {
+			if (typeof(e) == "object") { 
+				y = arr_f(e.ydata);
+				el = ["<td style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
+				el.push("<td class='legend-metric'><a href='"+e.link +  
+					"' data-toggle='tooltip-shuffle' data-original-title='"+ 
+					e.tooltip+"'>"+e.metric+"</td>");
+				el.push(databit("x̄", fix(y.mean), "average"));
+				el.push(databit("σ", fix(y.deviation), "deviation"));
+				el.push(databit("bounds", fix(y.min) + " , " + fix(y.max), "minimum and maximum"));
+				table.push(el.join(""));
+			} else { 
+				table.push("<td colspan=3>&nbsp;</td>");
+			} 
+		});
+		table.push("</tr>");
 	});
 
 	if (!noRight()) { 
@@ -222,19 +253,6 @@ function renderStacked(data) {
 		container: "body", 
 		delay: { show: 500 }
 	});
-	// end generate legend
-	
-	var hoverDetail = new Rickshaw.Graph.HoverDetail( {
-		graph: graph,
-		formatter: function(series, x, y, fx, fy, d) {
-			var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
-			var content = swatch + format_metrics[d.order - 1] + ": " + y.toFixed(4);
-			return content;
-		},
-		xFormatter: function(x){ 
-			return new Date(x * 1000).toString(); 
-		}
-	} );
 }
 
 function updateStacked() {
