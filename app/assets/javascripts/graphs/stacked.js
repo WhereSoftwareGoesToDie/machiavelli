@@ -218,7 +218,7 @@ function generate_legend() {
 		table.push("<tr>");
 
 		function databit(label, data, tooltip) { 
-			s = "<td class='table_detail' align='right' data-toggle='tooltip-shuffle' ";
+			s = "<td class='col-xs-1 table_detail' align='right' data-toggle='tooltip-shuffle' ";
 			s +="data-original-title='"+tooltip+"'> "+label+": "+ data+"</td>";
 			return s;
 		} 
