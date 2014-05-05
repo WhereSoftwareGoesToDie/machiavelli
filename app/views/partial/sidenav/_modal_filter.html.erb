@@ -9,13 +9,10 @@ $(document).ready(function() {
 	<div class="sidebar-collapse">
 		<ul class="nav side-menu" id="search">
 			<li class="header-text">
-				<span>Choose from Available Metrics
-				<span class="refresh"><a href="<%= refresh_path %>" data-toggle="tooltip" data-original-title="Click to refresh available metrics" 
-				onClick="$(this).addClass('icon-spin')"><i class="icon-refresh"></i></span></a>
-				</span>
+				<span>Choose from Available Metrics</span>
 			</li>
 			<li>
-			<li><a href="#filter_metrics" role="button" data-toggle="modal" data-target="#filter_metrics">Select metrics</a></li>
+			<li><a href="#filter_metrics" role="button" data-toggle="modal" data-target="#filter_metrics">Find metrics</a></li>
 			</li>
 		</ul>
 
@@ -24,7 +21,7 @@ $(document).ready(function() {
 		</ul>
 		<ul class="nav side-menu" id="graphed_metrics">
 			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
-			<li class="hover-li sortable" data-html="true" data-toggle="tooltip-always-metric" data-original-title="<%=style_metric :table, metric%>"><div>
+			<li class="hover-li sortable" data-html="true" data-toggle="tooltip-always-metric" data-original-title="<%=style_metric :table, metric%><br>Click to remove"><div>
 				<a href="<%= rem_qs :metric, metric %>"	onClick="this.href = this.href+window.location.hash">
 				<span class="hover hover-left drag"><i class="icon-reorder"></i></span>
 				<span class="metric" data-pretty-metric="<%=style_metric :pretty, metric%>" data-metric="<%=metric%>"><%=style_metric :pretty, metric%></span>

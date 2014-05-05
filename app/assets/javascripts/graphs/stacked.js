@@ -62,9 +62,9 @@ function renderStacked(data) {
 			}
 		} 
 		if (isRight(n)) { 
-			right_range = [ Math.min(min, right_range[0]) , Math.max(max, right_range[1]) ];
+			right_range = [ Math.min(min, right_range[0]) - 1 , Math.max(max, right_range[1]) + 1 ];
 		} else { 
-			left_range = [ Math.min(min, left_range[0]) , Math.max(max, left_range[1]) ];
+			left_range = [ Math.min(min, left_range[0]) - 1, Math.max(max, left_range[1]) + 1 ];
 		} 
 	}
 
@@ -138,116 +138,121 @@ function renderStacked(data) {
 	slider = new Rickshaw.Graph.RangeSlider.Preview({
 		graph: graph,
 	        height: 30,
-		element: $('#slider')[0]
+		element: $('#slider')[0],
+	        onChangeDo: generate_legend
+
 	});
 
+	var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+		graph: graph,
+		formatter: function(series, x, y, fx, fy, d) {
+			var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
+			var date = '<span class="date"> '+new Date(x * 1000).toString()+'</span>';
+			var content = swatch + format_metrics[d.order - 1] + ": " + y.toFixed(4) + "<br>"+ date; 
+			return content;
+		},
+		xFormatter: function(x){ 
+			return new Date(x * 1000).toString(); 
+		}
+	} );
 
-	// Custom Legend
+	generate_legend();
+}
+
+function generate_legend() { 
 	var legend = document.querySelector("#legend-dual");
+	function arr_f(a) { 
+		r = {avg: 0, min: 0, max: 0, std: 0};
+		t = a.length;
+		r.max = Math.max.apply(Math, a);
+		r.min = Math.min.apply(Math, a);
+		for(var m, s = 0, l = t; l--; s += a[l]);
+		for(m = r.mean = s / t, l = t, s = 0; l--; s += Math.pow(a[l] - m, 2));
+		return r.deviation = Math.sqrt(r.variance = s / t), r;
+	}
 
-	function divme(className, inner) { 
-		var x = document.createElement("div");
-		x.className = className;
-		x.innerHTML = inner;
-		return x;
+	function fix(a) { return a.toFixed(4);}
+
+	function visibleData(a) { 
+		if (graph.window.xMin === undefined) {
+			min = Number.MIN_VALUE;
+		} else { min = graph.window.xMin; }
+		if (graph.window.xMax === undefined) {
+			max = Number.MAX_VALUE;
+		} else { max = graph.window.xMax; }
+
+		return $.map(a, function(d) { if (d.x >= min && d.x <= max) { return d.y;}  });
 	} 
 
-	function generate_legend(date, v) { 
-		legend.innerHTML = "";
+	left = [];
+	right = [];
 
-		left = [];
-		right = [];
+	for (var i = 0; i < graph.series.length; i++) { 
+		d = graph.series[i];
+		obj = {};
+		obj.metric = format_metrics[i];
+		obj.colour = d.color;
 
-		for (var i = 0; i < v.length; i++) { 
-			d = v[i];
-			obj = {};
-			obj.metric = format_metrics[i];
-			obj.data = formatData(d[1]);
-			obj.colour = d[2];
-			if (isRight(i)) { 
-				obj.link = left_links[i];
-				obj.tooltip = "Move metric to the left y-axis";
-				right.push(obj);
-			} else { 
-				obj.link = right_links[i];
-				obj.tooltip = "Move metric to the right y-axis";
-				left.push(obj);
-			}
+		obj.ydata = visibleData(d.data);
+		
+		if (isRight(i)) { 
+			obj.link = left_links[i];
+			obj.tooltip = "Move metric to the left y-axis";
+			right.push(obj);
+		} else { 
+			obj.link = right_links[i];
+			obj.tooltip = "Move metric to the right y-axis";
+			left.push(obj);
 		}
+	}
 
-		arr = [];
-		len = Math.max(left.length, right.length) ;
-		for (var j = 0; j < len; j++) { 
-			arr.push([left[j],right[j]]);
+	arr = [];
+	len = Math.max(left.length, right.length) ;
+	for (var j = 0; j < len; j++) { 
+		arr.push([left[j],right[j]]);
+	} 
+
+	table = ["<table class='table table-condensed borderless' width='100%'>"];
+
+	arr.forEach(function(d) { 
+		table.push("<tr>");
+
+		function databit(label, data, tooltip) { 
+			s = "<td class='col-xs-1 table_detail' align='right' data-toggle='tooltip-shuffle' ";
+			s +="data-original-title='"+tooltip+"'> "+label+": "+ data+"</td>";
+			return s;
 		} 
 
-		table = ["<table class='table table-condensed borderless' width='100%'>"];
-		table.push("<tr><td colspan=6>"+date+"</td></tr>");
-
-		arr.forEach(function(d) { 
-			table.push("<tr>");
-			d.forEach(function(e) {
-				if (typeof(e) == "object") { 
-					el = ["<td style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
-					el.push("<td class='legend-metric'><a href='"+e.link +  
-						"' data-toggle='tooltip-shuffle' data-original-title='"+ 
-						e.tooltip+"'>"+e.metric+"</td>");
-					el.push("<td class='col-xs-1' align='right'>"+e.data+"</td>");
-					table.push(el.join(""));
-				} else { 
-					table.push("<td colspan=3>&nbsp;</td>");
-				} 
-			});
-			table.push("</tr>");
+		d.forEach(function(e) {
+			if (typeof(e) == "object") { 
+				y = arr_f(e.ydata);
+				el = ["<td style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
+				el.push("<td class='legend-metric'><a href='"+e.link +  
+					"' data-toggle='tooltip-shuffle' data-original-title='"+ 
+					e.tooltip+"'>"+e.metric+"</td>");
+				el.push(databit("x̄", fix(y.mean), "average"));
+				el.push(databit("σ", fix(y.deviation), "deviation"));
+				el.push(databit("bounds", fix(y.min) + " , " + fix(y.max), "minimum and maximum"));
+				table.push(el.join(""));
+			} else { 
+				table.push("<td colspan=3>&nbsp;</td>");
+			} 
 		});
+		table.push("</tr>");
+	});
 
+	if (!noRight()) { 
 		table.push("<tr><td colspan=6><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
-		table.push("<table>");
-
-		legend.innerHTML = table.join("\n");
-	
-		$("[data-toggle='tooltip-shuffle']").tooltip({ 
-			placement: "bottom", 
-			container: "body", 
-			delay: { show: 500 }
-		});
-	} 
-
-	// Initial Labels with no values
-	fake_label = [];
-	for (i = 0; i < format_metrics.length; i++) {
-		fake_label.push([format_metrics[i], "", colours[i]]);
 	}
-	generate_legend("Hover over graph for details", fake_label);
+	table.push("<table>");
 
-	// Overload HoverDetail so it populates our legend dynamically
-	var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
-		render: function (args) {
+	legend.innerHTML = table.join("\n");
 
-			date = d3.time.format("%a, %d %b %Y %H:%M:%S")(new Date(args.domainX * 1000));
-			v = [];
-			args.detail.forEach(function (d) {
-				v.push([d.name, d.formattedYValue, d.series.color]);
-
-				// Highlight selected datapoints
-				var dot = document.createElement('div');
-				dot.className = 'dot';
-				dot.style.top = graph.y(d.value.y0 + d.value.y) + 'px';
-				dot.style.borderColor = d.series.color;
-
-				this.element.appendChild(dot);
-				dot.className = 'dot active';
-				this.show();
-			}, this);
-			generate_legend(date, v);
-		}
+	$("[data-toggle='tooltip-shuffle']").tooltip({ 
+		placement: "bottom", 
+		container: "body", 
+		delay: { show: 500 }
 	});
-
-	// Call the cover function
-	var hover = new Hover({
-		graph: graph
-	});
-
 }
 
 function updateStacked() {

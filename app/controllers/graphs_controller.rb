@@ -51,7 +51,7 @@ class GraphsController < ApplicationController
 	def submit #searching 
 		metrics = params[:filter][:metrics_select]
 		metrics = metrics.split(";") # select2 modal separator: ";", changed purposefully. Will break if metrics contain semicolon. 
-		metrics.reject! { |c| c.empty? or c.include?("0000") } # TODO why for the 0000? (sometimes [object Object])
+		metrics.reject! { |c| c.empty? or c.include?("0000")} 
 		redirect_to root_path + chg_qs(:metric, metrics, {url: :referer})
 
 	end
