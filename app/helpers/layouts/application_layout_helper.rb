@@ -5,6 +5,8 @@ module Layouts
 	module ApplicationLayoutHelper
 		UI_DEFAULTS = {	
 			start: "3h",
+			stop: "0h",
+			points: 600,
 			graph: "standard"
 		}
 		
@@ -59,7 +61,7 @@ module Layouts
 			a
 		end
 
-
+	# Backend Helpers
 		def style_metric style, metric
 			(init_backend metric).style_metric style, metric
 		end
@@ -91,7 +93,7 @@ module Layouts
 			list
 		end
 
-		# Query string manipulation functions
+	# Query string manipulation functions
 		def chk_qs k,v,p={}; alter_qs :chk, k,v,p; end
 		def que_qs k,  p={}; alter_qs :que, k, false, p; end
 		def chg_qs k,v,p={}; alter_qs :chg, k,v,p; end
@@ -149,15 +151,34 @@ module Layouts
 			hash_query hash
 		end
 
+	# Time manipulation functions
+		def is_epoch s #is integer.
+			s.to_i.to_s == s
+		end
+
+		def nicetime_split s
+			s.split(/(\d+)/).reject{|c| c.empty?}
+		end
+
+		def is_nicetime s
+			return false if is_epoch(s) #fast fail
+			a,b = nicetime_split s
+			return true if a.to_i.to_s == a and b.is_a? String
+		end
+
 		def to_epoch s
 			return "" if s.nil?
-			time_scale = (case s.tr("0-9","")
+			return s.to_i if is_epoch(s)
+
+			mult, time = nicetime_split s
+
+			time_scale = (case time
 				when "min"; "minutes"
 				when "h"; "hours"
 				when "d"; "days"
 				when "w"; "weeks"
 				end )
-			eval("#{s.tr("a-z","")}.#{time_scale}.ago.to_i")
+			eval("#{mult}.#{time_scale}.ago.to_i")
 		end
 	end
 end

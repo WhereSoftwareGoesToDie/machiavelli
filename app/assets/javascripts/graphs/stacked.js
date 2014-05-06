@@ -160,7 +160,9 @@ function renderStacked(data) {
 }
 
 function generate_legend() { 
+
 	var legend = document.querySelector("#legend-dual");
+	
 	function arr_f(a) { 
 		r = {avg: 0, min: 0, max: 0, std: 0};
 		t = a.length;

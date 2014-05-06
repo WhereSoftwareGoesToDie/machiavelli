@@ -10,15 +10,27 @@ class GraphsController < ApplicationController
 # GET
 	def index # index.html
 		@metrics = selected_metrics
-		@graph = params[:graph] || UI_DEFAULTS[:graph] 
-
-		start = params[:start] || UI_DEFAULTS[:start]
-		gon.start = to_epoch(start)
-		gon.stop  = to_epoch(params[:stop] || "0h")
-		gon.step  = params[:step] || steps(start) || 60 
-
 		gon.metrics = []
 
+		start = to_epoch(params[:start] || UI_DEFAULTS[:start])
+		stop  = to_epoch(params[:stop]  || UI_DEFAULTS[:stop])
+		
+		if stop < start
+			flash.now[:error] = "Start time has to be before stop time"
+			return
+		end
+
+		if stop - start <  UI_DEFAULTS[:points]
+			flash.now[:error] = "Time range must be at least #{UI_DEFAULTS[:points]} seconds apart."
+			return
+		end
+
+		# Everything should be ok from here on out
+		@graph = params[:graph] || UI_DEFAULTS[:graph] 
+
+		step  = params[:step]  || (stop - start).to_i / UI_DEFAULTS[:points]
+		gon.start, gon.stop, gon.step = start, stop, step
+		
 		@metrics.each_with_index do |m,i|
 			gon.metrics[i] = { metric: m, feed: "/metric/?metric="+m, live: (init_backend m).live?}
 		end
@@ -54,17 +66,5 @@ class GraphsController < ApplicationController
 		metrics.reject! { |c| c.empty? or c.include?("0000")} 
 		redirect_to root_path + chg_qs(:metric, metrics, {url: :referer})
 
-	end
-
-# Functions
-	def steps period # take a time period, and return the seconds it represents
-		mult, time = period.split(/(\d+)/).reject!{|a| a.empty?}
-		sec = case time 
-			when "min" then; 60
-			when "h"   then; 60*60
-			when "d"   then; 60*60*24
-			when "w"   then; 60*60*24*7
-			end
-		sec * mult.to_i / 600
 	end
 end
