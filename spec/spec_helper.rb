@@ -48,7 +48,7 @@ def time_css_button metric, type, time, css
 		visit "/?metric=#{metric}&graph=#{type}&start=#{time}"  
 		wait_for_ajax type, metric, time
 		
-		expect(page).not_to have_css "div#alert-danger"
+		expect(page).not_to have_css "div.alert-danger"
 		expect(page).to have_content metric.split("~").first # .join(" - ") 
 
 		m = metric.split(/[,:~]/)
@@ -84,7 +84,7 @@ shared_examples 'refresh metrics' do |type|
 
 		visit "/refresh"
 
-		expect(page).not_to have_css "div#alert-danger"
+		expect(page).not_to have_css "div.alert-danger"
 		visit "/source/"
                 expect(page).to have_content type
 
@@ -105,7 +105,7 @@ def add_config config
 end
 
 def test_config type
-	expect(page).not_to have_css "div#alert-danger"
+	expect(page).not_to have_css "div.alert-danger"
 	visit "/source/"
 	expect(page).to have_content type
 end
