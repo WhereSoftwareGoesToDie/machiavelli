@@ -70,16 +70,23 @@ class Backend::Descartes < Backend::GenericBackend
 			return [metric.select{|a| a[:x] >= start}.first]
 		end
 
+		# Walk though the retrieved dataset for the times are assume to
+		# get. Add a nil value if the date we aren't for isn't in the set.
 		padded = []
-		(start..stop).step(step).each do |i|
-			points = metric.select{|p| p[:x].between?(i, i+step-1)}
-			if points.length == 1 then
-				padded << points.first
-			elsif points.length == 0 then
-				padded << {x: i, y: nil} # (0.0/0.0)}
-			end
-		end
+		dindex = metric.find_index{|a| a[:x] >= start}
+		dstart = metric[dindex][:x]
+		xs = 0
+		points = (stop - start) / step
 
+		points.times do |n|
+			m = metric[dindex + n]
+			if m[:x] == dstart + (step * xs) then
+				padded << m
+			else
+				padded << {x: m[:x], y: nil}
+			end
+			xs += 1
+		end
 		padded
         end
 
