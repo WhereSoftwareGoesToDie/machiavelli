@@ -1,7 +1,7 @@
 
 <div class="btn-group" style="font-size: small">Data from: </div> 
 <div class="btn-group">
-	<% navbar_buttons(:start, ["10min","1h","3h","1d","1w","2w"]).each do |a| %>
+	<% navbar_buttons(:start, ["2w", "1w", "1d", "3h", "1h", "10min"]).each do |a| %>
 		<%= a.html_safe %>
 	<% end %>
 </div>
@@ -16,13 +16,24 @@
 	<div class="dropdown-menu">
 		<%= form_for "time", url: stop_time_path do |f| %>
 		<% field = params[:stop].nil? ? "10" : params[:stop].tr("^0-9", ''); %>
-		<li style="padding: 5px"><%=f.text_field(:number, value: field, style:"width: 100%;") %></li>
+		<li style="padding: 5px"><%=f.text_field(:number, value: field, style:"width: 100%") %></li>
 		
 		<div class="btn-group" style="padding-left: 5px">
-		<% ["min","h","d", "w", "now"].each do |a| %>
-				<%= f.submit a %>
-		<% end %>
+		<% ["min","h","d", "w"].each do |a| %>
+				<%= f.submit a, class: "btn btn-default" %>
+			<% end %>
+		</div>
+		<div class="btn-group" style="padding: 5px">
+		<%= f.submit "now", class: "btn btn-default", style: "display: inline-block"%>
 		</div>
 	<% end %>
 	</ul>
 </div>
+<script>
+$(function() {
+    $("div.dropdown-menu input").on("click", function(e) {
+	console.log("shtap")
+        e.stopPropagation();
+    });
+});
+</script>
