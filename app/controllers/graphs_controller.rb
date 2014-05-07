@@ -65,6 +65,14 @@ class GraphsController < ApplicationController
 		metrics = metrics.split(";") # select2 modal separator: ";", changed purposefully. Will break if metrics contain semicolon. 
 		metrics.reject! { |c| c.empty? or c.include?("0000")} 
 		redirect_to root_path + chg_qs(:metric, metrics, {url: :referer})
+	end
 
+	def stop_time #changing stop parameter
+		if params[:commit] == "now"
+			redirect_to root_path + obl_qs(:stop, {url: :referer})
+		else 
+			stop = params[:time][:number] + params[:commit]
+			redirect_to root_path + chg_qs(:stop, stop, {url: :referer})
+		end
 	end
 end
