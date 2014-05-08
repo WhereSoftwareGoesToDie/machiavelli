@@ -1,0 +1,23 @@
+
+	<% time_type = que_qs(:time).join(""); time_type = "relative" if time_type.empty? %>
+<div class="btn-group">
+	<% if time_type == "relative"
+		 icon = "<i class='icon-rocket'></i>"
+		tooltip = "Relative Time"
+		 change = "Change to Absolute"; 
+		link = root_path + chg_qs(:time, "absolute")
+	else 
+		icon = "<b>|x|</b>"
+		tooltip = "Absolute Time"
+		change = "Change to Relative"
+		link = root_path + chg_qs(:time, "relative")
+	end%>
+	<a type="button"  class="btn btn-default" data-toggle="tooltip-down" data-original-title="<%= tooltip%>"><%= icon.html_safe %></a>
+	<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+          </a>
+	<div class="dropdown-menu">
+		<li style="padding: 5px"><a href="<%=link%>"><%=change%></a></li>
+	</div>
+</div>
