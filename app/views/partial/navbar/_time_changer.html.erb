@@ -1,23 +1,31 @@
 
-	<% time_type = que_qs(:time).join(""); time_type = "relative" if time_type.empty? %>
+<% time_type = que_qs(:time).join(""); time_type = "default" if time_type.empty? %>
 <div class="btn-group">
-	<% if time_type == "relative"
-		 icon = "<i class='icon-rocket'></i>"
+	
+	<% change_links = [
+		["default",  "Change to Default", root_path + obl_qs(:time)],
+		["relative", "Change to Relative", root_path + chg_qs(:time, "relative")],
+		["absolute", "Change to Absolute", root_path + chg_qs(:time, "absolute")]
+	]
+	if time_type == "relative"
+		icon = "<i class='icon-rocket'></i>"
 		tooltip = "Relative Time"
-		 change = "Change to Absolute"; 
-		link = root_path + chg_qs(:time, "absolute")
-	else 
+	elsif time_type == "absolute" 
 		icon = "<b>|x|</b>"
 		tooltip = "Absolute Time"
-		change = "Change to Relative"
-		link = root_path + chg_qs(:time, "relative")
-	end%>
-	<a type="button"  class="btn btn-default" data-toggle="tooltip-down" data-original-title="<%= tooltip%>"><%= icon.html_safe %></a>
+	else 
+		icon = "default"
+		tooltip = "Default time"
+	end
+	change_links.delete_at(change_links.map{|x| x[0]}.index time_type) %>
+	<a type="button" class="btn btn-default active" data-toggle="tooltip-down" data-original-title="<%=tooltip%>"><%= icon.html_safe %></a>
 	<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
           </a>
 	<div class="dropdown-menu">
-		<li style="padding: 5px"><a href="<%=link%>"><%=change%></a></li>
+	 	<% change_links.each do |c| %>
+		<li style="padding: 5px"><a href="<%=c[2]%>"><%=c[1]%></a></li>
+		<% end %>
 	</div>
 </div>
