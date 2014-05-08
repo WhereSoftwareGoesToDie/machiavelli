@@ -10,6 +10,9 @@ module Layouts
 			graph: "standard"
 		}
 		
+		def ui_default s
+			UI_DEFAULTS[s]
+		end
 		def ui_message msg
 			case msg
 			when :no_graphs_selected; "Select a metric from the list to graph"
@@ -48,16 +51,12 @@ module Layouts
 			render(partial: partial)
 		end
 
-		def navbar_buttons param, buttons, match_substr=false
+		def navbar_buttons param, buttons, args={}
 			a = []
 			buttons.each do |b|
 				html = "<a type='button' class='btn btn-default "
 				p = chk_qs(param,b) 
-				if match_substr
-					html += "active" if (p || (que_qs(param).join("").include? b))
-				else 
-					html += "active" if (p || p.nil? && UI_DEFAULTS[param] == b)
-				end
+				html += "active" if (p || p.nil? && UI_DEFAULTS[param] == b) || args[:active]
 				html += "' href='"+ chg_qs(param, b) +"'>"+b+"</a>"
 				a << html
 			end

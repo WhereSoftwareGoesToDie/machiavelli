@@ -2,10 +2,10 @@
 <%= javascript_include_tag "bootstrap-datetimepicker.min" %>
 <%= stylesheet_link_tag "bootstrap-datetimepicker.min" %>
 
-<% times = [{field: "start", label: "Data from "},{field: "stop", label: "to"}] %>
+<% times = [{field: "start", label: "Data from ", default: to_epoch(ui_default(:start))},{field: "stop", label: "to", default: to_epoch(ui_default(:stop))}] %>
 <%= form_for "time", url: absolute_time_path, html: {style: "display: inline-block"} do |f| %>
 	<% times.each do |b|
-		val = to_epoch(params[b[:field].to_sym])
+		val = to_epoch(params[b[:field].to_sym] || b[:default].to_s)
 		val = Time.at(val.to_i).strftime("%d/%m/%Y %H:%M:%S %p") %>
 
 <div class="btn-group" style="font-size: small"><%= b[:label] %></div> 	
@@ -32,7 +32,7 @@ $(function() {
 			    date: "icon-calendar",
 			    up: "icon-arrow-up",
 			    down: "icon-arrow-down"
-			}, 
+			},
 			format: "DD/MM/YYYY HH:mm:ss A"
                 });
 	<% end %>
