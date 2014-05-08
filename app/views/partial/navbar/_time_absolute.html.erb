@@ -1,11 +1,40 @@
+<%= javascript_include_tag "moment.min" %>
+<%= javascript_include_tag "bootstrap-datetimepicker.min" %>
+<%= stylesheet_link_tag "bootstrap-datetimepicker.min" %>
+
+<% times = [{field: "start", label: "Data from "},{field: "stop", label: "to"}] %>
+<%= form_for "time", url: absolute_time_path, html: {style: "display: inline-block"} do |f| %>
+	<% times.each do |b|
+		val = to_epoch(params[b[:field].to_sym])
+		val = Time.at(val.to_i).strftime("%d/%m/%Y %H:%M:%S %p") %>
+
+<div class="btn-group" style="font-size: small"><%= b[:label] %></div> 	
+<div class="btn-group" style="width: 230px">
+	<div id="datetimepicker_<%=b[:field]%>" class="input-group date">
+		<%= f.text_field "#{b[:field]}_time", class: "form-control", value: val, style: "display: inline-block" %>
+		<span class="input-group-addon"><i class="icon-calendar"></i></span>
+	</div>
+</div>
+<% end #loop %>
 
 <div class="btn-group">
-	<% navbar_buttons(:start, ["10min","1h","3h","1d","1w","2w"]).each do |a| %>
-		<%= a.html_safe %>
-	<% end %>
+	<%= f.submit "Go", class: "form-control" %>
 </div>
-<div class="btn-group">
-	<% navbar_buttons(:end, ["10min","1h","3h","1d","1w","2w"]).each do |a| %>
-		<%= a.html_safe %>
+<% end # form %>
+
+
+<script type="text/javascript">
+$(function() { 
+	<% times.each do |b| %>
+		$('#datetimepicker_<%=b[:field]%>').datetimepicker({ 
+			icons: {
+			    time: "icon-time",
+			    date: "icon-calendar",
+			    up: "icon-arrow-up",
+			    down: "icon-arrow-down"
+			}, 
+			format: "DD/MM/YYYY HH:mm:ss A"
+                });
 	<% end %>
-</div>
+});
+</script>

@@ -5,9 +5,9 @@
 		<%= a.html_safe %>
 	<% end %>
 </div>
-<div class="btn-group" style="font-size: small">to: </div> 
+<div class="btn-group" style="font-size: small">ago to: </div> 
 <div class="btn-group">
-	<% label = que_qs(:stop); label = ["now"] if label.empty? ; navbar_buttons(:end, label).each do |a| %><%= a.html_safe %><%end%>
+	<% label = que_qs(:stop); label = ["now"] if label.empty? || is_epoch(label[0]) ; navbar_buttons(:stop, label).each do |a| %><%= a.html_safe %><%end%>
 
 	<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 		<span class="caret"></span>

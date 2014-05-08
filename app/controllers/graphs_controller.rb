@@ -75,4 +75,12 @@ class GraphsController < ApplicationController
 			redirect_to root_path + chg_qs(:stop, stop, {url: :referer})
 		end
 	end
+
+	def absolute_time 
+		start = Time.parse(params[:time][:start_time]).to_i
+		stop = Time.parse(params[:time][:stop_time]).to_i
+		p_url = chg_qs(:start, start, {url: :referer})
+		url = chg_qs(:stop, stop, {url: p_url})
+		redirect_to root_path + url
+	end
 end
