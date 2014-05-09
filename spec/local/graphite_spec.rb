@@ -4,7 +4,7 @@ describe "Graphite", :js => true do
 
 	type = "Graphite"
 	name = "carbon.agents.graphite-a.cache.queues"
-	graphite_host = "http://192.168.122.219"
+	graphite_host = "http://#{ENV["TEST_GRAPHITE_HOST"]}"
 	metric = "#{type}~#{name}" 
 
 	begin
