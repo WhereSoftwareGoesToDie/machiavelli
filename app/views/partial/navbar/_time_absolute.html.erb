@@ -1,7 +1,7 @@
 <%= javascript_include_tag "moment.min" %>
 <%= javascript_include_tag "bootstrap-datetimepicker.min" %>
 <%= stylesheet_link_tag "bootstrap-datetimepicker.min" %>
-
+<%= javascript_include_tag "jquery.form-validator" %>
 <% times = [{field: "start", label: "Data from ", default: to_epoch(ui_default(:start))},{field: "stop", label: "to", default: to_epoch(ui_default(:stop))}] %>
 <%= form_for "time", url: absolute_time_path, html: {style: "display: inline-block"} do |f| %>
 	<% times.each do |b|
@@ -11,7 +11,7 @@
 <div class="btn-group" style="font-size: small"><%= b[:label] %></div> 	
 <div class="btn-group" style="width: 230px">
 	<div id="datetimepicker_<%=b[:field]%>" class="input-group date">
-		<%= f.text_field "#{b[:field]}_time", class: "form-control", value: val, style: "display: inline-block" %>
+		<%= f.text_field "#{b[:field]}_time", class: "form-control", value: val, style: "display: inline-block", data: {validation: 'datetime'} %>
 		<span class="input-group-addon"><i class="icon-calendar"></i></span>
 	</div>
 </div>
@@ -36,5 +36,15 @@ $(function() {
 			format: "DD/MM/YYYY HH:mm:ss A"
                 });
 	<% end %>
+	$.formUtils.addValidator({
+		name: "datetime",
+		validatorFunction: function(val, el, config, lang, form) { 
+			return moment(new Date(val)).isValid();
+		},
+		errorMessage: "",
+		errorMessageKey: ""
+	})
+	$.validate()
+
 });
 </script>
