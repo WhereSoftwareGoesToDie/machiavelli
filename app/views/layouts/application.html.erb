@@ -39,7 +39,18 @@
 			</div>
 			<div id="navbar-buttons">
 				<ul class="nav navbar-top-links navbar-right" style="margin-top:10px; margin-right: 10px">
-					<%= render partial: "partial/navbar/timescales" %>
+				<%= render partial: "partial/navbar/version" %>
+				<% if que_qs(:metric).join("").length > 0 %>
+					<%= render partial: "partial/navbar/autoplay" %>
+					<%= render partial: "partial/navbar/refresh" %>
+					<%= render partial: "partial/navbar/graphs" %>
+					<% if params[:time] == "absolute" %> 
+					<%= render partial: "partial/navbar/time_absolute" %>
+					<% else %> 
+					<%= render partial: "partial/navbar/time_relative" %>
+					<% end %>
+					<%= render partial: "partial/navbar/time_changer" %>
+				<% end %>
 				</ul>
 			</div>
 		</nav>

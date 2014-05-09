@@ -5,6 +5,11 @@
 
 .tooltip-inner { max-width: 800px} 
 
+/*jquery.formValidator theme */
+input.error { 
+	background: #ffebef; 
+	color: #480000
+}
 
 
 /* Font-awesome search */

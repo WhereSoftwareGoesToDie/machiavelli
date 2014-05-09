@@ -10,6 +10,9 @@ module Layouts
 			graph: "standard"
 		}
 		
+		def ui_default s
+			UI_DEFAULTS[s]
+		end
 		def ui_message msg
 			case msg
 			when :no_graphs_selected; "Select a metric from the list to graph"
@@ -47,14 +50,13 @@ module Layouts
 			partial = "partial/sidenav/modal_filter"
 			render(partial: partial)
 		end
-		
-		def navbar_buttons param, buttons
+
+		def navbar_buttons param, buttons, args={}
 			a = []
 			buttons.each do |b|
 				html = "<a type='button' class='btn btn-default "
 				p = chk_qs(param,b) 
-
-				html += "active" if (p || p.nil? && UI_DEFAULTS[param] == b)
+				html += "active" if (p || p.nil? && UI_DEFAULTS[param] == b) || args[:active]
 				html += "' href='"+ chg_qs(param, b) +"'>"+b+"</a>"
 				a << html
 			end
@@ -169,7 +171,7 @@ module Layouts
 		def to_epoch s
 			return "" if s.nil?
 			return s.to_i if is_epoch(s)
-
+			s = "0h" if s == "now"
 			mult, time = nicetime_split s
 
 			time_scale = (case time

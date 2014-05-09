@@ -1,0 +1,13 @@
+
+<% time_type = que_qs(:time).join(""); time_type = "relative" if time_type.empty? 
+	case time_type
+		when "relative" then icon = "calendar"; chg = "absolute"
+		when "absolute" then icon = "rocket"; chg = "relative"
+	end
+%>
+<div class="btn-group">
+	<a type="button" class="btn btn-default" data-toggle="tooltip-down" data-original-title="Change to <%= chg.titleize%> Time"
+	href="<%=root_path + chg_qs(:time, chg) %>">
+		<i class="icon-arrow-right"></i> <i class="icon-<%= icon %>"></i>
+	</a>
+</div>
