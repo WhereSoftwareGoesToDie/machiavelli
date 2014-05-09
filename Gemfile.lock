@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/glasnt/git-version-bump
+  revision: 41984f4b49154101648d078d02b0f15b394f2ea0
+  specs:
+    git-version-bump (0.9.1.5.g41984f4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -246,6 +252,7 @@ DEPENDENCIES
   coffee-rails
   color
   coveralls
+  git-version-bump!
   gon
   guard-rspec
   guard-spork

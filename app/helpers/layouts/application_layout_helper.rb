@@ -1,5 +1,7 @@
 require 'cgi'
 require 'uri'
+require 'git-version-bump'
+
 
 module Layouts
 	module ApplicationLayoutHelper
@@ -22,19 +24,8 @@ module Layouts
 		end
 
 		def version
-			config = "config/version"
-			if Rails.env.development?
-				v = %x[git describe --tags --always].strip()
-				File.open(config, "w") do |file|
-					file.write(v)
-				end
-
-				link_to v, "https://github.com/anchor/machiavelli/commit/#{v[-7..-1]}", target: "blank"
-			else 
-				v = File.read(config)
-				t = v.split("-").first
-				link_to t, "https://github.com/anchor/machiavelli/tree/#{t}", target: "blank"
-			end
+			v = GVB.version
+			link_to v, "https://github.com/anchor/machiavelli/tree/#{v}", target: "blank"
 		end
 
 		def flash_class(level)
