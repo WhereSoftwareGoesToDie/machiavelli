@@ -60,7 +60,7 @@
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-md-12">
-					<div id="flash"><% flash.each do |key, value| %><div class="<%= flash_class(key) %>"><%= value %></div><% end %></div>
+					<div id="flash"><% flash.each do |key, value| %><div class="<%= flash_class(key.to_sym) %>"><%= value %></div><% end %></div>
 					<%= yield %>
 				</div>
 			</div>
