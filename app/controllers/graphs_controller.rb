@@ -12,8 +12,8 @@ class GraphsController < ApplicationController
 		@metrics = selected_metrics
 		gon.metrics = []
 
-		start = to_epoch(params[:start] || UI_DEFAULTS[:start])
-		stop  = to_epoch(params[:stop]  || UI_DEFAULTS[:stop])
+		start = to_epoch(get_param(:start))
+		stop  = to_epoch(get_param(:stop))
 		
 		if stop < start
 			flash.now[:error] = "Start time has to be before stop time"
@@ -26,7 +26,7 @@ class GraphsController < ApplicationController
 		end
 
 		# Everything should be ok from here on out
-		@graph = params[:graph] || UI_DEFAULTS[:graph] 
+		@graph = get_param(:graph)
 
 		step  = params[:step]  || (stop - start).to_i / UI_DEFAULTS[:points]
 		gon.start, gon.stop, gon.step = start, stop, step

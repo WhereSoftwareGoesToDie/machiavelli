@@ -7,14 +7,22 @@ module Layouts
 	module ApplicationLayoutHelper
 		UI_DEFAULTS = {	
 			start: "3h",
-			stop: "0h",
+			stop: "now",
 			points: 600,
-			graph: "standard"
+			graph: "standard",
+			time: "relative"
 		}
 		
 		def ui_default s
 			UI_DEFAULTS[s]
 		end
+		
+		def get_param s
+			p = que_qs(s).first
+			p = ui_default(s) if p.nil?
+			p
+		end
+
 		def ui_message msg
 			case msg
 			when :no_graphs_selected; "Select a metric from the list to graph"

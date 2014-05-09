@@ -44,7 +44,7 @@
 					<%= render partial: "partial/navbar/autoplay" %>
 					<%= render partial: "partial/navbar/refresh" %>
 					<%= render partial: "partial/navbar/graphs" %>
-					<% if params[:time] == "absolute" %> 
+					<% if get_param(:time) == "absolute" %> 
 					<%= render partial: "partial/navbar/time_absolute" %>
 					<% else %> 
 					<%= render partial: "partial/navbar/time_relative" %>
