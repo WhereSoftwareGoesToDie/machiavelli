@@ -13,7 +13,7 @@ input.error { background: #ffebef; color: #480000}
 	<% label = que_qs(:stop); label = ["now"] if label.empty? || is_epoch(label[0])
 		navbar_buttons(:stop, label, {active: true}).each do |a| %><%= a.html_safe %><%end%>
 
-	<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+	<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="stop_select">
 		<span class="caret"></span>
 		<span class="sr-only">Toggle Dropdown</span>
 	</a>
