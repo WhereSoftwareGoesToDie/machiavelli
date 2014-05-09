@@ -30,3 +30,6 @@ temp_settings.yml
 
 # Ignore simplecov generated files
 /coverage
+
+# Ignore 
+lib/hax
