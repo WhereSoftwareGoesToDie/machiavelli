@@ -23,7 +23,7 @@ TEMP_YML = "temp_settings.yml"
 REDIS_METRIC_KEY = "Machiavelli.Metrics"
 
 Capybara.default_wait_time = 2
-AJAX_WAIT_TIME = 20
+AJAX_WAIT_TIME = 30
 
 Capybara.javascript_driver = :webkit unless ENV["BROWSER"] == "firefox"
 
