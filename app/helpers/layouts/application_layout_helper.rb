@@ -25,7 +25,8 @@ module Layouts
 
 		def version
 			v = GVB.version
-			link_to v, "https://github.com/anchor/machiavelli/tree/#{v}", target: "blank"
+			l = v.split(".")[0..2].join(".")
+			link_to v, "https://github.com/anchor/machiavelli/releases/tag/v#{l}", target: "blank"
 		end
 
 		def flash_class(level)
