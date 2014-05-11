@@ -12,7 +12,8 @@ mkdir -p "vendor/bundle"
 share "vendor/bundle"
 mkdir -p "config/settings"
 share "config/settings/${APP_ENV}.yml"
-
+mkdir -p "lib/extensions"
+share "lib/extensions"
 
 echo "Installing gems..."
 chruby-exec "$(cat .ruby-version)" -- bundle install --deployment --without 'development test'
