@@ -32,4 +32,4 @@ temp_settings.yml
 /coverage
 
 # Ignore 
-lib/hax
+lib/extensions
