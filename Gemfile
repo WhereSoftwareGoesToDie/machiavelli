@@ -14,7 +14,7 @@ gem 'coveralls', require: false, group: :test
 gem 'simplecov', '~> 0.7.1'
 gem 'sinatra'
 
-gem "git-version-bump", git: "https://github.com/glasnt/git-version-bump" 
+gem "git-version-bump"
 
 group :production do
 	gem 'unicorn'

@@ -1,9 +1,3 @@
-GIT
-  remote: https://github.com/glasnt/git-version-bump
-  revision: 7a4575f533c2abb199265bfeda22f53aae3618b3
-  specs:
-    git-version-bump (0.9.1.7.g7a4575f)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -85,6 +79,7 @@ GEM
     execjs (2.0.2)
     ffi (1.9.3)
     formatador (0.2.4)
+    git-version-bump (0.9.1)
     gon (5.0.4)
       actionpack (>= 2.3.0)
       json
@@ -262,7 +257,7 @@ DEPENDENCIES
   coffee-rails
   color
   coveralls
-  git-version-bump!
+  git-version-bump
   gon
   guard-rspec
   guard-spork
