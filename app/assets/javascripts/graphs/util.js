@@ -66,7 +66,7 @@ function stopButtonClick() {
 function stopAll() {
         stopUpdates();
 	stopButtonClick();
-	unrenderWaiting();
+	//unrenderWaiting();
 }
 
 function metric_sort() {
