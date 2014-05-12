@@ -35,7 +35,7 @@ module Layouts
 			begin
 				v = "#{GVB.major_version}.#{GVB.minor_version}.#{GVB.patch_version}"
 			rescue
-				v = File.read(".gvb_version") if File.exists?(".gvb_vesion")
+				v = File.read(".gvb_version") if File.exists?(".gvb_version")
 			end
 			link_to v, "https://github.com/anchor/machiavelli/releases/tag/v#{v}", target: "blank" if v
 		end
