@@ -173,7 +173,7 @@ function generate_legend() {
 		return r.deviation = Math.sqrt(r.variance = s / t), r;
 	}
 
-	function fix(a) { return a.toFixed(4);}
+	function fix(a) { return Rickshaw.Fixtures.Number.formatKMBT_round(a);}
 
 	function visibleData(a) { 
 		if (graph.window.xMin === undefined) {
@@ -232,12 +232,12 @@ function generate_legend() {
 				el.push("<td class='legend-metric'><a href='"+e.link +  
 					"' data-toggle='tooltip-shuffle' data-original-title='"+ 
 					e.tooltip+"'>"+e.metric+"</td>");
-				el.push(databit("x̄", fix(y.mean), "average"));
-				el.push(databit("σ", fix(y.deviation), "deviation"));
-				el.push(databit("bounds", fix(y.min) + " , " + fix(y.max), "minimum and maximum"));
+				el.push(databit("x̄", fix(y.mean), "average: "+ y.mean));
+				el.push(databit("σ", fix(y.deviation), "deviation: "+y.deviation));
+				el.push(databit("bounds", fix(y.min) + ", " + fix(y.max), "minimum: "+y.min +" and maximum: "+ y.max));
 				table.push(el.join(""));
 			} else { 
-				table.push("<td colspan=3>&nbsp;</td>");
+				table.push("<td colspan=5>&nbsp;</td>");
 			} 
 		});
 		table.push("</tr>");
