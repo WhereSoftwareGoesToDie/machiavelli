@@ -80,11 +80,15 @@ class Backend::Descartes < Backend::GenericBackend
 
 		points.times do |n|
 			m = metric[dindex + n]
-			if m[:x] == dstart + (step * xs) then
-				padded << m
-			else
-				padded << {x: m[:x], y: nil}
+			x =  dstart + (step * xs)
+			y = nil
+
+			if m and (m[:x] == dstart + (step * xs)) then
+				y = m[:y]
 			end
+
+			padded << {x: x, y: y}
+
 			xs += 1
 		end
 		padded
