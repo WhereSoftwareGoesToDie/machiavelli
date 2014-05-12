@@ -80,7 +80,7 @@ class Backend::Descartes < Backend::GenericBackend
 		dindex = metric.find_index{|a| a[:x] >= start}
 		dstart = metric[dindex][:x]
 		xs = 0
-		points = (stop - start) / step - 1
+		points = (stop - start) / step 
 
 		points.times do |n|
 			m = metric[dindex + n]
