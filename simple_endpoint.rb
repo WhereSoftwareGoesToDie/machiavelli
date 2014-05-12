@@ -38,7 +38,7 @@ get '/source/:source' do
 
 	data = []
 
-	(start..stop).step(step).each do |x|
+	(start..(stop-step)).step(step).each do |x|
 		y = 10 * (Math.sin(0.005 * x) + Math.sin((0.004 * x) + ((Math::PI * i) / len) )) + 20 + i 
 		data << { x: x, y: y.round(2) } 
 	end
