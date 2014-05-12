@@ -32,9 +32,12 @@ module Layouts
 		end
 
 		def version
-			v = GVB.version
-			l = v.split(".")[0..2].join(".")
-			link_to v, "https://github.com/anchor/machiavelli/releases/tag/v#{l}", target: "blank"
+			begin
+				v = "#{GVB.major_version}.#{GVB.minor_version}.#{GVB.patch_version}"
+			rescue
+				v = File.read(".gvb_version") if File.exists?(".gvb_vesion")
+			end
+			link_to v, "https://github.com/anchor/machiavelli/releases/tag/v#{v}", target: "blank" if v
 		end
 
 		def flash_class(level)
