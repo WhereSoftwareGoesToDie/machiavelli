@@ -32,7 +32,13 @@ class GraphsController < ApplicationController
 		gon.start, gon.stop, gon.step = start, stop, step
 		
 		@metrics.each_with_index do |m,i|
-			gon.metrics[i] = { metric: m, feed: "/metric/?metric="+m, live: (init_backend m).live?}
+			gon.metrics[i] = { 
+				metric: m,
+				feed: "/metric/?metric="+m,
+				live: (init_backend m).live?,
+				sourceURL: (init_backend m).get_metric_url(m,start,stop,step)
+			}
+
 		end
 	end
 	

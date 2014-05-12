@@ -29,7 +29,7 @@ class Backend::Descartes < Backend::GenericBackend
 	def to_des m;  m.gsub(":",SEP); end
 	def to_mach m; m.gsub(SEP,":"); end 
 
-        def get_metric m, start, stop, step
+        def get_metric m, start, stop, step, args={}
 		query = []
 		m = to_des(m)
 		query << "start=#{start - 200}" 
@@ -43,6 +43,10 @@ class Backend::Descartes < Backend::GenericBackend
 		query_string = "?" + query.join("&")
 	
 		uri = "#{@base_url}/interpolated/#{m}#{query_string}"
+
+		if args[:return_url]
+			return uri
+		end
 
 		begin
 			data = get_json uri

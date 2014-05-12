@@ -35,8 +35,12 @@ class Backend::Flatfile < Backend::GenericBackend
 		[@metric]	
         end
 
-        def get_metric m, start=nil, stop=nil, step=nil
+        def get_metric m, start=nil, stop=nil, step=nil, args={}
 		raise Backend::Error, "File #{@file} does not exist" unless File.exists?(@file)
+
+		if args[:return_url]
+			return "file://#{Rails.root}/#{@file}"
+		end
 		
 		data = []
 		File.open(@file).each_line do |line|

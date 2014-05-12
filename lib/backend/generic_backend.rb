@@ -31,8 +31,13 @@ class Backend::GenericBackend
 	#      	{ "x": epoch, "y": value },
 	#      	...
 	#    ] 
-	def get_metric m, start=nil, stop=nil, step=nil
+	def get_metric m, start=nil, stop=nil, step=nil, args={}
 		raise NotImplementedError
+	end
+
+	def get_metric_url m, start, stop, step
+		get_metric m, start, stop, step, {:return_url => true}
+
 	end
 
 	# Is the metric returning live data? That is, can it be assumed to have

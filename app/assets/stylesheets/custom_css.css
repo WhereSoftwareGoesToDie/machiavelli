@@ -1,4 +1,4 @@
-.plaid, .plaid:hover { text-decoration: none; color: black}
+.plaid, .plaid:hover { text-decoration: none; color: black;  vertical-align:text-bottom; display:inline;}
 
 /* Make a hoverlink look kind of normal */
 .hoverlink { cursor: pointer } 
@@ -11,7 +11,14 @@ input.error {
 	color: #480000
 }
 
-
+.metric_url a { 
+	font-size: small; 
+	color: grey;
+} 
+.metric_url_toggle { 
+	font-size: small;
+	display: inline;
+}
 /* Font-awesome search */
 .hover { opacity: 0.5; visibility: hidden}
 .drag{ cursor: move; padding-right: 5px}

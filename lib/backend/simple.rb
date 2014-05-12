@@ -22,7 +22,7 @@ class Backend::Simple < Backend::GenericBackend
 		end
         end
 
-        def get_metric m, start=nil, stop=nil, step=nil
+        def get_metric m, start=nil, stop=nil, step=nil, args={}
 	
 		query = []
 		query << "start=#{start}"
@@ -31,11 +31,20 @@ class Backend::Simple < Backend::GenericBackend
 
 		query_string = "?" + query.join("&")
 
+		uri = "#{@base_url}/source/#{m}#{query_string}"
+
+		if args[:return_url]
+			return uri
+		end
+
 		begin
-			get_json "#{@base_url}/source/#{m}#{query_string}"
+			data = get_json uri
 		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
 			raise Backend::Error, "Error retreiving simple metric #{m}: #{e}"
 		end
+
+		return data
+
         end
 
 	def get_json uri 

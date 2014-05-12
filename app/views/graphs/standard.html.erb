@@ -11,7 +11,10 @@
 <% @metrics.each_with_index do |metric, index| %>
 	
 <div class="graph_title">
-	<h4><a href="#" data-toggle="tooltip-always-metric" data-html="true" data-original-title="<%= style_metric :table, metric%>" class="plaid"><%= style_metric :pretty, metric %></a></h4>
+	<h4><a href="#" data-toggle="tooltip-always-metric" data-html="true" 
+			data-original-title="<%= style_metric :table, metric%>" class="plaid"><%= style_metric :pretty, metric %></a>
+		<div id="metric_<%=index%>_url" class="metric_url_toggle"></div>
+	</h4>
 </div>
 <div id="chart_container">
 	<div class="y_axis" id="<%="y_axis_#{index}"%>"></div>
@@ -22,6 +25,7 @@
 color.push(palette.color());
 renderWaiting("chart_<%=index%>");
 renderStandard(<%=index%>);
+showURL("metric_<%=index%>_url", gon.metrics[<%=index%>].sourceURL);
 </script>
 <% end %>
 

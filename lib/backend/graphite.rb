@@ -19,7 +19,7 @@ class Backend::Graphite < Backend::GenericBackend
 		end
 	end
 
-	def get_metric m, start=nil, stop=nil, step=nil
+	def get_metric m, start=nil, stop=nil, step=nil, args={}
 		url = 	@base_url + 
 			"/render?target=" + m + 
 			"&from=#{start}" +
@@ -28,6 +28,10 @@ class Backend::Graphite < Backend::GenericBackend
 
 		# Because why cook when you can create?
 		url.gsub!(m, "summarize(#{m},'#{step}sec','avg')") if step
+
+		if args[:return_url]
+			return url
+		end
 
 		begin
 			stats = get_json url

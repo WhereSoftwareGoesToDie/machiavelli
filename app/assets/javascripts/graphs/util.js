@@ -35,6 +35,15 @@ function unrenderWaiting(element) {
 	if (element) { $("#"+element).find(".icon-spinner").hide(); }
 	else { $(".icon-spinner").hide(); }
 }
+function showURL(element, url) { 
+	show = "<a class='metric_url_toggle' href='javascript:void(0);'>Show URL</a> <div class='metric_url' style='display:none'><a href='"+url+"' target=_blank'>"+url+"</a></div>";
+
+	document.getElementById(element).innerHTML = show;
+
+	$("#"+element+" .metric_url_toggle").click(function() {
+		$(this).parent().find(".metric_url").toggle(100);
+	});
+} 
 
 function renderError(element, error, detail) {
 	error_alert = "<div class='alert alert-danger'>" + error;
