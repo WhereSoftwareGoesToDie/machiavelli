@@ -36,7 +36,7 @@ describe "Search", :js => true do
 
 		# Check headers
 		headers = all("h4").map{|c| c.text}
-		expect(headers[0]).to eq nice_metrics[0]
+		expect(headers[0]).to include nice_metrics[0]
 		expect(headers).not_to include nice_metrics[1]
 		expect(headers).not_to include nice_metrics[2]
 
@@ -62,8 +62,8 @@ describe "Search", :js => true do
 
 		# Check headers
 		headers = all("h4").map{|c| c.text}
-		expect(headers[0]).to eq nice_metrics[0]
-		expect(headers[1]).to eq nice_metrics[1]
+		expect(headers[0]).to include nice_metrics[0]
+		expect(headers[1]).to include nice_metrics[1]
 		expect(headers).not_to include nice_metrics[2]
 
 	end
