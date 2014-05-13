@@ -196,7 +196,10 @@ function generate_legend() {
 		obj.colour = d.color;
 
 		obj.ydata = visibleData(d.data);
-		
+		obj.sourceURL = gon.metrics[i].sourceURL;
+		obj.index = i;
+		obj.div_name = "metric_"+i+"_url";
+
 		if (isRight(i)) { 
 			obj.link = left_links[i];
 			obj.tooltip = "Move metric to the left y-axis";
@@ -214,6 +217,8 @@ function generate_legend() {
 		arr.push([left[j],right[j]]);
 	} 
 
+	showURLs = []
+
 	table = ["<table class='table table-condensed borderless' width='100%'>"];
 
 	arr.forEach(function(d) { 
@@ -228,17 +233,20 @@ function generate_legend() {
 		d.forEach(function(e) {
 			if (typeof(e) == "object") { 
 				y = arr_f(e.ydata);
+
 				el = ["<td style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
 				el.push("<td class='legend-metric'><a href='"+e.link +  
 					"' data-toggle='tooltip-shuffle' data-original-title='"+ 
-					e.tooltip+"'>"+e.metric+"</td>");
+					e.tooltip+"'>"+e.metric+"</a> <div id='"+e.div_name+"' class='metric_url_toggle' style='display:block'></div></td>");
 				el.push(databit("x̄", fix(y.mean), "average: "+ y.mean));
 				el.push(databit("σ", fix(y.deviation), "deviation: "+y.deviation));
 				el.push(databit("bounds", fix(y.min) + ", " + fix(y.max), "minimum: "+y.min +" and maximum: "+ y.max));
 				table.push(el.join(""));
+				showURLs.push([e.div_name, e.sourceURL]);
 			} else { 
 				table.push("<td colspan=5>&nbsp;</td>");
 			} 
+
 		});
 		table.push("</tr>");
 	});
@@ -253,6 +261,10 @@ function generate_legend() {
 	table.push("<table>");
 
 	legend.innerHTML = table.join("\n");
+
+	showURLs.forEach(function(d){
+		showURL(d[0],d[1]);
+	});
 
 	$("[data-toggle='tooltip-shuffle']").tooltip({ 
 		placement: "bottom", 
