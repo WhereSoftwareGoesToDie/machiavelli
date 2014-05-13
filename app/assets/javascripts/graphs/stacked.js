@@ -8,12 +8,12 @@ var flag;
 			feed = metricURL(gon.metrics[i].feed, gon.start, gon.stop, gon.step);
 			$.getJSON(feed, function (data) {
 				if (data.error) {
-					renderError("chart", errorMessage.endpointError, data.error);
+					renderError("chart", data.error);
 					stopUpdates();
 					return false;
 				}
 				if (data.length === 0) {
-					renderError("chart", errorMessage.noData ,feed);
+					renderError("chart", errorMessage.noData);
 					stopUpdates();
 					return false;
 				}
@@ -285,12 +285,12 @@ function updateStacked() {
 
 				$.getJSON(update, function (d) {
 					if (d.error) {
-						renderError("flash", errorMessage.endpointError + " on update", d.error);
+						renderError("flash", d.error);
 						stopUpdates();
 						return false;
 					}
 					if (d.length === 0) {
-						renderError("flash", errorMessage.noData + " on update", update);
+						renderError("flash", errorMessage.noData);
 						stopUpdates();
 						return false;
 					}

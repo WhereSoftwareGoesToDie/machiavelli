@@ -51,12 +51,12 @@ class Backend::Descartes < Backend::GenericBackend
 		begin
 			data = get_json uri
 		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError => e
-			raise Backend::Error, "Error retreiving descartes metric #{m}: #{e} (full_url: #{@base_url}/interpolated/#{m}#{query_string})"
+			raise Backend::Error, "Error retreiving descartes metric #{m}: #{e}"
 		end
 
 		if (data.is_a? Hash) then
 			if data[:error] then
-				raise Backend::Error, "Descartes Exception raised: #{data[:error]}. uri: #{uri}"
+				raise Backend::Error, "Descartes Exception raised: #{data[:error]}"
 			end
 		end
 			
@@ -66,7 +66,7 @@ class Backend::Descartes < Backend::GenericBackend
 		end
 
 		if data.empty? then
-			raise Backend::Error, "No data returned from descartes query. URI: #{uri}"
+			raise Backend::Error, "No data returned from descartes query"
 		end
 
 		if stop - start == step then

@@ -9,12 +9,12 @@ function renderStandard(index) {
 		var yaxis = "y_axis_" + index;
 		
 		if (data.error) { 
-			renderError(chart, errorMessage.endpointError, data.error); 
+			renderError(chart, data.error, null, gon.metrics[index].removeURL); 
 			stopAll(); 
 			return false;
 		} 
 		if (data.length === 0) { 
-			renderError(chart, errorMessage.noData, metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step)); 
+			renderError(chart, errorMessage.noData, null, gon.metrics[index].removeURL);
 			stopAll(); 
 			return false;
 		}
@@ -83,11 +83,11 @@ function updateStandard(){
 				update = metricURL(metric.feed,now-span,now,gon.step);
 				$.getJSON(update, function(d){
 					if (d.error) { 
-						renderError("flash", errorMessage.endpointError + " on update", d.error); stopAll(); 
+						renderError("flash", d.error); stopAll(); 
 						return false;
 					} 
 					if (d.length === 0) {
-						renderError("flash", errorMessage.noData + " on update", update); stopAll(); 
+						renderError("flash", errorMessage.noData); stopAll(); 
 						return false;
 					}
 					graph[i].series[0].data = d;
