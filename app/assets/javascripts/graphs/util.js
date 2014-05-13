@@ -45,11 +45,15 @@ function showURL(element, url) {
 	});
 } 
 
-function renderError(element, error, detail) {
+function renderError(element, error, detail, url) {
 	error_alert = "<div class='alert alert-danger'>" + error;
 
+	if (url) { 
+		error_alert +=  ". <a class='alert-link' href='"+url+"'>Remove graph</a>."; 
+	}
+
 	if (detail) { 
-		error_alert +=  " <a class='detail_toggle alert-link' href='javascript:void(0);'>(details)</a>" +
+		error_alert +=  "<a class='detail_toggle alert-link' href='javascript:void(0);'>(details)</a>" +
 			"<div class='detail' style='display:none'>" +
 			detail +
 			"</div>";
