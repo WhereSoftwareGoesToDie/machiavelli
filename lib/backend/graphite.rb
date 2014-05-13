@@ -49,7 +49,9 @@ class Backend::Graphite < Backend::GenericBackend
 			metric << {x: node[1], y: node[0] } 
 		end
 
-		metric
+		points = (stop - start)/step
+
+		return metric.take(points)
 	end
 
 	def get_json url
