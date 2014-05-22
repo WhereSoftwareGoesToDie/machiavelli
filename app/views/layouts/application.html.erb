@@ -25,7 +25,7 @@
 			$("[data-toggle='tooltip-always']").tooltip({ placement: "right", container: "body", delay: { show: 500}}) 
 			$("[data-toggle='tooltip-always-metric']").tooltip({ placement: "right", container: "body", delay: { show: 500}}) 
 		})
-		</script>
+	</script>
 	<div id="wrapper">
 		<nav class="navbar navbar-default navbar-static-top" role="navigation" id="navbar" style="margin-bottom: 0">
 			<div class="navbar-header">
@@ -44,9 +44,9 @@
 					<%= render partial: "partial/navbar/autoplay" if get_param(:time) == "relative" && get_param(:stop) == "now" %>
 					<%= render partial: "partial/navbar/graphs" %>
 					<% if get_param(:time) == "absolute" %> 
-					<%= render partial: "partial/navbar/time_absolute" %>
+					<%=   render partial: "partial/navbar/time_absolute" %>
 					<% else %> 
-					<%= render partial: "partial/navbar/time_relative" %>
+					<%=   render partial: "partial/navbar/time_relative" %>
 					<% end %>
 					<%= render partial: "partial/navbar/time_changer" %>
 				<% end %>
@@ -59,7 +59,11 @@
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-md-12">
-					<div id="flash"><% flash.each do |key, value| %><div class="<%= flash_class(key.to_sym) %>"><%= value %></div><% end %></div>
+					<div id="flash">
+					<% flash.each do |key, value| %>
+						<div class="<%= flash_class(key.to_sym) %>"><%= value %></div>
+					<% end %>
+					</div>
 					<%= yield %>
 				</div>
 			</div>
