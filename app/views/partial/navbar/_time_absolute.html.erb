@@ -6,7 +6,7 @@
 <%= form_for "time", url: absolute_time_path, html: {style: "display: inline-block"} do |f| %>
 	<% times.each do |b|
 		val = to_epoch(params[b[:field].to_sym] || b[:default].to_s)
-		val = Time.at(val.to_i).strftime("%d/%m/%Y %H:%M:%S %p") %>
+		val = Time.at(val.to_i).strftime("%d/%m/%Y %I:%M:%S %p") %>
 
 <div class="btn-group" style="font-size: small"><%= b[:label] %></div> 	
 <div class="btn-group" style="width: 230px">
@@ -26,6 +26,8 @@
 <script type="text/javascript">
 $(function() { 
 	<% times.each do |b| %>
+		format_string = "DD/MM/YYYY HH:mm:ss A"
+
 		$('#datetimepicker_<%=b[:field]%>').datetimepicker({ 
 			icons: {
 			    time: "icon-time",
@@ -33,13 +35,13 @@ $(function() {
 			    up: "icon-arrow-up",
 			    down: "icon-arrow-down"
 			},
-			format: "DD/MM/YYYY HH:mm:ss A"
+		format: format_string
                 });
 	<% end %>
 	$.formUtils.addValidator({
 		name: "datetime",
 		validatorFunction: function(val, el, config, lang, form) { 
-			return moment(new Date(val)).isValid();
+			return moment(val, format_string).isValid();
 		},
 		errorMessage: "",
 		errorMessageKey: ""
