@@ -98,6 +98,17 @@ module Layouts
 			list
 		end
 
+		def refresh_errors method=:show, error=nil
+			one = "#"; two = "$"
+			if method == :save
+				init_backend.redis_conn.set "Machiavelli:RefreshErrors", error.map{|a| a.join(one)}.join(two)
+			else
+				e = init_backend.redis_conn.get "Machiavelli:RefreshErrors" 
+				e.split(two).map{|a| a.split(one)}
+			end
+		end
+
+
 	# Query string manipulation functions
 		def chk_qs k,v,p={}; alter_qs :chk, k,v,p; end
 		def que_qs k,  p={}; alter_qs :que, k, false, p; end

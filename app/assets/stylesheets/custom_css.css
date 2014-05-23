@@ -35,6 +35,7 @@ input.error {
 .side-menu a { text-decoration: none; color: #333}
 .side-menu { font-size:small}
 .side-menu .find {font-weight:normal }
+.no_link a, .no_link a:hover  { font-weight: normal; color: #666; text-decoration: none}
 .side-menu .metric {
 	display:inline-block;
 	width: 200px;

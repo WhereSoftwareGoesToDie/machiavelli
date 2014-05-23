@@ -1,3 +1,5 @@
+require 'redis'
+
 class GraphsController < ApplicationController
 	include Layouts::ApplicationLayoutHelper
 
@@ -52,16 +54,21 @@ class GraphsController < ApplicationController
 		if Settings.backends.nil?
 			flash[:error] = ui_message(:no_backends)
 		else 
+			inactive_backends = []
 			Settings.backends.each do |b|
 				begin
 					settings = b.settings.to_hash.merge({alias: b.alias||b.type})
 					backend = init_backend b.type, settings
 					backend.refresh_metrics_cache # b.alias
 				rescue Backend::Error => e
+					inactive_backends << [(b.alias||b.type), e]
 					errors << e
 				end
 			end
-			flash[:error] = errors.join("<br/>").html_safe unless errors.empty?
+			unless errors.empty?
+				flash[:error] = errors.join("<br/>").html_safe 
+				refresh_errors :save, inactive_backends
+			end
 		end
 		redirect_to root_path
 	end
