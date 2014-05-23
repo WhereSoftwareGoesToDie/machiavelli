@@ -8,8 +8,8 @@
 	var palette = new Rickshaw.Color.Palette({scheme: "munin"});
 </script>
 <div class="slider" id="multi_slider"></div>
+<span id="zoomtoselected" class="no_link zoomtoselected"></span>
 <% @metrics.each_with_index do |metric, index| %>
-	
 <div class="graph_title">
 	<h4><a href="#" data-toggle="tooltip-always-metric" data-html="true" 
 			data-original-title="<%= style_metric :table, metric%>" class="plaid"><%= style_metric :pretty, metric %></a>
@@ -26,6 +26,8 @@ color.push(palette.color());
 renderWaiting("chart_<%=index%>");
 renderStandard(<%=index%>);
 showURL("metric_<%=index%>_url", gon.metrics[<%=index%>].sourceURL);
+<% base = obl_qs :start; base = obl_qs(:stop, {url: base}); base = chg_qs(:time, "absolute", {url: base})%>
+zoomtoselected("<%= base.html_safe %>", <%= to_epoch(params[:start])%>, <%= to_epoch(params[:stop]) %>)
 </script>
 <% end %>
 

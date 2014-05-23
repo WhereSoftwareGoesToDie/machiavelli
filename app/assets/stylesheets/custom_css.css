@@ -48,6 +48,10 @@ input.error {
 
 .data_source a, .data_source a:hover  { font-size: small; color: #666; text-decoration: none}
 
+#zoomtoselected { display:inline; position: relative;
+top: -25px;
+left: 30px;} 
+
 /* Nicer Richshaw Hovers */
 .rickshaw_graph .detail .x_label { display: none } 
 .rickshaw_graph .detail .item { line-height: 1.4; padding: 0.5em }

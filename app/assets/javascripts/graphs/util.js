@@ -5,7 +5,31 @@ var errorMessage = {
 function formatData(d) { 
 	return Rickshaw.Fixtures.Number.formatKMBT_round(parseFloat(d),0,0,4);
 } 
+function zoomtoselected(base, orig_start, orig_stop) { 
+	$(window).on('hashchange', function() {
+		hash = window.location.hash.slice(1).split(",");
+		start = parseInt(hash[0]);
+		stop = parseInt(hash[1]);
+		url = base;
+		if (start === 0) { start = orig_start }
+		if (stop === 0) { stop = orig_stop }
 
+		if (stop - start < 600) { stop = start + 600 } //prevent zooms that are too small 
+
+		url += "&start=" + start;
+		url +=  "&stop=" + stop;
+		console.log(url);
+
+		html =  "<a href='"+url+"' data-toggle='tooltip_z' " ;
+		html += "data-original-title='Magnify search to selected'><i class='icon-zoom-in no_link'>";
+		html += "</i></a>";
+		$("#zoomtoselected").html(html);
+		$("[data-toggle='tooltip_z']").tooltip({ placement: "bottom", container: "body", delay: { show: 500} })
+
+
+	});
+
+} 
 function rickshawFitToWindow(graph) { 
 	if (window.innerWidth < 768) { r = 180; } else { r = 460; }
 	new_width = window.innerWidth - r;
