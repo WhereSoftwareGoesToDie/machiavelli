@@ -36,13 +36,9 @@ function unrenderWaiting(element) {
 	else { $(".icon-spinner").hide(); }
 }
 function showURL(element, url) { 
-	show = "<a class='metric_url_toggle' href='javascript:void(0);'>Show URL</a> <div class='metric_url' style='display:none'><a href='"+url+"' target=_blank'>"+url+"</a></div>";
+	show = "<span class='data_source'><a href='"+url+"' target=_blank>source <i class='icon-external-link'></i></a></span>";
 
 	document.getElementById(element).innerHTML = show;
-
-	$("#"+element+" .metric_url_toggle").click(function() {
-		$(this).parent().find(".metric_url").toggle(100);
-	});
 } 
 
 function renderError(element, error, detail, url) {

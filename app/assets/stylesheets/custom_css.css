@@ -44,6 +44,9 @@ input.error {
 	color: #333;
 } 
 .side-menu .find { padding-left: 22px}
+
+.data_source a, .data_source a:hover  { font-size: small; color: #666; text-decoration: none}
+
 /* Nicer Richshaw Hovers */
 .rickshaw_graph .detail .x_label { display: none } 
 .rickshaw_graph .detail .item { line-height: 1.4; padding: 0.5em }
