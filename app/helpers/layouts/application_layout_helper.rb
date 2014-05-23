@@ -50,7 +50,7 @@ module Layouts
 		end
 
 		def render_sidenav
-			partial = "partial/sidenav/modal_filter"
+			partial = "partial/sidenav/metric_search"
 			render(partial: partial)
 		end
 
