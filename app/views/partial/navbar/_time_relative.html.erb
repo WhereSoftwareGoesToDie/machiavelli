@@ -10,8 +10,13 @@ input.error { background: #ffebef; color: #480000}
 </div>
 <div class="btn-group" style="font-size: small">ago to: </div> 
 <div class="btn-group">
-	<% label = que_qs(:stop); label = ["now"] if label.empty? || is_epoch(label[0])
-		navbar_buttons(:stop, label, {active: true}).each do |a| %><%= a.html_safe %><%end%>
+	<% label = que_qs(:stop); 
+	field = "10" || (params[:stop].tr("^0-9", '')  if params[:stop])
+	if label.empty? || is_epoch(label[0]) then
+		field = "10"
+		label = ["now"] 
+	end
+	navbar_buttons(:stop, label, {active: true}).each do |a| %><%= a.html_safe %><%end%>
 
 	<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="stop_select">
 		<span class="caret"></span>
@@ -19,7 +24,6 @@ input.error { background: #ffebef; color: #480000}
 	</a>
 	<div class="dropdown-menu">
 		<%= form_for "time", url: stop_time_path, html: {id: "rel_form"} do |f| %>
-		<% field = params[:stop].nil? ? "10" : params[:stop].tr("^0-9", ''); %>
 		<li style="padding: 5px"><%=f.text_field(:number, value: field, style:"width: 100%", data: {validation: "number", validation_error_msg: "Enter a valid integer"}) %></li>
 
 		
