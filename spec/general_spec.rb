@@ -6,7 +6,7 @@ describe "Basic Machiavelli Functionality", :js => true do
 	it "has a front page with buttons" do
 		visit "/"
 		expect(page).to have_link "Machiavelli"
-		expect(page).to have_link "Find metrics"
+		expect(page).to have_link "Search"
 
 	end
 
