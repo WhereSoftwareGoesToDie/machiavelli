@@ -13,11 +13,13 @@
 				keys = [] 
 				keys = @r.map{|a| a[0] } unless @r.empty?
 
-				Settings.backends.each do |b| 
-					if keys.include? (b.alias || b.type) then
-						inactive << b
-					else 
-						active << b
+				if Settings.backends then
+					Settings.backends.each do |b| 
+						if keys.include? (b.alias || b.type) then
+							inactive << b
+						else 
+							active << b
+						end
 					end
 				end
 
