@@ -20,49 +20,36 @@ input.error {
 	display: inline;
 }
 /* Font-awesome search */
+
+.nav > li:focus, .nav> li:hover:not(.no_highlight)  {
+	text-decoration: none;
+	background-color: #eeeeee;
+}
 .hover { opacity: 0.5; visibility: hidden}
 .drag{ cursor: move; padding-right: 5px}
-.header-text { font-weight: bold; padding: 5px}
+.header-text { font-weight: bold; padding: 10px; color: #333}
 .header-text i { padding-right: 2px } 
 .hover-li { padding: 5px }
 .hover-right { float:right;}
 .hover-left { float:left;}
-.side-menu a { text-decoration: none;}
+.side-menu a { text-decoration: none; color: #333}
 .side-menu { font-size:small}
-.search-box {
-    position: relative;
-    padding: 10px;
-    padding-right: 30px
-}
-.search-box input {
-    padding-right: 30px;
-}
-.search-box i {
-    position: absolute;
-    right: 30px;
-    padding: 10px 12px;
-}
-.search-box .icon-question-sign { 
-    right: 0px;
-
-}
-.header-text .refresh { 
-	float: right;
-	padding-right: 5px
+.side-menu .find {font-weight:normal }
+.side-menu .metric {
+	display:inline-block;
+	width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-decoration: none;
+	color: #333;
 } 
-
+.side-menu .find { padding-left: 22px}
 /* Nicer Richshaw Hovers */
 .rickshaw_graph .detail .x_label { display: none } 
 .rickshaw_graph .detail .item { line-height: 1.4; padding: 0.5em }
 .detail_swatch { display: inline-block; width: 10px; height: 10px; margin: 0 4px 0 0 }
 .rickshaw_graph .detail .date { color: #a0a0a0 }
 
-.side-menu .metric { 
-	display:inline-block;
-	width: 200px;
-	overflow: hidden; 
-	text-overflow: ellipsis
-} 
 
 #chart_container { 
 	 padding-bottom: 40px
