@@ -54,7 +54,7 @@ class GraphsController < ApplicationController
 		if Settings.backends.nil?
 			flash[:error] = ui_message(:no_backends)
 		else 
-			inactive_backends = []
+			inactive_backends = []; refresh_errors :remove
 			Settings.backends.each do |b|
 				begin
 					settings = b.settings.to_hash.merge({alias: b.alias||b.type})

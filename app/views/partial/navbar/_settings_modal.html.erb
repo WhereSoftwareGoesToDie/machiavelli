@@ -10,11 +10,11 @@
 				<%
 
 				@r = refresh_errors; inactive = []; active = []
-
-				keys = @r.map{|a| a[0] }
+				keys = [] 
+				keys = @r.map{|a| a[0] } unless @r.empty?
 
 				Settings.backends.each do |b| 
-					if (keys.include? b.alias) || (keys.include? b.type) then
+					if keys.include? (b.alias || b.type) then
 						inactive << b
 					else 
 						active << b
@@ -26,7 +26,12 @@
 					<% b.settings.each do |k,v| %>
 						<li><%= k %>: <%=v%></li>
 					<% end %>
-					<div class='alert-danger'> <%=@r.select{|a| a[0] == (b.alias || b.type)}.first[1] if show_error%></div>
+					<%msg = @r.select{|a| a[0] == (b.alias || b.type)}%>
+					<% if msg.first %>
+						<div class='alert-danger'> 
+							<%= msg.first.last %>
+						</div>
+					<% end %>
 					<br />
 				<% 
 				end #def display

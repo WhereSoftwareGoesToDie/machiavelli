@@ -99,11 +99,14 @@ module Layouts
 		end
 
 		def refresh_errors method=:show, error=nil
-			one = "#"; two = "$"
+			one = "#"; two = "$"; key = "Machiavelli:RefreshErrors"
 			if method == :save
-				init_backend.redis_conn.set "Machiavelli:RefreshErrors", error.map{|a| a.join(one)}.join(two)
+				init_backend.redis_conn.set key, error.map{|a| a.join(one)}.join(two)
+			elsif method == :remove
+				init_backend.redis_conn.del key
 			else
-				e = init_backend.redis_conn.get "Machiavelli:RefreshErrors" 
+				e = init_backend.redis_conn.get key 
+				return [[]] if e.nil?
 				e.split(two).map{|a| a.split(one)}
 			end
 		end
