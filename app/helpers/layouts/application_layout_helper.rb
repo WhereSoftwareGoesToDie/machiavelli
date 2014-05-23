@@ -25,7 +25,7 @@ module Layouts
 
 		def ui_message msg
 			case msg
-			when :no_graphs_selected; "Select a metric from the list to graph"
+			when :no_graphs_selected; "No graphs selected. You should <a href='#filter_metrics' role='button' data-toggle='modal' data-target='#filter_metrics'>search</a> for one."
 			when :no_backends; "No backends configured. Check your config/settings/{ENV}.yml file."
 			else "UI MESSAGE VARIABLE NOT FOUND: #{msg}"
 			end

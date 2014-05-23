@@ -13,6 +13,6 @@
 %>
 	<%= render(file: "graphs/#{graph}", locals: {dckx: dckx}) if graph%>
 <% elsif @metrics.length == 0%>
-	<p><%= ui_message(:no_graphs_selected) %></p>
+	<p><%= ui_message(:no_graphs_selected).html_safe %></p>
 <% end %>
 
