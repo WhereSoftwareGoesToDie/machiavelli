@@ -2,42 +2,63 @@ require 'spec_helper'
 require 'open-uri'
 describe "Descartes", :js => true do
 
-	descartes_host = ENV["TEST_DESCARTES_HOST"]
-	raise StandardError, "Missing environment variable ENV['TEST_DESCARTES_HOST']" unless descartes_host
-	origin = ENV["TEST_DESCARTES_ORIGIN"]
-	raise StandardError, "Missing environment variable ENV['TEST_DESCARTES_ORIGIN']" unless origin
 
-	begin
-                URI.parse(descartes_host).read
-        rescue Errno::ECONNREFUSED,Errno::EHOSTUNREACH => e
-                raise StandardError, "\n\nYou can't test the Descartes endpoint at #{descartes_host} unless it's live, dummy. \n\n#{e}\n\n"
-        end
+	descartes_string = ENV["TEST_DESCARTES_STRING"]
+	descartes_string ||= ENV["TEST_DESCARTES_HOST"] +","+ ENV["TEST_DESCARTES_ORIGIN"]
 
-	# Since origin is dynamic, should just use one of the sources we can
-	# see, as opposed to hard coding it here
-	source = URI.parse(descartes_host+"/simple/search?&origin=#{origin}")	
-	name = JSON.parse(source.read).first.gsub("~", ":")
-	type = "Descartes"
-	metric = "#{type}~#{name}" 
+	raise StandardError, "No DESCARTES environment variables specificied.\n"\
+			     "Use TEST_DESCARTES_STRING in the form HREF1,ORIGIN1[,METRIC1]|HREF2,ORIGIN2[,METRIC2]|...,"\
+			     "or one TEST_DESCARTES_HOST and one TEST_DESCARTES_ORIGIN" unless descartes_string
 
-	before :each do 
-		add_config "backends: [{ type: '#{type}', settings: {url: '#{descartes_host}', origin: '#{origin}'}}]\nautoplay: false "
-		test_config type
-	end
+	descartes = descartes_string.split("|").map{|a| a.split("~")}
 
-        context "refresh metrics" do
-                include_examples "refresh metrics", type
-        end
-
-        context "graphs" do
-                it_behaves_like "a graph", metric
-        end
+	descartes.each do |d|
 	
-	it "returns valid errors if provoked" do
-		visit "/metric/?metric=#{metric}&start=-1337"
-		json = JSON.parse(page.text)
-		expect(json).to include "error"
-		expect(json["error"]).to include "Descartes Exception raised"
+		descartes_host = d[0]
+		origin = d[1]
+		metric = d[2] if d.length == 3
+
+		begin
+			URI.parse(descartes_host).read
+		rescue Errno::ECONNREFUSED,Errno::EHOSTUNREACH => e
+			raise StandardError, "\n\nYou can't test the Descartes endpoint at #{descartes_host} unless it's live, dummy. \n\n#{e}\n\n"
+		end
+
+		unless metric 
+	
+			# No metric supplied? Use Dynamic
+			source = URI.parse(descartes_host+"/simple/search?&origin=#{origin}")	
+			metric = JSON.parse(source.read).first
+			raise StandardError, "Descartes source #{source} offers no metrics" unless metric
+		end
+
+		metric.gsub!("~", ":")
+		type = "Descartes"
+		metric = "#{type}~#{metric}" 
+
+
+		context "Host #{descartes_host} with origin #{origin}" do
+
+			before :each do 
+				add_config "backends: [{ type: '#{type}', settings: {url: '#{descartes_host}', origin: '#{origin}'}}]\nautoplay: false "
+				test_config type
+			end
+
+			context "refresh metrics" do
+				include_examples "refresh metrics", type
+			end
+
+			context "graphs" do
+				it_behaves_like "a graph", metric
+			end
+			
+			it "returns valid errors if provoked" do
+				visit "/metric/?metric=#{metric}&start=-1337"
+				json = JSON.parse(page.text)
+				expect(json).to include "error"
+				expect(json["error"]).to include "Descartes Exception raised"
+			end
+		end
 	end
 end
 
