@@ -4,7 +4,8 @@ describe "Graphite", :js => true do
 
 	type = "Graphite"
 	name = "carbon.agents.graphite-a.cache.queues"
-	graphite_host = "http://#{ENV["TEST_GRAPHITE_HOST"]}"
+	graphite_host = ENV["TEST_GRAPHITE_HOST"]
+	raise StandardError, "Missing environment variable ENV['TEST_GRAPHITE_HOST']" unless graphite_host
 	metric = "#{type}~#{name}" 
 
 	begin
