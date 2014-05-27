@@ -5,7 +5,6 @@ require 'uri'
 class Backend::GenericBackend
 
 #Making a new backend? Copy these functions!
-
 	# Pre-condition:  none
 	# Post-condition: an array of strings of uniquely defined metrics
 	def get_metrics_list
@@ -92,6 +91,16 @@ class Backend::GenericBackend
 	end
 
 ### Helper functions
+
+	# If a file exists within the extensions folder, require it
+	def self.load_extension class_name
+		base = class_name.downcase.gsub("::","/")
+		ext = "#{Rails.root}/lib/extensions/#{base}.rb"
+
+		if File.exists? ext
+			require ext
+		end
+	end
 
 end
 class Backend::Error < StandardError; end
