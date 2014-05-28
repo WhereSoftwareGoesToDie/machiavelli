@@ -1,6 +1,6 @@
 /*= require graphs/standard  */
 .legend { 
-	margin-left: 60px;
+	margin-left: 40px;
 } 
 .legend-metric, .legend-data, .legend-shuffle { 
         display: inline-block;

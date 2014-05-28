@@ -4,16 +4,14 @@
 <% if dckx %>
 <%= stylesheet_link_tag    "graphs/dckx" %>
 <%end%>
-	<div class="slider" id="slider"></div>
-	<span id="zoomtoselected" class="no_link zoomtoselected"></span>
-<div class="col-md-10">
-	<div id="chart_container">
-		<div class="y_axis" id="y_axis"></div>
-		<div class="chart"  id="chart"></div>
-		<div class="y_axis right_axis" id="y_axis_right"></div>
-		<div class="x_axis" id="x_axis"></div>
-		<div class="legend" id="legend-dual"></div>
-	</div>
+<div class="slider" id="slider"></div>
+<span id="zoomtoselected" class="no_link zoomtoselected"></span>
+<div id="chart_container">
+	<div class="y_axis" id="y_axis"></div>
+	<div class="chart"  id="chart"></div>
+	<div class="y_axis right_axis" id="y_axis_right"></div>
+	<div class="x_axis" id="x_axis"></div>
+	<div class="legend" id="legend-dual"></div>
 </div>
 <script>
 var data = [], metrics =  [], format_metrics = [], right_links = [], left_links = [];
