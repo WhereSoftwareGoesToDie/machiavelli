@@ -224,7 +224,7 @@ function generate_legend() {
 	function rtd(side) { 
 		c = [];
 
-		["&nbsp","x̄","σ","bounds"].forEach(function(d){
+		["&nbsp","average","deviation","bounds"].forEach(function(d){
 			c.push("<td align='right'>"+d+"</td>");
 		});
 		c.splice(1,0, "<td>"+side+" Axis</td>");
@@ -243,7 +243,7 @@ function generate_legend() {
 	arr.forEach(function(d) { 
 		table.push("<tr>");
 
-		function databit(label, data, tooltip) { 
+		function databit(data, tooltip) { 
 			s = "<td class='table_detail' align='right' data-toggle='tooltip-shuffle' nowrap ";
 			s +="data-original-title='"+tooltip+"'>" + data + "</td>";
 			return s;
@@ -257,9 +257,9 @@ function generate_legend() {
 				el.push("<td class='legend-metric'><a href='"+e.link +  
 					"' data-toggle='tooltip-shuffle' data-original-title='"+ 
 					e.tooltip+"'>"+e.metric+"</a> <div id='"+e.div_name+"' class='metric_url' style='display:inline'></div></td>");
-				el.push(databit("x̄", fix(y.mean), "average: "+ y.mean));
-				el.push(databit("σ", fix(y.deviation), "deviation: "+y.deviation));
-				el.push(databit("bounds", fix(y.min) + ", " + fix(y.max), "minimum: "+y.min +" and maximum: "+ y.max));
+				el.push(databit(fix(y.mean), y.mean));
+				el.push(databit(fix(y.deviation), y.deviation));
+				el.push(databit(fix(y.min) + ", " + fix(y.max), y.min +" - "+ y.max));
 				table.push(el.join(""));
 				showURLs.push([e.div_name, e.sourceURL]);
 			} else { 
