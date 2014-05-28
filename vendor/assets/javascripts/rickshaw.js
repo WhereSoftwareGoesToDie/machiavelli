@@ -2493,6 +2493,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		var point = points.filter( function(p) { return p.active } ).shift();
 
 		if (point.value.y === null) return;
+		if (isNaN(point.value.y)) return;
 
 		var formattedXValue = point.formattedXValue;
 		var formattedYValue = point.formattedYValue;
