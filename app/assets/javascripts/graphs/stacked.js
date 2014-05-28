@@ -217,16 +217,35 @@ function generate_legend() {
 		arr.push([left[j],right[j]]);
 	} 
 
-	showURLs = []
+	showURLs = [];
 
 	table = ["<table class='table table-condensed borderless' width='100%'>"];
+
+	function rtd(side) { 
+		c = [];
+
+		["&nbsp","x̄","σ","bounds"].forEach(function(d){
+			c.push("<td align='right'>"+d+"</td>");
+		});
+		c.splice(1,0, "<td>"+side+" Axis</td>");
+		return c.join("");
+	} 
+
+	header = rtd("Left");
+	if (arr[0][1]) { 
+		header += rtd("Right");}
+	else { 
+		header += "<td colspan=5>&nbsp;</td>";
+	}
+
+	table.push(header);
 
 	arr.forEach(function(d) { 
 		table.push("<tr>");
 
 		function databit(label, data, tooltip) { 
-			s = "<td class='col-xs-1 table_detail' align='right' data-toggle='tooltip-shuffle' ";
-			s +="data-original-title='"+tooltip+"'> "+label+": "+ data+"</td>";
+			s = "<td class='table_detail' align='right' data-toggle='tooltip-shuffle' nowrap ";
+			s +="data-original-title='"+tooltip+"'>" + data + "</td>";
 			return s;
 		} 
 
@@ -237,7 +256,7 @@ function generate_legend() {
 				el = ["<td style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
 				el.push("<td class='legend-metric'><a href='"+e.link +  
 					"' data-toggle='tooltip-shuffle' data-original-title='"+ 
-					e.tooltip+"'>"+e.metric+"</a> <div id='"+e.div_name+"' class='metric_url_toggle' style='display:block'></div></td>");
+					e.tooltip+"'>"+e.metric+"</a> <div id='"+e.div_name+"' class='metric_url' style='display:inline'></div></td>");
 				el.push(databit("x̄", fix(y.mean), "average: "+ y.mean));
 				el.push(databit("σ", fix(y.deviation), "deviation: "+y.deviation));
 				el.push(databit("bounds", fix(y.min) + ", " + fix(y.max), "minimum: "+y.min +" and maximum: "+ y.max));

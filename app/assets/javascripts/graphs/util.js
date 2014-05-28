@@ -60,7 +60,7 @@ function unrenderWaiting(element) {
 	else { $(".icon-spinner").hide(); }
 }
 function showURL(element, url) { 
-	show = "<span class='data_source'><a href='"+url+"' target=_blank>source <i class='icon-external-link'></i></a></span>";
+	show = "<span class='data_source'><a href='"+url+"' target=_blank><i title='Open external data source' class='icon-external-link'></i></a></span>";
 
 	document.getElementById(element).innerHTML = show;
 } 

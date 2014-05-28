@@ -11,14 +11,11 @@ input.error {
 	color: #480000
 }
 
-.metric_url a { 
+.metric_url { display: inline; }
+.metric_url span a { 
 	font-size: small; 
 	color: grey;
 } 
-.metric_url_toggle { 
-	font-size: small;
-	display: inline;
-}
 /* Font-awesome search */
 
 .nav > li:focus, .nav> li:hover:not(.no_highlight)  {
@@ -46,6 +43,7 @@ input.error {
 } 
 .side-menu .find { padding-left: 22px}
 
+.data_source { display: inline }
 .data_source a, .data_source a:hover  { font-size: small; color: #666; text-decoration: none}
 
 #zoomtoselected { display:inline; position: relative;
