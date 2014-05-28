@@ -5,16 +5,17 @@ var errorMessage = {
 function formatData(d) { 
 	return Rickshaw.Fixtures.Number.formatKMBT_round(parseFloat(d),0,0,4);
 } 
-function zoomtoselected(base, orig_start, orig_stop) { 
+function zoomtoselected() { 
 	$(window).on('hashchange', function() {
 		hash = window.location.hash.slice(1).split(",");
 		start = parseInt(hash[0]);
 		stop = parseInt(hash[1]);
-		url = base;
-		if (start === 0) { start = orig_start }
-		if (stop === 0) { stop = orig_stop }
+		if (start === 0) { start = gon.start; }
+		if (stop === 0) { stop = gon.stop; }
 
-		if (stop - start < 600) { stop = start + 600 } //prevent zooms that are too small 
+		if (stop - start < 600) { stop = start + 600; } //prevent zooms that are too small 
+
+		url = gon.base;
 
 		url += "&start=" + start;
 		url +=  "&stop=" + stop;
@@ -24,7 +25,7 @@ function zoomtoselected(base, orig_start, orig_stop) {
 		html += "data-original-title='Magnify search to selected'><i class='icon-zoom-in no_link'>";
 		html += "</i></a>";
 		$("#zoomtoselected").html(html);
-		$("[data-toggle='tooltip_z']").tooltip({ placement: "bottom", container: "body", delay: { show: 500} })
+		$("[data-toggle='tooltip_z']").tooltip({ placement: "bottom", container: "body", delay: { show: 500} });
 
 
 	});

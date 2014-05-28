@@ -32,6 +32,8 @@ class GraphsController < ApplicationController
 
 		step  = params[:step]  || (stop - start).to_i / UI_DEFAULTS[:points]
 		gon.start, gon.stop, gon.step = start, stop, step
+		base = obl_qs :start; base = obl_qs(:stop, {url: base}); base = chg_qs(:time, "absolute", {url: base})
+		gon.base = base
 		
 		@metrics.each_with_index do |m,i|
 			gon.metrics[i] = { 

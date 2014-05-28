@@ -26,11 +26,6 @@ color.push(palette.color());
 renderWaiting("chart_<%=index%>");
 renderStandard(<%=index%>);
 showURL("metric_<%=index%>_url", gon.metrics[<%=index%>].sourceURL);
-<% base = obl_qs :start; base = obl_qs(:stop, {url: base}); base = chg_qs(:time, "absolute", {url: base})
-start = to_epoch(params[:start]).to_i; 
-stop = to_epoch(params[:stop]).to_i
-%>
-zoomtoselected("<%= base.html_safe %>", <%= start %>, <%= stop %>)
 </script>
 <% end %>
 
@@ -38,5 +33,6 @@ zoomtoselected("<%= base.html_safe %>", <%= start %>, <%= stop %>)
 var intervalID; 
 function stopUpdates() { clearInterval(intervalID);} 
 function startUpdates() { intervalID = updateStandard();} 
+zoomtoselected()
 </script>
 
