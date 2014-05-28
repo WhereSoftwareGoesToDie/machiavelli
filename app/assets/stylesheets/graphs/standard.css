@@ -23,14 +23,11 @@
         width: 60px;
 }
 .legend {
-        position: absolute;
 	font-size: small;
-        top: 350px;
-        left: 0px;
-        vertical-align: top;
-        margin: 0 0 0 10px;
-        background: transparent;
-        color: black;
+	vertical-align: top;
+	margin-top: 20px;
+	background: transparent;
+	color: black;
 }
 .x_axis { 
         position: relative;
