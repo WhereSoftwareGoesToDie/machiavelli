@@ -67,6 +67,7 @@ class Backend::Flatfile < Backend::GenericBackend
 			end
 		end
 
-		filtered
+		point_c = (stop - start) / step
+		filtered.take(point_c)
         end
 end 
