@@ -14,8 +14,10 @@ colours = safe_array Graph::Horizon.get_colours
 	function stopUpdates() { context.stop(); }
 	function startUpdates() { context.start(); } 
 
+	delay = Date.now() - (gon.stop* 1000)
+
 	var context = cubism.context()
-		.serverDelay(0)
+		.serverDelay(delay)
 		.clientDelay(0)
 		.step(gon.step*1000) //1e3)
 		.size(<%=width%>)
@@ -33,7 +35,6 @@ colours = safe_array Graph::Horizon.get_colours
 		datum.push(machiavelli.metric(m.metric, nice_metrics[i]));
 	});
 
-	// Erectin' a dispenser
 	d3.select("#horizon_graph").call(function(div) {
 		div.append("div")
 			.attr("class", "axis")
