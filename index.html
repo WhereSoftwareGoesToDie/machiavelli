@@ -30,45 +30,80 @@
 
       </header>
       <section>
-        <h1>
-<a name="machiavelli" class="anchor" href="#machiavelli"><span class="octicon octicon-link"></span></a>Machiavelli</h1>
+        <h1><a name="machiavelli" class="anchor" href="#machiavelli"><span class="octicon octicon-link"></span></a>Machiavelli</h1>
 
-<p><a href="https://travis-ci.org/anchor/machiavelli"><img src="https://travis-ci.org/anchor/machiavelli.png?branch=travis" alt="Build Status"></a><a href='https://coveralls.io/r/anchor/machiavelli?branch=master'><img src='https://coveralls.io/repos/anchor/machiavelli/badge.png?branch=master' alt='Coverage Status' /></a></p>
+<p> Current status: <a href="https://travis-ci.org/anchor/machiavelli"><img src="https://travis-ci.org/anchor/machiavelli.png?branch=travis" alt="Build Status"></a> 
+<a href='https://coveralls.io/r/anchor/machiavelli?branch=master'><img src='https://coveralls.io/repos/anchor/machiavelli/badge.png?branch=master' alt='Coverage Status' /></a>
+</p>
 
 
 <p>Machiavelli is a Ruby on Rails application for taking any arbitrarily defined data source, and feeding it into any arbitrarily defined graphing library.</p>
 
-<p>It does this by defining a set of data sources, or "backends", and a set of charting libraries, or "graphs".</p>
+<h2>
+	<a name="principles" class="anchor" href=#principles"><span class="octicon octicon-link"></span></a>Base Principles
+</h2>
 
-<h4>
-<a name="backends" class="anchor" href="#backends"><span class="octicon octicon-link"></span></a>Backends</h4>
+<blockquote>
 
-<p>A backend is a flatfile or json feed from a website. For Machiavelli to work it's magic, it needs to know two things about any particular backend:</p>
+<p>Show Machiavelli how to access a list of things, and how to get information about a specific thing from that list. That's it.</p>
+<p>At any time, you should be able to copy the URL of a specific Machiavelli page, open it somewhere else, and get the exact same view of the data.</p>
+</blockquote>
+
+</p>
+<h2>
+	<a name="components" class="anchor" href="#components"><span class="octicon octicon-link"></span></a>Components
+</h2>
+
+<h3>
+	<a name="backends" class="anchor" href="#backends"><span class="octicon octicon-link"></span></a>Backends
+</h3>
+
+<p>A backend is defined as a thing that contains data, and information about what data it has. Per base princples, a backend must be sufficiently defined as to know how to: 
+</p>
 
 <ul>
-<li>How to get a list of available metrics, and </li>
-<li>How to get a data set for a particular metric</li>
-</ul><p>Machiavelli currently has modules supporting the following backend types:</p>
+<li>get a list of available metrics, and </li>
+<li>get a data set for a particular metric</li>
+</ul>
+
+<p>Machiavelli currently has modules supporting the following backend types:</p>
 
 <ul>
-<li>Descartes</li>
-<li>Graphite</li>
-<li>A "simple" json feed (dummy sinatra application, see Installation)</li>
-<li>flat files, e.g. comma delimited datapoints.</li>
-</ul><h3>
-<a name="graphs" class="anchor" href="#graphs"><span class="octicon octicon-link"></span></a>Graphs</h3>
+	<li><a href="https://github.com/anchor/vaultaire">Vaultaire</a>, via the <a href="https://github.com/anchor/descartes">Descartes</a> interface</li>
+	<li><a href="https://github.com/graphite-project/graphite-web">Graphite</a></li>
+	<li>"simple" RESTful interfaces</li>
+	<li>csv flat files</li>
+</ul>
 
-<p>Once a metric source has been obtained, it can be fed to a graph. This is done by a series of ruby classes, views and javascript files in order to manipulate and display the data. These can be toggled on the fly in the user interface, as required.</p>
+<p>Additional backends can be easily created via extenions</p>
+
+<h3>
+	<a name="metrics" class="anchor" href="#graphs"><span class="octicon octicon-link"></span></a>Metrics
+</h3>
+
+<p>A metric is defined as an array or hash of points containing information about something over time. Any source that returns a series of <code>[time,value]</code> points can then be manipulated by a Machiavelli backend into a sufficiently standard format for graphing. </p>
+
+<p>Metrics could be: the used space on a drive for a server over time, or the number of awake cows in a yard over a day. All graphs require a time series. Should a dataset return only values, assuming that the values start from a determined time and have a specific frequency (e.g. one datapoint per 10 seconds), then the backend can use this information to provide a <code>[time,value]</code> set for graphing. </p>
+
+
+<h3>
+	<a name="graphs" class="anchor" href="#graphs"><span class="octicon octicon-link"></span></a>Graphs
+</h3>
+
+<p>Once a metric source has been obtained and massaged into a standard format, it can be fed to a graph. This is done by a series of ruby classes, ERB views and javascript files in order to manipulate and display the data. </p>
+
+<p>The type of graph being used to represent the selected metrics can be changed on the fly by the user via a simple series of buttons and toggles in the user interface.</p>
 
 <p>Machiavelli current includes these graphing libraries:</p>
 
 <ul>
-<li>Cubism (for horizon charts)</li>
-<li>Rickshaw (for standard, and stacked charts).</li>
-</ul><p>See the Dependencies second of this file for more information about these libraries.</p>
+	<li><a href="https://github.com/square/cubism">Cubism</a> (for horizon charts)</li>
+	<li><a href="https://github.com/shutterstock/rickshaw">Rickshaw </a>(for standard, and stacked charts).</li>
+</ul>
 
 <h2>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+	<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation
+</h2>
 
 <p>Ensure Ruby 1.9.3 or higher, and Redis are installed locally. Then, clone and execute like any standard Ruby on Rails application:</p>
 
@@ -77,38 +112,46 @@ bundle install
 bundle <span class="nb">exec </span>rails server
 </pre></div>
 
-<h3>
-<a name="testing-data-source" class="anchor" href="#testing-data-source"><span class="octicon octicon-link"></span></a>Testing Data source</h3>
+<p>The application can then be viewed at <code>http://localhost:3000</code>.</p>
 
-<p>The default configuration settings include a simple data source, a itty bitty Sinatra application that can be run along side a default installation of Machiavelli to demo the application. Run this by executing:</p>
+<h3>
+	<a name="testing-data-source" class="anchor" href="#testing-data-source"><span class="octicon octicon-link"></span></a>Testing Data source
+</h3>
+
+<p>The default configuration settings include a simple data source, an itty bitty Sinatra application that can be run along side a default installation of Machiavelli to demo the application. Run this by executing:</p>
 
 <div class="highlight highlight-sh"><pre>
 ruby simple_endpoint.rb
 </pre></div>
 
-<p>Then, just navigate to <code>http://localhost:3000</code> in your favourite browser, and you're on your way.</p>
+<p>The endpoint itself is then accessible at <code>http://localhost:4567</code> (the standard Sinatra path)</p>
+
+<p>Then, just navigate to the running Machiavelli instance, <code>http://localhost:3000</code>, and you're on your way.</p>
 
 <p>For testing flatfiles, run <code>generate_flatfile.rb</code> and reference the file in <code>public/flatfile.csv</code></p>
 
 <h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+	<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage
+</h2>
 
-<p>After loading the Machiavelli page for the first time, no metrics are available to display. Clicking the "Refresh" button on the left hand side navigation menu near the -- currently-empty -- Available Metrics listing, iterates over all the configuration settings and pulls all available metrics to be graphed into the left hand side bar.</p>
+<p>Once at the Machiavelli page, the navigation is intuiative. The interface is very plain until a metric is selected, using the 'Search' button.</p>
 
-<p>Then, any metric can be added or removed from the page by clicking its link. Active metrics can be rearranged by dragging their listing to reorder.</p>
+<p>Metrics are listed either by a live json feed, or via a cached list, defined per backend. </p>
 
-<p>The filter bar can be used to narrow down the list of available metrics (those that aren't already graphed) for ease of selection. Entering a substring matching multiple metrics and pressing enter will add all matches to the page.</p>
-
-<p>The buttons on the top navigation bar can be used to toggle the date range, and graphing style to use. Depending on the view being used, hovering can show more detail, and sliders can be used to zoom to specific points in time.</p>
-
-<p>Clicking 'Refresh' in the top navigation bar will refresh the page, and thus the metric data being displayed</p>
-
-<p>The Play/Stop button can be used to stop the live updating of metrics. Clicking the Play button refreshes the page, and the live updating starts again. </p>
-
-<p><strong>Please note</strong> - live metric updating requires that your local time be up to date with the Machiavelli server time. Should any errors relating to lack of live updating data occur, please confirm the ntp services on your local machine and the hosted Machiavelli environment</p>
+<p>After selecting, a number of options relating to the time range being queried, the graphing option being used, and other elements, can be changed via the various toggles and buttons in the navigation bar</p>
 
 <h2>
-<a name="invoking-backends" class="anchor" href="#invoking-backends"><span class="octicon octicon-link"></span></a>Invoking Backends</h2>
+	<a name="url" class="anchor" href="#url"><span class="octicon octicon-link"></span></a>The URL
+</h2>
+
+<p>Per the base principles, Machiavelli adheres to is the 'stickiess' of it's URL. Any generated URL should be able to be sent to someone else to get the same view of the data (given they have access to the main server).</p>
+
+<p>TODO: exact URL declaration</p>
+
+
+<h2>
+	<a name="invoking-backends" class="anchor" href="#invoking-backends"><span class="octicon octicon-link"></span></a>Invoking Backends
+</h2>
 
 <p>Adding a backend to a Machiavelli instance is as simple as adding it to the <code>backends</code> stanza in <code>config/settings.yml</code>.</p>
 
@@ -129,12 +172,12 @@ ruby simple_endpoint.rb
 <li>a hash of settings to pass to the library. See each library for details.</li>
 </ul>
 </li>
-</ul><p>Multiple backends of the same type can be invoked at once by adding an <code>alias</code> setting. The backend type, or alias, will appear in the metrics listing in Machiavelli.</p>
+</ul><p>Multiple backends of the same type can be invoked at once by adding an <code>alias</code> setting. The backend type, or alias (if used), will appear in the metrics listing in Machiavelli.</p>
 
 <h2>
 <a name="creating-new-backends" class="anchor" href="#creating-new-backends"><span class="octicon octicon-link"></span></a>Creating New Backends</h2>
 
-<p>New backends can be defined by copying the simple backend as a template. In addition, the <code>generic_backend.rb</code> describes the <code>get_metrics_list</code> and <code>get_metrcs</code> functions, which are overloaded in child classes. Overload these in your child library to implement. </p>
+<p>New backends can be defined by copying the simple backend as a template. In addition, the functions within the parent <code>Backend::GenericBackend</code> class marked as <code>NotImplemented</code> should be included in the child class.</p>
 
 <h2>
 <a name="optional-settings" class="anchor" href="#optional-settings"><span class="octicon octicon-link"></span></a>Optional Settings</h2>
@@ -168,42 +211,42 @@ ruby simple_endpoint.rb
 
 <ul>
 <li>
-<a href="https://github.com/shutterstock/rickshaw">Rickshaw</a>, available under the MIT Licence.
+<a href="https://github.com/shutterstock/rickshaw">Rickshaw</a> by <a href="http://www.shutterstock.com">Shutterstock</a>, available under the MIT Licence.
 
 <ul>
-<li>we use a slightly patched version, availble <a href="https://github.com/glasnt/rickshaw">here</a>
+<li>our fork is available <a href="https://github.com/glasnt/rickshaw">here</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="https://github.com/square/cubism">Cubism</a>, available under the Apache 2.0 Licence.
+<a href="https://github.com/square/cubism">Cubism</a> by <a href="http://square.github.io/">Square</a>, available under the Apache 2.0 Licence.
 
 <ul>
-<li>we use a slighly patched version, available <a href="https://github.com/glasnt/cubism">here</a>
+<li>our fork is available <a href="https://github.com/glasnt/cubism">here</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="https://github.com/mbostock/d3">D3</a>, available under the BSD3 Licence.
+<a href="https://github.com/mbostock/d3">D3</a> by <a href="http://bost.ocks.org/mike/">Mike Bostock</a>, available under the BSD3 Licence.
 
 <ul>
-<li>we use a slighly patched version, avaiable <a href="https://github.com/glasnt/d3">here</a>
+<li>our fork is available <a href="https://github.com/glasnt/d3">here</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="https://github.com/IronSummitMedia/startbootstrap/tree/master/templates/sb-admin-v2">SBAdmin2 Theme</a>, available under the Apache 2.0 Licence.</li>
+<a href="https://github.com/IronSummitMedia/startbootstrap/tree/master/templates/sb-admin-v2">SBAdmin2 Theme</a> by <a href="http://www.ironsummitmedia.com/">Iron Summit Media</a>, available under the Apache 2.0 Licence.</li>
 <ul>
-<li>we use a slighly patched version, avaiable <a href="https://github.com/glasnt/startbootstrap">here</a>
+<li>our fork is available <a href="https://github.com/glasnt/startbootstrap">here</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="https://github.com/twbs/bootstrap/">Bootstrap</a>, available under the MIT Licence.</li>
+<a href="https://github.com/twbs/bootstrap/">Bootstrap</a> by <a href="https://twitter.com">Twitter</a>, available under the MIT Licence.</li>
 <li>
 <a href="https://github.com/jquery/jquery">jQuery</a>, available under the MIT Licence.</li>
 <li>
-<a href="https://github.com/ivaynberg/select2">select2</a>, available under the Apache 2.0 Licence.</li>
+<a href="https://github.com/ivaynberg/select2">select2</a> by <a href="https://github.com/ivaynberg">Igor Vaynberg</a>, available under the Apache 2.0 Licence.</li>
 <li>
 <a href="https://github.com/FortAwesome/Font-Awesome/">Font Awesome</a>, by Dave Gandy - <a href="http://fontawesome.io">http://fontawesome.io</a>
 </li>
@@ -219,16 +262,11 @@ ruby simple_endpoint.rb
 <p><a href="https://github.com/graphite-project/">Graphite</a> is available under the Apache 2.0 Licence.</p>
 
 <p><a href="https://github.com/antirez/redis">Redis</a> is available under a BSD3 Licence.</p>
-
-<hr><blockquote>
-<p>Before all else, be graphed</p>
-
-<ul>
-<li>Machiavelli (apocryphal)</li>
-</ul>
-</blockquote>
-      </section>
+</section>
       <footer>
+	      <hr>
+	      <p style="font-size: small"><span style="font-style:oblique">Before all else, be graphed</span> -- Machiavelli (apocryphal)</p>
+	      <hr>
         <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
