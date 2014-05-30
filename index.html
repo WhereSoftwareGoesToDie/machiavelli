@@ -147,7 +147,40 @@ ruby simple_endpoint.rb
 
 <p>Per the base principles, Machiavelli adheres to is the 'stickiess' of it's URL. Any generated URL should be able to be sent to someone else to get the same view of the data (given they have access to the main server).</p>
 
-<p>TODO: exact URL declaration</p>
+<p>The user interface in Machiavelli is mostly used to generate this URL. The ruby and javascript parts then take bits of the URL to create the visualization</p>
+
+<h3>
+	Sudo make me a URL
+</h3>
+
+<p>The Machiavelli URL can be generated manually. It adheres to the following specification: </p>
+
+<p>Assuming the hostname is <code>http://hostname.com/</code>, then ...</p>
+
+<code>/?[metric][paramters]</code>
+<ul>
+	<li><code>metric</code> - in the form <code>backend~metric</code> per <code>/source/</code></li>
+	<li>Optional</li>
+<ul>
+	<li><code>start</code> - the start time for a metric. Default: 3 hours ago. Format: seconds since epoch, or "nice time"</li>
+	<li><code>stop</code> - the stop time for a metric. Default: now. Format: seconds since epoch, or "nice time", or <code>now</code></li>
+	<li><code>step</code> - the "stride" between points. Default: the step between start and stop that will return 600 datapoints. </li>
+	<li><code>time</code> - the time format to the used - <code>relative</code> or <code>absolute</code> (UI default). Default: relative. </li>
+	<li><code>graph</code> - the graphing module to be used - <code>standard</code>, <code>stacked</code>, or <code>horizon</code>. Default: standard</li>
+</ul>
+</ul>
+<p>"nice time" is in the format [INT][w|d|h|min] (week, day, hour, minute) e.g. <code>3h</code> -&gt; 3 hours</p>
+
+<code>/metric/?[metric][params]</code>
+<ul>
+	<li><code>metric</code> - see <code>/</code></li>
+	<li><code>start/stop/step</code> - see <code>/</code></li>
+</ul>
+
+<code>/source/</code> - lists all available sources
+<ul>
+<li><code>backend</code> - (Optional). Allows you to list metrics from one backend source only</li>
+</ul>
 
 
 <h2>
