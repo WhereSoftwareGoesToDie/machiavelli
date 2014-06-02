@@ -18,6 +18,16 @@ var data = [], metrics =  [], format_metrics = [], right_links = [], left_links 
 var reset = "<%= obl_qs :right%>";
 var right_id = ["<%= (que_qs :right).join('","').html_safe%>"];
 
+<% def to_bool(s) return false if s.nil?; s.downcase == "true"; end 
+def check_param(s,allowed) 
+	v = get_param(s)
+	v if allowed.include? v.to_s
+end%>
+
+var config = {}
+config.renderer = '<%= check_param(:render, ["line","area","bar"]) || "line" %>'
+config.stack = <%= to_bool(check_param(:stack, ["true","false"]) || "false") %>
+
 <% @metrics.each do |m| %>
 	metrics.push("<%= m %>");
 	format_metrics.push("<%= style_metric :pretty, m%>")
