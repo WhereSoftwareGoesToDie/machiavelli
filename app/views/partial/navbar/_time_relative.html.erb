@@ -2,41 +2,22 @@
 <style>
 input.error { background: #ffebef; color: #480000}
 </style>
-<div class="btn-group" style="font-size: small">Data from: </div> 
 <div class="btn-group">
-	<% navbar_buttons(:start, ["2w", "1w", "1d", "3h", "1h", "10min"]).each do |a| %>
+	<% navbar_dropdown(:start, ["2w", "1w", "1d", "3h", "1h", "10min"], {label: true}).each do |a| %>
 		<%= a.html_safe %>
 	<% end %>
 </div>
-<div class="btn-group" style="font-size: small">ago to: </div> 
 <div class="btn-group">
-	<% label = que_qs(:stop); 
-	field = "10" || (params[:stop].tr("^0-9", '')  if params[:stop])
-	if label.empty? || is_epoch(label[0]) then
-		field = "10"
-		label = ["now"] 
-	end
-	navbar_buttons(:stop, label, {active: true}).each do |a| %><%= a.html_safe %><%end%>
+<% label = que_qs(:stop); 
+field = "10" || (params[:stop].tr("^0-9", '')  if params[:stop])
+if label.empty? || is_epoch(label[0]) then field = "10"; label = ["now"]; end
 
-	<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="stop_select">
-		<span class="caret"></span>
-		<span class="sr-only">Toggle Dropdown</span>
-	</a>
-	<div class="dropdown-menu">
-		<%= form_for "time", url: stop_time_path, html: {id: "rel_form"} do |f| %>
-		<li style="padding: 5px"><%=f.text_field(:number, value: field, style:"width: 100%", data: {validation: "number", validation_error_msg: "Enter a valid integer"}) %></li>
-
-		
-		<div class="btn-group" style="padding-left: 5px">
-		<% ["min","h","d", "w"].each do |a| %>
-			<%= f.submit a, class: "btn btn-default" %>
-		<% end %>
-		</div>
-		<div class="btn-group" style="padding: 5px">
-		<%= f.submit "now", class: "btn btn-default", style: "display: inline-block"%>
-		</div>
-	<% end %>
-	</div>
+navbar_buttons(:stop, label, {active: true}).each do |a| %><%#= a.html_safe %><%end%>
+<% fie = form_for "time", url: stop_time_path, html: {id: "rel_form"} do |f| %>
+	<li style="padding: 3px"><%=f.text_field(:number, value: field, style:"width: 100%", data: {validation: "number", validation_error_msg: "Enter a valid integer"})%></LI>
+	<li style="padding: 3px"><div class="btn-group"><%["min","h","d", "w"].each do |a| %><%= f.submit a, class: "btn btn-default" %><% end %></div></li>
+<% end %>
+<% full = "<div class='dropdown-menu'>#{fie}</div>"; (dropdown full, {prompt: "stop: #{label.first}"}).each do |d|%><%= d.html_safe %><% end %>
 </div>
 <script>
 $(function() {
