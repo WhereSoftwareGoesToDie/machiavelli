@@ -70,7 +70,6 @@ module Layouts
 
 		def dropdown inner, args={}
 			a = []
-		require 'pry-debugger'; binding.pry	
 			prompt = (args && args[:prompt]) ? args[:prompt] + "  " : ""
 			a << '<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+prompt+'<span class="caret">'\
 			     '</span><span class="sr-only">Toggle Dropdown</span></a>'
