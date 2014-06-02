@@ -10,7 +10,9 @@ module Layouts
 			stop: "now",
 			points: 600,
 			graph: "standard",
-			time: "relative"
+			time: "relative",
+			render: "line",
+			stack: false
 		}
 		
 		def ui_default s
