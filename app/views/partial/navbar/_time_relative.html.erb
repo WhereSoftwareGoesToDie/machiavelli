@@ -16,6 +16,7 @@ navbar_buttons(:stop, label, {active: true}).each do |a| %><%#= a.html_safe %><%
 <% fie = form_for "time", url: stop_time_path, html: {id: "rel_form"} do |f| %>
 	<li style="padding: 3px"><%=f.text_field(:number, value: field, style:"width: 100%", data: {validation: "number", validation_error_msg: "Enter a valid integer"})%></LI>
 	<li style="padding: 3px"><div class="btn-group"><%["min","h","d", "w"].each do |a| %><%= f.submit a, class: "btn btn-default" %><% end %></div></li>
+	<li style="padding: 3px"><div class="btn-group"><%["now"].each do |a| %><%= f.submit a, class: "btn btn-default" %><% end %></div></li>
 <% end %>
 <% full = "<div class='dropdown-menu'>#{fie}</div>"; (dropdown full, {prompt: "stop: #{label.first}"}).each do |d|%><%= d.html_safe %><% end %>
 </div>
