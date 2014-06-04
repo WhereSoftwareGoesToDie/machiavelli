@@ -40,7 +40,7 @@ class GraphsController < ApplicationController
 				metric: m,
 				feed: "/metric/?metric="+m,
 				live: (init_backend m).live?,
-				sourceURL: (init_backend m).get_metric_url(m,start,stop,step),
+				sourceURL: (init_backend m).get_metric_url(m.split(SEP).last,start,stop,step),
 				removeURL: rem_qs(:metric, m)
 			}
 
