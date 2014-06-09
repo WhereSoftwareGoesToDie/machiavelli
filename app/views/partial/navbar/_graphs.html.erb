@@ -3,11 +3,17 @@
 		<%= a.html_safe %>
 	<% end %>
 </div>
-<% 
-if get_param(:graph) == "stacked" %>
+<%if get_param(:graph) == "stacked" %>
 <div class="btn-group">
 	<% navbar_dropdown(:render, ["line","area","bar"], {label: true}).each do |a| %>
 		<%= a.html_safe %>
 	<% end %>
 </div>
+<% if get_param(:render) != "line" %>
+<div class="btn-group">
+	<% navbar_dropdown(:stack, ["on","off"], {label: true}).each do |a| %>
+		<%= a.html_safe %>
+	<% end %>
+</div>
+<%end%>
 <%end%>
