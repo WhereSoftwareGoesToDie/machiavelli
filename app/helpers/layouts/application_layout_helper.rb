@@ -12,7 +12,7 @@ module Layouts
 			graph: "standard",
 			time: "relative",
 			render: "line",
-			stack: false
+			stack: "off"
 		}
 		
 		def ui_default s
