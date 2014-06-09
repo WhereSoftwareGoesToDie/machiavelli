@@ -82,14 +82,14 @@ module Layouts
 		def navbar_dropdown param, buttons, args={}
 			p = que_qs(param).first || UI_DEFAULTS[param]
 			active, list = buttons.partition{|b| b == p}
-	
+
 			b = []
 
 			b << '<ul class="dropdown-menu">'
 			list.each {|l|
 				b << "<li><a href='#{chg_qs(param,l)}'>#{l}</a></li>"
 			}
-			
+
 			b << '</ul>'
 			a = active.first
 
