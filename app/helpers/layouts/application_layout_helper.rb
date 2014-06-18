@@ -10,7 +10,9 @@ module Layouts
 			stop: "now",
 			points: 600,
 			graph: "standard",
-			time: "relative"
+			time: "relative",
+			render: "line",
+			stack: "off"
 		}
 		
 		def ui_default s
@@ -64,6 +66,36 @@ module Layouts
 				a << html
 			end
 			a
+		end
+
+		def dropdown inner, args={}
+			a = []
+			prompt = (args && args[:prompt]) ? args[:prompt] + "  " : ""
+			a << '<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+prompt+'<span class="caret">'\
+			     '</span><span class="sr-only">Toggle Dropdown</span></a>'
+
+			a << inner
+
+			a.flatten
+		end
+
+		def navbar_dropdown param, buttons, args={}
+			p = que_qs(param).first || UI_DEFAULTS[param]
+			active, list = buttons.partition{|b| b == p}
+
+			b = []
+
+			b << '<ul class="dropdown-menu">'
+			list.each {|l|
+				b << "<li><a href='#{chg_qs(param,l)}'>#{l}</a></li>"
+			}
+
+			b << '</ul>'
+			a = active.first
+
+			label = (args[:label]) ? "#{param.to_s}:  #{a}  " : a 
+			dropdown(b, {prompt: label}).flatten
+
 		end
 
 	# Backend Helpers

@@ -19,7 +19,6 @@ function zoomtoselected() {
 
 		url += "&start=" + start;
 		url +=  "&stop=" + stop;
-		console.log(url);
 
 		html =  "<a href='"+url+"' data-toggle='tooltip_z' " ;
 		html += "data-original-title='Magnify search to selected'><i class='icon-zoom-in no_link'>";

@@ -90,16 +90,22 @@ function renderStacked(data) {
 	}
 
 	// Finally, make the chart
-	interpolate = "cardinal";
-	if (flag == "xkcd") {interpolate = "xkcd";}
+
+	config.interpolate = "cardinal";
+
+	if (flag == "xkcd") {
+		config.interpolate = "xkcd";
+	}
+
 	graph = new Rickshaw.Graph({
 		element: document.querySelector("#chart"),
 		width: 700,
 		height: 300,
-		interpolation: interpolate,
-		renderer: 'line',
 		series: series
 	});
+
+	graph.configure(config);
+
 
 	// Left Y-Axis will always be around
 	left_axis = new Rickshaw.Graph.Axis.Y.Scaled({
@@ -133,6 +139,11 @@ function renderStacked(data) {
 	dynamicWidth(graph);
 	graph.render();
 
+	// Make stacks easier to see by adding an alpha transperancy to both
+	// the graph and the legend 
+	if (config.stack === false && (config.renderer == "area")) {
+		$(document.head).append("<style>path.area{opacity:0.8};.legend-color{opacity:0.8}</style>");
+	}
 
 	// X-axis slider for zooming
 	slider = new Rickshaw.Graph.RangeSlider.Preview({
@@ -253,7 +264,7 @@ function generate_legend() {
 			if (typeof(e) == "object") { 
 				y = arr_f(e.ydata);
 
-				el = ["<td style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
+				el = ["<td class='legend-color' style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
 				el.push("<td class='legend-metric'><a href='"+e.link +  
 					"' data-toggle='tooltip-shuffle' data-original-title='"+ 
 					e.tooltip+"'>"+e.metric+"</a> <div id='"+e.div_name+"' class='metric_url' style='display:inline'></div></td>");

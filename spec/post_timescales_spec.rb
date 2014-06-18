@@ -29,13 +29,13 @@ describe "Post Timescales", :js => true do
 
 
 		# Relative Time
-		click_dropdown
+		click_stop_dropdown
 		fill_in "time_number", with: "20"
 		click_on "min"
 
 		expect(current_url).to include "&stop=20min"
 
-		click_dropdown
+		click_stop_dropdown
 		click_on "now"
 
 		expect(current_url).not_to include "&stop="
@@ -72,6 +72,6 @@ def click_icon icon
 	first(:xpath, "//i[@class='icon-#{icon}']//..").click
 end
 
-def click_dropdown
-	first(:xpath, "//span[@class='caret']//..").click
+def click_stop_dropdown
+	all("a").select{|a| a.text.include? "stop: "}.first.click
 end
