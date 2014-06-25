@@ -35,7 +35,7 @@ end
 
 url = ARGV[0]
 
-puts "\nDescartes Query"
+puts "\nSieste Query"
 
 
 path = url.split("/").last.split("?").first

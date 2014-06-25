@@ -1,6 +1,6 @@
 # Seperators
 
-SEP = "~"   # Backend -> Metric seperator  e.g. DemoDescartes~wave
+SEP = "~"   # Backend -> Metric seperator  e.g. DemoSieste~wave
 KVP = ":"   # Key Value Pair               e.g. wave:sine
 DELIM = "," # Delimiter                    e.g. hostname,service,value
 

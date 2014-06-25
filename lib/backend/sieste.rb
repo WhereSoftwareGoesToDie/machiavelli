@@ -1,10 +1,10 @@
 # Required config/settings.yml > backend > settings parameters: 
-# #  url - the entrypoint for the descartes backend
+# #  url - the entrypoint for the sieste backend
 # #  origin - the origin for the data (BETA)
 
 #require 'open-uri'
 require 'net/http'
-class Backend::Descartes < Backend::GenericBackend
+class Backend::Sieste < Backend::GenericBackend
 
         def initialize params={}
 		self.class.superclass.load_extension  self.class.name
@@ -16,12 +16,12 @@ class Backend::Descartes < Backend::GenericBackend
                 raise Backend::Error, "Must provide an origin value" if @origin.nil?
         end
 
-	# Descartes don't need no storage
+	# Sieste don't need no storage
         def get_metrics_list
 		return []
         end
 
-	# Descartes is dynamic, yo
+	# Sieste is dynamic, yo
 	def search_metric_list q, page
 		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}&page=#{page - 1}"
 		result = get_json uri
@@ -53,12 +53,12 @@ class Backend::Descartes < Backend::GenericBackend
 		begin
 			data = get_json uri
 		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError => e
-			raise Backend::Error, "Error retreiving descartes metric #{m}: #{e}"
+			raise Backend::Error, "Error retreiving sieste metric #{m}: #{e}"
 		end
 
 		if (data.is_a? Hash) then
 			if data[:error] then
-				raise Backend::Error, "Descartes Exception raised: #{data[:error]}"
+				raise Backend::Error, "Sieste Exception raised: #{data[:error]}"
 			end
 		end
 			
@@ -68,7 +68,7 @@ class Backend::Descartes < Backend::GenericBackend
 		end
 
 		if data.empty? then
-			raise Backend::Error, "No data returned from descartes query"
+			raise Backend::Error, "No data returned from sieste query"
 		end
 
 		if stop - start == step then
