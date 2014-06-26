@@ -28,20 +28,26 @@ class Backend::Sieste < Backend::GenericBackend
 		result.map{|x| "#{@alias}#{SEP}#{to_mach(x)}"}
 	end
 
-	def to_des m;  m.gsub(":",SEP); end
+	def to_sie m;  m.gsub(":",SEP); end
 	def to_mach m; m.gsub(SEP,":"); end 
 
         def get_metric m, start, stop, step, args={}
 		query = []
-		m = to_des(m)
+
+		# Sieste v2 only requires the Address field, and optional is_float flag
+		keys = Hash[*m.split(DELIM).map{|y| y.split(KVP)}.flatten]
+		keys = Hash[keys.map{|k,v| [URI.decode(k), URI.decode(v)] }]
+
+		m = keys["address"]
+		float = true if keys["is_float"]
+
 		query << "start=#{start - 200}" 
 		query << "end=#{stop + 10}"
 		query << "interval=#{step}"
 		query << "origin=#{@origin}"
 
-		replace = [ ["/", "%2f"], ["_","%5f"]]
-		replace.each { |r| m.gsub!(r[0], r[1]) } # TODO make metrics not have to be manhandled back into quasi-encoded status
-		
+		query << "as_double=true" if float
+
 		query_string = "?" + query.join("&")
 	
 		uri = "#{@base_url}/interpolated/#{m}#{query_string}"
