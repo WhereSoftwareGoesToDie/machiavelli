@@ -12,8 +12,6 @@ class Backend::GenericBackend
 	end
 
 	def search_metric_list q, page
-		# capture backend errors?
-		get_metrics_list
 
 		return [] if page.to_i > 1
 		r = redis_conn
