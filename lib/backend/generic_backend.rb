@@ -13,7 +13,11 @@ class Backend::GenericBackend
 
 	def search_metric_list q, page
 
+		# TODO test connectivity each search?
+ 
+		# TODO Redis based pagination
 		return [] if page.to_i > 1
+
 		r = redis_conn
 		keys = r.keys "#{REDIS_KEY}:#{backend_key}#{q}"
 		keys.map!{|x|x.split(":").last}
