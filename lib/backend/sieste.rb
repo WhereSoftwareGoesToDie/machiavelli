@@ -44,17 +44,20 @@ class Backend::Sieste < Backend::GenericBackend
         def get_metric m, start, stop, step, args={}
 		query = []
 
-		# Sieste v2 only requires the Address field, and optional is_float flag
-		keys = Hash[*m.split(DELIM).map{|y| y.split(KVP)}.flatten]
-		keys = Hash[keys.map{|k,v| [URI.decode(k), URI.decode(v)] }]
+		# Sieste's identifcation string...
+		# v1 - uri-encoded full string of metric
+		# v2 - only requires the Address field, and optional is_float flag
 
-		addr = keys["address"]
-		if addr 
-			m = addr
+		v2 = "#{DELIM}address#{KVP}"
+
+		if m.include? v2
+			key = m.split(DELIM).map{|a| a.split(KVP)}.flatten.select{|a| a[0] == "address"}
+			m = key[1]
 			float = true if keys["is_float"]
+		else
+			m = sieste_encode m
 		end
 
-		m = sieste_encode m
 
 		query << "start=#{start - 200}" 
 		query << "end=#{stop + 10}"
