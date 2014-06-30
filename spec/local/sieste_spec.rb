@@ -1,14 +1,20 @@
 require 'spec_helper'
 require 'open-uri'
+
+def enverr 
+	raise StandardError, "No SIESTE environment variables specificied.\n" \
+	     "Use TEST_SIESTE_STRING in the form HREF1,ORIGIN1[,METRIC1]|HREF2,ORIGIN2[,METRIC2]|...," \
+	     "or one TEST_SIESTE_HOST and one TEST_SIESTE_ORIGIN"
+end
+
 describe "Sieste", :js => true do
 
+	enverr unless ENV["TEST_SIESTE_STRING"] || ENV["TEST_SIESTE_HOST"]
 
 	sieste_string = ENV["TEST_SIESTE_STRING"]
 	sieste_string ||= ENV["TEST_SIESTE_HOST"] +","+ ENV["TEST_SIESTE_ORIGIN"]
 
-	raise StandardError, "No SIESTE environment variables specificied.\n"\
-			     "Use TEST_SIESTE_STRING in the form HREF1,ORIGIN1[,METRIC1]|HREF2,ORIGIN2[,METRIC2]|...,"\
-			     "or one TEST_SIESTE_HOST and one TEST_SIESTE_ORIGIN" unless sieste_string
+	enverr unless sieste_string
 
 	sieste = sieste_string.split("|").map{|a| a.split("~")}
 
