@@ -38,8 +38,11 @@ class Backend::Sieste < Backend::GenericBackend
 		keys = Hash[*m.split(DELIM).map{|y| y.split(KVP)}.flatten]
 		keys = Hash[keys.map{|k,v| [URI.decode(k), URI.decode(v)] }]
 
-		m = keys["address"]
-		float = true if keys["is_float"]
+		addr = keys["address"]
+		if addr 
+			m = addr
+			float = true if keys["is_float"]
+		end
 
 		query << "start=#{start - 200}" 
 		query << "end=#{stop + 10}"
