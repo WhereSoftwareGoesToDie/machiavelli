@@ -100,7 +100,7 @@ class Backend::GenericBackend
 		ext = "#{Rails.root}/lib/extensions/#{base}.rb"
 
 		if File.exists? ext
-			require ext
+			require_dependency ext
 		end
 	end
 
