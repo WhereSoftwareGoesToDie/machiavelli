@@ -25,11 +25,21 @@ class Backend::Sieste < Backend::GenericBackend
 	def search_metric_list q, page
 		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}&page=#{page - 1}"
 		result = get_json uri
-		result.map{|x| "#{@alias}#{SEP}#{to_mach(x)}"}
+		result.map{|x| "#{@alias}#{SEP}#{machiavelli_encode x}"}
 	end
 
-	def to_sie m;  m.gsub(":",SEP); end
-	def to_mach m; m.gsub(SEP,":"); end 
+	# Convert a string into a uri-transferable sieste metric
+	def sieste_encode m
+		n = m.gsub(":",SEP)
+		replace = [ ["/", "%2f"], ["_","%5f"]]
+		replace.each { |r| n.gsub!(r[0], r[1]) }
+		n
+	end
+
+	# Convert a sieste-encoded metric into a machiavelli one
+	def machiavelli_encode m
+		m.gsub(SEP,":")
+	end
 
         def get_metric m, start, stop, step, args={}
 		query = []
@@ -43,6 +53,8 @@ class Backend::Sieste < Backend::GenericBackend
 			m = addr
 			float = true if keys["is_float"]
 		end
+
+		m = sieste_encode m
 
 		query << "start=#{start - 200}" 
 		query << "end=#{stop + 10}"
