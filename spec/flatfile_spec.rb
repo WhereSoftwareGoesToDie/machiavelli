@@ -37,10 +37,5 @@ describe "Broken Filefiles Backend", :js => true do
 
 		visit "/refresh"
 		expect(page).to have_css "div.alert-danger"
-
-		visit "/source/"
-		json = JSON.parse(page.text)
-		expect(json).to include "error"
-		expect(json["error"]).to eq "File #{file} does not exist"
 	end
 end

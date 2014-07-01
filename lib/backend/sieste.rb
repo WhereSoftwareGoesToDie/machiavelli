@@ -1,10 +1,10 @@
 # Required config/settings.yml > backend > settings parameters: 
-# #  url - the entrypoint for the descartes backend
+# #  url - the entrypoint for the sieste backend
 # #  origin - the origin for the data (BETA)
 
 #require 'open-uri'
 require 'net/http'
-class Backend::Descartes < Backend::GenericBackend
+class Backend::Sieste < Backend::GenericBackend
 
         def initialize params={}
 		self.class.superclass.load_extension  self.class.name
@@ -16,32 +16,56 @@ class Backend::Descartes < Backend::GenericBackend
                 raise Backend::Error, "Must provide an origin value" if @origin.nil?
         end
 
-	# Descartes don't need no storage
+	# Sieste don't need no storage
         def get_metrics_list
 		return []
         end
 
-	# Descartes is dynamic, yo
+	# Sieste is dynamic, yo
 	def search_metric_list q, page
 		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}&page=#{page - 1}"
 		result = get_json uri
-		result.map{|x| "#{@alias}#{SEP}#{to_mach(x)}"}
+		result.map{|x| "#{@alias}#{SEP}#{machiavelli_encode x}"}
 	end
 
-	def to_des m;  m.gsub(":",SEP); end
-	def to_mach m; m.gsub(SEP,":"); end 
+	# Convert a string into a uri-transferable sieste metric
+	def sieste_encode m
+		n = m.gsub(":",SEP)
+		replace = [ ["/", "%2f"], ["_","%5f"]]
+		replace.each { |r| n.gsub!(r[0], r[1]) }
+		n
+	end
+
+	# Convert a sieste-encoded metric into a machiavelli one
+	def machiavelli_encode m
+		m.gsub(SEP,":")
+	end
 
         def get_metric m, start, stop, step, args={}
 		query = []
-		m = to_des(m)
+
+		# Sieste's identifcation string...
+		# v1 - uri-encoded full string of metric
+		# v2 - only requires the Address field, and optional is_float flag
+
+		v2 = "#{DELIM}address#{KVP}"
+
+		if m.include? v2
+			key = m.split(DELIM).map{|a| a.split(KVP)}.flatten.select{|a| a[0] == "address"}
+			m = key[1]
+			float = true if keys["is_float"]
+		else
+			m = sieste_encode m
+		end
+
+
 		query << "start=#{start - 200}" 
 		query << "end=#{stop + 10}"
 		query << "interval=#{step}"
 		query << "origin=#{@origin}"
 
-		replace = [ ["/", "%2f"], ["_","%5f"]]
-		replace.each { |r| m.gsub!(r[0], r[1]) } # TODO make metrics not have to be manhandled back into quasi-encoded status
-		
+		query << "as_double=true" if float
+
 		query_string = "?" + query.join("&")
 	
 		uri = "#{@base_url}/interpolated/#{m}#{query_string}"
@@ -53,12 +77,12 @@ class Backend::Descartes < Backend::GenericBackend
 		begin
 			data = get_json uri
 		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError => e
-			raise Backend::Error, "Error retreiving descartes metric #{m}: #{e}"
+			raise Backend::Error, "Error retreiving sieste metric #{m}: #{e}"
 		end
 
 		if (data.is_a? Hash) then
 			if data[:error] then
-				raise Backend::Error, "Descartes Exception raised: #{data[:error]}"
+				raise Backend::Error, "Sieste Exception raised: #{data[:error]}"
 			end
 		end
 			
@@ -68,7 +92,7 @@ class Backend::Descartes < Backend::GenericBackend
 		end
 
 		if data.empty? then
-			raise Backend::Error, "No data returned from descartes query"
+			raise Backend::Error, "No data returned from sieste query"
 		end
 
 		if stop - start == step then

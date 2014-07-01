@@ -12,10 +12,12 @@ class Backend::GenericBackend
 	end
 
 	def search_metric_list q, page
-		# capture backend errors?
-		get_metrics_list
 
+		# TODO test connectivity each search?
+ 
+		# TODO Redis based pagination
 		return [] if page.to_i > 1
+
 		r = redis_conn
 		keys = r.keys "#{REDIS_KEY}:#{backend_key}#{q}"
 		keys.map!{|x|x.split(":").last}
@@ -98,7 +100,7 @@ class Backend::GenericBackend
 		ext = "#{Rails.root}/lib/extensions/#{base}.rb"
 
 		if File.exists? ext
-			require ext
+			require_dependency ext
 		end
 	end
 
