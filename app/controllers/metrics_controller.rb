@@ -39,13 +39,15 @@ class MetricsController < ApplicationController
 		page = params[:page]
 		page ||= 1
 	
+		page_size = params[:page_size] || 25
+		
 		search.gsub!(" ","*") 
 		list = []
 
 		b.each do |x|
 			begin
 				be = init_backend x
-				ret = be.search_metric_list(search, page.to_i)
+				ret = be.search_metric_list(search, { page: page.to_i, page_size: page_size.to_i})
 				list << ret.map{|r| {id: r, text: be.style_metric(:pretty, r)}}
 			rescue Backend::Error, Errno::ECONNREFUSED => e
 				 unless  params[:callback] then

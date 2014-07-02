@@ -22,8 +22,12 @@ class Backend::Sieste < Backend::GenericBackend
         end
 
 	# Sieste is dynamic, yo
-	def search_metric_list q, page
-		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}&page=#{page - 1}"
+	def search_metric_list q, args={}
+
+		page = args[:page] || 1
+		page_size = args[:page_size] || 25
+
+		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}&page=#{page - 1}&page_size=#{page_size}"
 		result = get_json uri
 		result.map{|x| "#{@alias}#{SEP}#{machiavelli_encode x}"}
 	end

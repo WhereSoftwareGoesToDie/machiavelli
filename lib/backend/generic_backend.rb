@@ -11,12 +11,12 @@ class Backend::GenericBackend
 		raise NotImplementedError
 	end
 
-	def search_metric_list q, page
+	def search_metric_list q, args={}
 
 		# TODO test connectivity each search?
  
 		# TODO Redis based pagination
-		return [] if page.to_i > 1
+		return [] if args[:page] and args[:page].to_i > 1
 
 		r = redis_conn
 		keys = r.keys "#{REDIS_KEY}:#{backend_key}#{q}"
