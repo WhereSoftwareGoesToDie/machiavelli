@@ -62,7 +62,6 @@ describe "Sieste", :js => true do
 				visit "/metric/?metric=#{metric}&start=-1337"
 				json = JSON.parse(page.text)
 				expect(json).to include "error"
-				expect(json["error"]).to include "Sieste Exception raised"
 			end
 		end
 	end

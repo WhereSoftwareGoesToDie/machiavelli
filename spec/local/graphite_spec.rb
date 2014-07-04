@@ -40,6 +40,6 @@ describe "broken graphite" do
 		add_config "backends: [{ type: 'graphite', settings: { url: 'http://idontwork.nope.org'}}]"
 		visit "/refresh"
 		expect(page).to have_css "div.alert-danger"
-		expect(page).to have_content "Error retrieving Graphite metrics"
+		expect(page).to have_content "Error"
 	end
 end
