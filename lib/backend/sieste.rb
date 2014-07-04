@@ -63,7 +63,7 @@ class Backend::Sieste < Backend::GenericBackend
 			float = true if keys.include? ["is_float"]
 			factor = 1000000000 # vaultaire v2 serves itty bitty seconds since epoch
 		else
-			m = sieste_encode m
+			m = sieste_encode metric
 		end
 
 		query << "start=#{start - 200}" 
