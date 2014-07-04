@@ -70,6 +70,8 @@ end
 describe "broken sieste" do
 	it "doesn't work with an unconnectable sieste instance" do
 		add_config "backends: [{ type: 'sieste', settings: { url: 'http://idontwork.nope.org', origin: 'POTATO'}}]"
-		expect{visit "/source"}.to raise_error
+		visit "/source"
+		json = JSON.parse(page.text)
+		expect(json).to include "error"
 	end
 end
