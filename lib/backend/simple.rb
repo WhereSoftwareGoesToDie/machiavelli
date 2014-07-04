@@ -32,6 +32,6 @@ class Backend::Simple < Backend::GenericBackend
 			return uri
 		end
 
-		json_metrcs uri
+		json_metrics uri
         end
 end
