@@ -2,8 +2,6 @@
 # #  url - the entrypoint for the sieste backend
 # #  origin - the origin for the data (BETA)
 
-#require 'open-uri'
-require 'net/http'
 class Backend::Sieste < Backend::GenericBackend
 
         def initialize params={}
@@ -18,17 +16,16 @@ class Backend::Sieste < Backend::GenericBackend
 
 	# Sieste don't need no storage
         def get_metrics_list
+		raise Backend::Error, "Unable to connect to sieste instance at #{@base_url}" unless is_up? @base_url
 		return []
         end
 
 	# Sieste is dynamic, yo
 	def search_metric_list q, args={}
-
 		page = args[:page] || 1
 		page_size = args[:page_size] || 25
-
 		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}&page=#{page - 1}&page_size=#{page_size}"
-		result = get_json uri
+		result = json_metrics_list uri
 		result.map{|x| "#{@alias}#{SEP}#{machiavelli_encode x}"}
 	end
 
@@ -45,23 +42,25 @@ class Backend::Sieste < Backend::GenericBackend
 		m.gsub(SEP,":")
 	end
 
-        def get_metric m, start, stop, step, args={}
+        def get_metric metric, start, stop, step, args={}
 		query = []
 
 		# Sieste's identifcation string...
 		# v1 - uri-encoded full string of metric
 		# v2 - only requires the Address field, and optional is_float flag
+		
+		# TODO assumes address isn't first. Check siestev2 implementation
+		v2 = "address#{KVP}" 
 
-		v2 = "#{DELIM}address#{KVP}"
-
-		if m.include? v2
-			key = m.split(DELIM).map{|a| a.split(KVP)}.flatten.select{|a| a[0] == "address"}
-			m = key[1]
-			float = true if keys["is_float"]
+#		require 'pry-debugger'; binding.pry # FAIL TODO String to Int err here
+		
+		if metric.include? v2
+			keys = metric.split(DELIM).map{|a| a.split(KVP)}
+			m = keys.select{|a| a[0] == "address"}[0][1]
+			float = true if keys.include? ["is_float"]
 		else
 			m = sieste_encode m
 		end
-
 
 		query << "start=#{start - 200}" 
 		query << "end=#{stop + 10}"
@@ -78,11 +77,7 @@ class Backend::Sieste < Backend::GenericBackend
 			return uri
 		end
 
-		begin
-			data = get_json uri
-		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError => e
-			raise Backend::Error, "Error retreiving sieste metric #{m}: #{e}"
-		end
+		data = json_metrics uri
 
 		if (data.is_a? Hash) then
 			if data[:error] then
@@ -127,12 +122,4 @@ class Backend::Sieste < Backend::GenericBackend
 		end
 		padded
         end
-
-	def get_json url 
-		uri = URI.parse(url)
-		puts uri if Rails.env.development?
-		http = Net::HTTP.new(uri.host, uri.port)
-		result = http.get uri.request_uri
-		JSON.parse(result.body, :symbolize_names => true)
-	end
 end
