@@ -147,7 +147,7 @@ class Backend::GenericBackend
 
 		begin
 			response = http.request(request)
-		rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED => e
+		rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, SocketError => e
 			raise Backend::Error, "#{error_msg}: #{e}"
 		end
 
