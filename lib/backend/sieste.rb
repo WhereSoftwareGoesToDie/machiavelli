@@ -53,11 +53,15 @@ class Backend::Sieste < Backend::GenericBackend
 		v2 = "address#{KVP}" 
 
 #		require 'pry-debugger'; binding.pry # FAIL TODO String to Int err here
-		
+
+		factor = 1
+
 		if metric.include? v2
+
 			keys = metric.split(DELIM).map{|a| a.split(KVP)}
 			m = keys.select{|a| a[0] == "address"}[0][1]
 			float = true if keys.include? ["is_float"]
+			factor = 1000000000 # vaultaire v2 serves itty bitty seconds since epoch
 		else
 			m = sieste_encode m
 		end
@@ -87,7 +91,7 @@ class Backend::Sieste < Backend::GenericBackend
 			
 		metric = []
 		data.each do |node|
-			metric << {x: node[0], y: node[1]}
+			metric << {x: node[0] / factor, y: node[1]}
 		end
 
 		if data.empty? then
