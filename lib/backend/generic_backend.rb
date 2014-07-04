@@ -118,7 +118,7 @@ class Backend::GenericBackend
 
 	def is_up? uri
 		begin
-			return true if open(uri)
+			return true if Net::HTTP.get(URI.parse(uri))
 		rescue
 			return false
 		end
