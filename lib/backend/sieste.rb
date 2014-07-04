@@ -60,7 +60,10 @@ class Backend::Sieste < Backend::GenericBackend
 
 			keys = metric.split(DELIM).map{|a| a.split(KVP)}
 			m = keys.select{|a| a[0] == "address"}[0][1]
-			float = true if keys.include? ["is_float"]
+
+			# TODO Temporary fix - chevalier not presenting field
+			float = @orign == "4HXR1F" ? false : true
+#			float = true if keys.include? ["is_float"]
 			factor = 1000000000 # vaultaire v2 serves itty bitty seconds since epoch
 		else
 			m = sieste_encode metric
