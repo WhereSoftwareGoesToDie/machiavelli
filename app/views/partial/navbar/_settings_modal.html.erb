@@ -1,63 +1,59 @@
 <div class="modal" id="settingsModal" role="dialog" aria-labelledby="settingsModal" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="settingsModalLabel">Settings</h4>
-			</div>
-			<div class="modal-body">
-				<% ui_message(:no_backends) if Settings.backends.nil? %>
-				<%
-
-				@r = refresh_errors; inactive = []; active = []
-				keys = [] 
-				keys = @r.map{|a| a[0] } unless @r.empty?
-
-				if Settings.backends then
-					Settings.backends.each do |b| 
-						if keys.include? (b.alias || b.type) then
-							inactive << b
-						else 
-							active << b
-						end
-					end
-				end
-
-				def display b, show_error=false %>
-				<%= b.type.titleize %> <%= "('"+b.alias+"')" if b.alias %> </br>
-					<% b.settings.each do |k,v| %>
-						<li><%= k %>: <%=v%></li>
-					<% end %>
-					<%msg = @r.select{|a| a[0] == (b.alias || b.type)}%>
-					<% if msg.first %>
-						<div class='alert-danger'> 
-							<%= msg.first.last %>
-						</div>
-					<% end %>
-					<br />
-				<% 
-				end #def display
-				%> 
-
-				<div class="col-md-6">
-					<h4>Active Backends</h4>
-					<% active.each do |b| display b; end %>
-				</div>
-				<div class="col-md-6">
-					<h4>Inactive Backends</h4>
-					<% inactive.each do |b| display b, true; end %>
-					<p><%= link_to "Refresh settings from file, and metrics cache", refresh_path, class: 'btn btn-info' %></p>
-				</div>	
-
-				<div class="clearfix">&nbsp;</div>
-
-
-				<div class="modal-footer no_link" style="font-size: small">
-					Machiavelli version <%=version%>. 
-					Developed by <a href="http://anchor.com.au"><i class="icon-anchor"></i></a>. 
-					Fork it on <a href="https://github.com/anchor/machiavelli"><i class="icon-github"></i></a>.
-				</div>
-			</div>
-		</div>
+	<div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title" id="settingsModalLabel">Settings</h4>
 	</div>
+	<div class="modal-body">
+		<% ui_message(:no_backends) if Settings.backends.nil? %>
+		<%
+		@r = refresh_errors; inactive = []; active = []
+		keys = [] 
+		keys = @r.map{|a| a[0] } unless @r.empty?
+
+		if Settings.backends then
+			Settings.backends.each do |b| 
+				if keys.include? (b.alias || b.type) then
+					inactive << b
+				else 
+					active << b
+				end
+			end
+		end
+
+		def display b, show_error=false 
+		%>
+		<%= b.type.titleize %> <%= "('"+b.alias+"')" if b.alias %> </br>
+			<% b.settings.each do |k,v| %>
+				<li><%= k %>: <%=v%></li>
+			<% end %>
+			<%msg = @r.select{|a| a[0] == (b.alias || b.type)}.flatten%>
+			<% unless msg.empty? 
+				m = msg[1] %>
+				<div class='alert-danger'> 
+					<%= "Last error: #{m}" %>
+				</div>
+			<% end %>
+			<br />
+		<% 
+		end #def display
+		%> 
+
+		<div class="col-md-6">
+			<h4>Active Backends</h4>
+			<% active.each do |b| display b; end %>
+		</div>
+		<div class="col-md-6">
+			<h4>Inactive Backends</h4>
+			<% inactive.each do |b| display b, true; end %>
+			<p><%= link_to "Refresh settings from file, and metrics cache", refresh_path, class: 'btn btn-info' %></p>
+		</div>	
+
+		<div class="clearfix">&nbsp;</div>
+
+		<div class="modal-footer no_link" style="font-size: small">
+			Machiavelli version <%=version%>. 
+			Developed by <a href="http://anchor.com.au"><i class="icon-anchor"></i></a>. 
+			Fork it on <a href="https://github.com/anchor/machiavelli"><i class="icon-github"></i></a>.
+		</div>
+	</div></div></div>
 </div>
