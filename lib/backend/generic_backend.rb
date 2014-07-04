@@ -2,6 +2,8 @@
 # 
 require 'redis'
 require 'uri'
+require 'net/http'
+
 class Backend::GenericBackend
 
 #Making a new backend? Copy these functions!
@@ -12,9 +14,7 @@ class Backend::GenericBackend
 	end
 
 	def search_metric_list q, args={}
-
 		# TODO test connectivity each search?
- 
 		# TODO Redis based pagination
 		return [] if args[:page] and args[:page].to_i > 1
 
@@ -36,10 +36,6 @@ class Backend::GenericBackend
 		raise NotImplementedError
 	end
 
-	def get_metric_url m, start, stop, step
-		get_metric m, start, stop, step, {:return_url => true}
-
-	end
 
 	# Is the metric returning live data? That is, can it be assumed to have
 	# data values up to Time.now() within step tolerance?
@@ -59,6 +55,22 @@ class Backend::GenericBackend
 	end
 
 # Parent class functionality after this point
+	def name
+		self.class.name.split("::").last
+	end
+	
+	def get_metric_url m, start, stop, step
+		get_metric m, start, stop, step, {:return_url => true}
+	end
+
+	def json_metrics_list uri, args={}
+		get_json uri, args, "Error retriving #{name} metrics list"
+	end
+
+	def json_metrics uri, args={}
+		get_json uri, args, "Error retriving #{name} metric"
+	end
+	
 
 	REDIS_KEY = Settings.metrics_key || "Machiavelli.Metrics"
 	
@@ -102,6 +114,56 @@ class Backend::GenericBackend
 		if File.exists? ext
 			require_dependency ext
 		end
+	end
+
+	def is_up? uri
+		begin
+			return true if open(uri)
+		rescue
+			return false
+		end
+	end
+
+	# Precond:  valid URI, optional error parsing lambda
+	# Postcond: key-symbolized parsed JSON hash
+	def get_json url, args={}, error_msg=""
+		
+
+		uri = URI.parse(url)
+		
+		puts "Get JSON: #{uri}" if Rails.env.development?
+
+		http = Net::HTTP.new(uri.host, uri.port)
+
+		if uri.is_a? URI::HTTPS then
+			http.use_ssl = true
+			http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+		end
+
+		request = Net::HTTP::Get.new(uri.request_uri)
+		if @username 
+		        request.basic_auth(@username,@password);
+		end
+
+		begin
+			response = http.request(request)
+		rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED => e
+			raise Backend::Error, "#{error_msg}: #{e}"
+		end
+
+		if Rails.env.development?
+			puts "Response: #{response.code}, body length: #{response.body.length} characters"
+			puts "Body: #{response.body[0..50]}..."
+		end
+		
+		if response.code.match(/2\d\d/)
+			return JSON.parse(response.body, symbolize_names: true)
+		else
+			error = response.body
+			error = args[:error_parse].call(error) if args[:error_parse]
+			raise Backend::Error, "#{error_msg}: #{response.code} - #{error}"
+		end
+		
 	end
 
 end
