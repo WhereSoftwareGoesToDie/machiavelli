@@ -9,9 +9,7 @@ class Backend::Simple < Backend::GenericBackend
 
         def initialize params={}
 		super 
-#		@alias = params[:alias] || self.class.name.split("::").last
                 @base_url = mandatory_param :url
-                raise Backend::Error, "Must provide a url value" if @base_url.nil?
         end
 
         def get_metrics_list
