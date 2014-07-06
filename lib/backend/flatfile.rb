@@ -1,6 +1,5 @@
 # Flatfiles are pretty broad, but at a basic level, they are just a
 # list of x and y values. 
-#
 # 
 # Required config/settings.yml > backend > settings parameters: 
 #  - file_name - relative to the rails root folder. 
@@ -20,10 +19,16 @@
 
 class Backend::Flatfile < Backend::GenericBackend
 	def initialize params={}
-		@alias = params[:alias] || self.class.name.split("::").last
-		@file      = params[:file_name]
-		@metric    = params[:metric]
-		@delimiter = params[:delimiter]  || ","
+		super
+		@file      = mandatory_param :file_name
+		@metric    = mandatory_param :metric
+		@delimiter = optional_param  :delimiter, ","
+
+		@base_url  = @file #synonym for is_up error msg
+	end
+
+	def is_up?
+		File.exists?(@file)
 	end
 
 	def live?
@@ -31,7 +36,6 @@ class Backend::Flatfile < Backend::GenericBackend
 	end
 
 	def get_metrics_list
-		raise Backend::Error, "File #{@file} does not exist" unless File.exists?(@file)
 		[@metric]	
         end
 

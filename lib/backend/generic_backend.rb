@@ -1,21 +1,23 @@
-# The Generic Definition of a Backend
-# 
 require 'redis'
 require 'uri'
 require 'net/http'
 
 class Backend::GenericBackend
 
-#Making a new backend? Copy these functions!
-	# Pre-condition:  none
-	# Post-condition: an array of strings of uniquely defined metrics
+	def initialize params={}
+		load_extension  self.class.name
+		@params = params
+		@alias = optional_param :alias, name
+	end
+
+	# Return an array of uniquely defined metrics
 	def get_metrics_list
 		raise NotImplementedError
 	end
 
 	def search_metric_list q, args={}
-		# TODO test connectivity each search?
-		# TODO Redis based pagination
+		raise Backend::Error, "Unable to connect to #{name} backend at #{@base_url}" unless is_up?
+		
 		return [] if args[:page] and args[:page].to_i > 1
 
 		r = redis_conn
@@ -41,6 +43,14 @@ class Backend::GenericBackend
 	# data values up to Time.now() within step tolerance?
 	def live?
 		true
+	end
+
+	def is_up? uri=@base_url 
+		begin
+			return true if Net::HTTP.get(URI.parse(uri))
+		rescue
+			return false
+		end
 	end
 
 	# Define any rules to make a metric name stylized. Default, do nothing. 
@@ -107,20 +117,12 @@ class Backend::GenericBackend
 ### Helper functions
 
 	# If a file exists within the extensions folder, require it
-	def self.load_extension class_name
+	def load_extension class_name
 		base = class_name.downcase.gsub("::","/")
 		ext = "#{Rails.root}/lib/extensions/#{base}.rb"
 
 		if File.exists? ext
 			require_dependency ext
-		end
-	end
-
-	def is_up? uri
-		begin
-			return true if Net::HTTP.get(URI.parse(uri))
-		rescue
-			return false
 		end
 	end
 
@@ -164,6 +166,25 @@ class Backend::GenericBackend
 			raise Backend::Error, "#{error_msg}: #{response.code} - #{error}"
 		end
 		
+	end
+
+	# Get the parameter named p, or fail
+	def mandatory_param p
+		param = @params[p.to_sym]
+		if param.nil? 
+			raise Backend::Error, "Must provide #{p} value"
+		else
+			param
+		end
+	end
+
+	def optional_param p, default
+		param = @params[p.to_sym]
+		if param.nil?
+			return default
+		else
+			param
+		end
 	end
 
 end

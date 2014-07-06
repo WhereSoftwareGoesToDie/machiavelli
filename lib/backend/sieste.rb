@@ -5,13 +5,9 @@
 class Backend::Sieste < Backend::GenericBackend
 
         def initialize params={}
-		self.class.superclass.load_extension  self.class.name
-
-		@alias = params[:alias] || self.class.name.split("::").last
-                @base_url = params[:url]
-                raise Backend::Error, "Must provide a url value" if @base_url.nil?
-                @origin = params[:origin]
-                raise Backend::Error, "Must provide an origin value" if @origin.nil?
+		super
+		@base_url = mandatory_param :url
+		@origin   = mandatory_param :origin
         end
 
 	# Sieste don't need no storage

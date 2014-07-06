@@ -5,9 +5,8 @@ require 'net/http'
 class Backend::Graphite < Backend::GenericBackend
 
 	def initialize params={}
-		@alias = params[:alias] || self.class.name.split("::").last
-		@base_url = params[:url]
-		raise Backend::Error, "Must provide a url value" if @base_url.nil?
+		super
+		@base_url = mandatory_param :url
 	end
 
 	def get_metrics_list
