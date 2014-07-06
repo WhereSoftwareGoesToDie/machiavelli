@@ -28,18 +28,13 @@ describe "Graphite", :js => true do
         end
 
 	it "returns valid graphite errors if provoked" do
-		visit "/metric/?metric=#{metric}&start=-1337"
-		json = JSON.parse(page.text)
-		expect(json).to include "error"
-		expect(json["error"]).to include "Exception"
+		expect_json_error "/metric/?metric=#{metric}&start=-1337"
 	end
 end
 
 describe "broken graphite" do
 	it "doesn't work with an unconnectable graphite instance" do
 		add_config "backends: [{ type: 'graphite', settings: { url: 'http://idontwork.nope.org'}}]"
-		visit "/refresh"
-		expect(page).to have_css "div.alert-danger"
-		expect(page).to have_content "Error"
+		expect_page_error "/refresh"
 	end
 end

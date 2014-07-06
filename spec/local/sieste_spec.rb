@@ -31,7 +31,6 @@ describe "Sieste", :js => true do
 		end
 
 		unless metric 
-	
 			# No metric supplied? Use Dynamic
 			source = URI.parse(sieste_host+"/simple/search?&origin=#{origin}")	
 			metric = JSON.parse(source.read).first
@@ -42,9 +41,7 @@ describe "Sieste", :js => true do
 		type = "Sieste"
 		metric = "#{type}~#{metric}" 
 
-
 		context "Host #{sieste_host} with origin #{origin}" do
-
 			before :each do 
 				add_config "backends: [{ type: '#{type}', settings: {url: '#{sieste_host}', origin: '#{origin}'}}]\nautoplay: false "
 				test_config type
@@ -59,9 +56,7 @@ describe "Sieste", :js => true do
 			end
 			
 			it "returns valid errors if provoked" do
-				visit "/metric/?metric=#{metric}&start=-1337"
-				json = JSON.parse(page.text)
-				expect(json).to include "error"
+			 	expect_json_error "/metric/?metric=#{metric}&start=-1337"
 			end
 		end
 	end
@@ -70,8 +65,6 @@ end
 describe "broken sieste" do
 	it "doesn't work with an unconnectable sieste instance" do
 		add_config "backends: [{ type: 'sieste', settings: { url: 'http://idontwork.nope.org', origin: 'POTATO'}}]"
-		visit "/source"
-		json = JSON.parse(page.text)
-		expect(json).to include "error"
+		expect_json_error "/source"
 	end
 end

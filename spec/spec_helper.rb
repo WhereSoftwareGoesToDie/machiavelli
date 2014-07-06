@@ -97,6 +97,17 @@ shared_examples 'refresh metrics' do |type|
 	end
 end
 
+def expect_json_error uri
+	visit uri
+	json = JSON.parse(page.text)
+	expect(json).to include "error"
+end
+
+def expect_page_error uri
+	visit uri
+	expect(page).to have_css "div.alert-danger"
+	expect(page).to have_content "Error"
+end
 
 def add_config config 
 	File.open(TEMP_YML, "w") do |f|
