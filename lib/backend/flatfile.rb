@@ -27,6 +27,10 @@ class Backend::Flatfile < Backend::GenericBackend
 		@base_url  = @file #synonym for is_up error msg
 	end
 
+	def test_file
+		raise Backend::Error, "Error: file #{@file} does not exist" unless is_up?
+	end
+
 	def is_up?
 		File.exists?(@file)
 	end
@@ -36,11 +40,12 @@ class Backend::Flatfile < Backend::GenericBackend
 	end
 
 	def get_metrics_list
+		test_file
 		[@metric]	
         end
 
         def get_metric m, start=nil, stop=nil, step=nil, args={}
-		raise Backend::Error, "File #{@file} does not exist" unless File.exists?(@file)
+		test_file
 
 		if args[:return_url]
 			return "file://#{Rails.root}/#{@file}"
