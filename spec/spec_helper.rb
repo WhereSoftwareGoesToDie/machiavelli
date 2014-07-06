@@ -37,7 +37,13 @@ RSpec.configure do |config|
 end
 
 shared_examples 'a graph' do |metric|
-	["1h","3h","1d","1w","2w"].each do |t|
+	if ENV["BACKDATE_TEST"] 
+	       range = ["1w","2w"]
+	else 
+		range = ["1h","3h","1d","1w","2w"]
+	end
+
+	range.each do |t|
 		time_css_button metric, "standard", t, ["#multi_slider","#chart_0",".x_tick"]
 		time_css_button metric, "stacked",  t, [".rickshaw_graph","#chart_container",".y_axis"]
 		time_css_button metric, "horizon",  t, [".horizon","#horizon_graph",".axis"]
