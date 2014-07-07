@@ -54,7 +54,7 @@ get metric_url do
 
 	(start..(stop-step)).step(step).each do |x|
 		y = 10 * (Math.sin(0.005 * x) + Math.sin((0.004 * x) + ((Math::PI * i) / len) )) + 20 + i 
-		data << [x,y.round(round)]
+		data << [x * 1000000000, y.round(round)]
 	end
 
 	data.to_json

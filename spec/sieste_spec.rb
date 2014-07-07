@@ -3,7 +3,7 @@ require 'open-uri'
 
 def enverr 
 	raise StandardError, "No SIESTE environment variables specificied.\n" \
-	     "Use TEST_SIESTE_STRING in the form HREF1,ORIGIN1[,METRIC1]|HREF2,ORIGIN2[,METRIC2]|...," \
+	     "Use TEST_SIESTE_STRING in the form HREF1~ORIGIN1[~METRIC1]|HREF2~ORIGIN2[~METRIC2]|...," \
 	     "or one TEST_SIESTE_HOST and one TEST_SIESTE_ORIGIN"
 end
 
@@ -12,7 +12,7 @@ describe "Sieste", :js => true do
 	enverr unless ENV["TEST_SIESTE_STRING"] || ENV["TEST_SIESTE_HOST"]
 
 	sieste_string = ENV["TEST_SIESTE_STRING"]
-	sieste_string ||= ENV["TEST_SIESTE_HOST"] +","+ ENV["TEST_SIESTE_ORIGIN"]
+	sieste_string ||= ENV["TEST_SIESTE_HOST"] +"~"+ ENV["TEST_SIESTE_ORIGIN"]
 
 	enverr unless sieste_string
 
@@ -23,7 +23,6 @@ describe "Sieste", :js => true do
 		sieste_host = d[0]
 		origin = d[1]
 		metric = d[2] if d.length == 3
-
 		begin
 			URI.parse(sieste_host).read
 		rescue Errno::ECONNREFUSED,Errno::EHOSTUNREACH => e
