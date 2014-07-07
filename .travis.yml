@@ -7,5 +7,7 @@ env:
 bundler_args: --without debugging production 
 script: 
   - ruby simple_endpoint.rb > /dev/null 2>&1 &
+  - curl http://localhost:4567/
   - ruby simple/mock_sieste.rb > /dev/null 2>&1 &
+  - curl http://localhost:1234/
   - xvfb-run --server-args="-screen 0 1024x768x24"  bundle exec rspec spec/*_spec.rb 
