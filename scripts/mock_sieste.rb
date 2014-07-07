@@ -2,7 +2,7 @@ require 'sinatra'
 require 'json'
 
 require 'sinatra/reloader' if development?
-set :port, 1234
+#set :port, 1234
 
 
 simple = ["JISPVTWX", "EVVDPKOX", "FASXEOMD", "FWNDTEZZ", "WZBXPSXK", "PRBXDCLZ"]
