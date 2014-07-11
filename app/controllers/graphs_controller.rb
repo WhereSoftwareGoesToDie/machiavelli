@@ -42,7 +42,7 @@ class GraphsController < ApplicationController
 			@metrics[i] = fm
 			gon.metrics[i] = { 
 				metric: fm,
-				feed: "/metric/?metric="+m,
+				feed: "/metric/?metric="+x,
 				live: b.live?,
 				sourceURL: b.get_metric_url(m.split(SEP).last,start,stop,step),
 				removeURL: rem_qs(:metric, m)
