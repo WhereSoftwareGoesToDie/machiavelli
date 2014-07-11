@@ -103,6 +103,10 @@ module Layouts
 			(init_backend metric).style_metric style, metric
 		end
 
+		def metric_id metric
+			(init_backend metric).get_metric_id metric
+		end
+
 		# Backend intialization 
 		# No Name? -> Generic
 		# Name, no settings? Search for settings in config
