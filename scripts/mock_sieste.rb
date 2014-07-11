@@ -6,7 +6,7 @@ set :port, 1234
 
 
 simple = ["JISPVTWX", "EVVDPKOX", "FASXEOMD", "FWNDTEZZ", "WZBXPSXK", "PRBXDCLZ"]
-meta_list = ["hostname","metric","uom"]
+meta_list = ["host","metric","service"]
 
 list_url = "/simple/search"
 metric_url = "/interpolated/:source"
@@ -21,7 +21,7 @@ end
 get list_url do
 	content_type :json
 	return [].to_json if params[:page] && params[:page].to_i > 0
-	list = simple.each_with_index.map{|a,i| "address~#{a},#{meta_list.map{|b| "#{b}~#{a}"}.join(",")}#{",is_float~true" if i.even?}"}
+	list = simple.each_with_index.map{|a,i| "address~#{a},#{meta_list.map{|b| "#{b}~#{a}"}.join(",")}#{",_float~1" if i.even?}"}
 	list.to_json
 end
 
