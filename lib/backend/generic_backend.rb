@@ -37,7 +37,12 @@ class Backend::GenericBackend
 	def get_metric m, start=nil, stop=nil, step=nil, args={}
 		raise NotImplementedError
 	end
+	
+	# Generally, the metric id is the metric itself.
+	def get_metric_id m; m;	end
 
+	# Generally, the metric includes all meta data
+	def get_metric_meta m; m; end
 
 	# Is the metric returning live data? That is, can it be assumed to have
 	# data values up to Time.now() within step tolerance?
