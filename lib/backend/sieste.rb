@@ -70,7 +70,7 @@ class Backend::Sieste < Backend::GenericBackend
 		query << "interval=#{step}"
 		query << "origin=#{@origin}"
 
-		query << "as_double=true" if float == 1
+		query << "as_double=true" if float
 
 		query_string = "?" + query.join("&")
 	
