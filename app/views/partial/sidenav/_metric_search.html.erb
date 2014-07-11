@@ -28,7 +28,7 @@ $(document).ready(function() {
 						<%=style_metric :pretty, metric%>
 					</span>
 					<span class="hover hover-right">
-						<a href="<%= rem_qs :metric, metric %>"	onClick="this.href = this.href+window.location.hash"
+						<a href="<%= rem_qs :metric, metric_id(metric) %>"	onClick="this.href = this.href+window.location.hash"
 							data-toggle="tooltip-always-metric" data-original-title="Remove metric">
 						<i class="icon-remove"></i>
 						</a>
