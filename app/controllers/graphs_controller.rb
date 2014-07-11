@@ -36,11 +36,15 @@ class GraphsController < ApplicationController
 		gon.base = base
 		
 		@metrics.each_with_index do |m,i|
+			b = (init_backend m)
+			fm = b.get_metric_meta(m)
+			x = b.get_metric_id(m)
+			@metrics[i] = fm
 			gon.metrics[i] = { 
-				metric: m,
+				metric: fm,
 				feed: "/metric/?metric="+m,
-				live: (init_backend m).live?,
-				sourceURL: (init_backend m).get_metric_url(m.split(SEP).last,start,stop,step),
+				live: b.live?,
+				sourceURL: b.get_metric_url(m.split(SEP).last,start,stop,step),
 				removeURL: rem_qs(:metric, m)
 			}
 
