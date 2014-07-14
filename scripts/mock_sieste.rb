@@ -4,9 +4,8 @@ require 'json'
 require 'sinatra/reloader' if development?
 set :port, 1234
 
-
-simple = ["JISPVTWX", "EVVDPKOX", "FASXEOMD", "FWNDTEZZ", "WZBXPSXK", "PRBXDCLZ"]
-meta_list = ["host","metric","service"]
+def simple; ["JISPVTWX", "EVVDPKOX", "FASXEOMD", "FWNDTEZZ", "WZBXPSXK", "PRBXDCLZ"]; end
+def meta_list;  ["host","metric","service"]; end
 
 list_url = "/simple/search"
 metric_url = "/interpolated/:source"
@@ -18,10 +17,21 @@ get '/' do
 	"<dt><code>#{metric_url}</code> <dd>get information for a source</dt>"
 end
 
+def make_listing a
+	i = simple.index a
+	"address~#{a},#{meta_list.map{|b| "#{b}~#{a}"}.join(",")}#{",_float~1" if i.even?}"
+end 
+
 get list_url do
 	content_type :json
 	return [].to_json if params[:page] && params[:page].to_i > 0
-	list = simple.each_with_index.map{|a,i| "address~#{a},#{meta_list.map{|b| "#{b}~#{a}"}.join(",")}#{",_float~1" if i.even?}"}
+	list = simple.map{|a| make_listing a}
+	if params[:address] 
+		a = params[:address]
+		return [(make_listing a)].to_json if simple.include? a
+		return [].to_json
+	end
+
 	list.to_json
 end
 
