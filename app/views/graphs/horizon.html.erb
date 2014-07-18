@@ -26,7 +26,7 @@ colours = safe_array Graph::Horizon.get_colours
 	datum = [];
 
 	nice_metrics = []
-	<% @metrics.each do |m| %>
+	<% @gon.metrics.each do |met| m = met[:metric] %>
 		nice_metrics.push("<%=style_metric :pretty, m%>");
 	<% end %>
 
