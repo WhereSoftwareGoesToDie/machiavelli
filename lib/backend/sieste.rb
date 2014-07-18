@@ -65,11 +65,10 @@ class Backend::Sieste < Backend::GenericBackend
 		factor = 1000000000
 		m = sieste_encode m
 
-		query << "start=#{start - 200}" 
-		query << "end=#{stop + 10}"
+		query << "start=#{start}" 
+		query << "end=#{stop}"
 		query << "interval=#{step}"
 		query << "origin=#{@origin}"
-
 		query << "as_double=true" if float
 
 		query_string = "?" + query.join("&")
@@ -102,27 +101,29 @@ class Backend::Sieste < Backend::GenericBackend
 			return [metric.select{|a| a[:x] >= start}.first]
 		end
 
-		# Walk though the retrieved dataset for the times are assume to
-		# get. Add a nil value if the date we aren't for isn't in the set.
 		padded = []
-		dindex = metric.find_index{|a| a[:x] >= start}
-		dstart = metric[dindex][:x]
-		xs = 0
-		points = (stop - start) / step 
 
-		points.times do |n|
-			m = metric[dindex + n]
-			x =  dstart + (step * xs)
-			y = nil
 
-			if m and (m[:x] == dstart + (step * xs)) then
-				y = m[:y]
-			end
+		# Assume that we never get the complete set of data from start to stop. 
+		# Backpad the starting data, and forward pad the ending data
+		# Use steps to ensure consistent intervals
+		first_point = metric[0][:x]
 
-			padded << {x: x, y: y}
-
-			xs += 1
+		# Reversing ensures consistent steps from interval BEFORE first data point to start 
+		(first_point-step).step(start, -step).each do |x|
+			padded << {x: x, y: nil}
 		end
+		padded.reverse!
+
+		# Append actual data
+		padded.concat metric
+
+		# Append forward padding from one step AFTER data to stop
+		last_point = metric[-1][:x]
+		(last_point+step..stop).step(step).each do |x|
+			padded << {x: x, y: nil}
+		end
+
 		padded
         end
 
