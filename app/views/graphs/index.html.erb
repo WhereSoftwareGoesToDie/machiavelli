@@ -2,7 +2,7 @@
 <%= javascript_include_tag "d3.layout.min" %>
 <%= include_gon %>
 
-<% if @metrics.length > 0 then
+<% if @gon.metrics.length > 0 then
 	if @graph == "xkcd"
 		dckx = true
 		graph = "stacked"
@@ -12,7 +12,7 @@
 	end
 %>
 	<%= render(file: "graphs/#{graph}", locals: {dckx: dckx}) if graph%>
-<% elsif @metrics.length == 0%>
+<% elsif @gon.metrics.length == 0%>
 	<p><%= ui_message(:no_graphs_selected).html_safe %></p>
 <% end %>
 

@@ -11,12 +11,36 @@ class GraphsController < ApplicationController
 	end
 # GET
 	def index # index.html
-		@metrics = selected_metrics
 		gon.metrics = []
 
 		start = to_epoch(get_param(:start))
 		stop  = to_epoch(get_param(:stop))
+
+		step  = params[:step]  || (stop - start).to_i / UI_DEFAULTS[:points]
+		gon.start, gon.stop, gon.step = start, stop, step
+
+		base = obl_qs(:stop, {url: obl_qs(:start) })
+		base = chg_qs(:time, "absolute", {url: base})
+
+		gon.base = base
 		
+		selected_metrics.each_with_index do |m,i|
+			b = (init_backend m)
+			metric_meta = b.get_metric_meta(m)
+			metric_id = b.get_metric_id(m)
+			gon.metrics[i] = { 
+				metric: metric_meta,
+				id: metric_id,
+				feed: "/metric/?metric="+metric_id,
+				live: b.live?,
+				sourceURL: b.get_metric_url(m.split(SEP).last,start,stop,step),
+				removeURL: rem_qs(:metric, m)
+			}
+
+		end
+
+		@gon = gon
+
 		if stop < start
 			flash.now[:error] = "Start time has to be before stop time"
 			return
@@ -29,24 +53,8 @@ class GraphsController < ApplicationController
 
 		# Everything should be ok from here on out
 		@graph = get_param(:graph)
-
-		step  = params[:step]  || (stop - start).to_i / UI_DEFAULTS[:points]
-		gon.start, gon.stop, gon.step = start, stop, step
-		base = obl_qs :start; base = obl_qs(:stop, {url: base}); base = chg_qs(:time, "absolute", {url: base})
-		gon.base = base
-		
-		@metrics.each_with_index do |m,i|
-			gon.metrics[i] = { 
-				metric: m,
-				feed: "/metric/?metric="+m,
-				live: (init_backend m).live?,
-				sourceURL: (init_backend m).get_metric_url(m.split(SEP).last,start,stop,step),
-				removeURL: rem_qs(:metric, m)
-			}
-
-		end
 	end
-	
+
 	def refresh # refresh button
 	
 		init_backend.delete_metrics_cache

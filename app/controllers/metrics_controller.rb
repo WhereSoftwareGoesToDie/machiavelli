@@ -48,7 +48,7 @@ class MetricsController < ApplicationController
 			begin
 				be = init_backend x
 				ret = be.search_metric_list(search, { page: page.to_i, page_size: page_size.to_i})
-				list << ret.map{|r| {id: r, text: be.style_metric(:pretty, r)}}
+				list << ret.map{|r| {id: be.get_metric_id(r), text: be.style_metric(:pretty, r)}}
 			rescue Backend::Error, Errno::ECONNREFUSED => e
 				 unless  params[:callback] then
 					 render json: { error: e.to_s } 

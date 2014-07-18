@@ -16,20 +16,19 @@ $(document).ready(function() {
 			</li>
 		</ul>
 		<ul class="nav side-menu" id="graphed_metrics">
-			<% @metrics.each_with_index do |metric, i| l = @metrics.length - 1 %>
+			<% @gon.metrics.each_with_index do |m, i| metric = m[:metric]; id = m[:id] %>
 			<li class="hover-li sortable">
 			<div>
-					<span class="hover hover-left drag" data-toggle="tooltip-always-metric" data-original-title="Drag to rearrange">	
-						<i class="icon-reorder"></i>
-					</span>
+				<span class="hover hover-left drag" data-toggle="tooltip-always-metric" data-original-title="Drag to rearrange">	
+					<i class="icon-reorder"></i>
+				</span>
 
-					<span class="metric" data-pretty-metric="<%=style_metric :pretty, metric%>" data-metric="<%=metric%>" 
-					data-html="true" data-toggle="tooltip-always-metric" data-original-title="<%=style_metric :table, metric%>">
-						<%=style_metric :pretty, metric%>
-					</span>
-					<span class="hover hover-right">
-						<a href="<%= rem_qs :metric, metric %>"	onClick="this.href = this.href+window.location.hash"
-							data-toggle="tooltip-always-metric" data-original-title="Remove metric">
+				<span class="metric" data-pretty-metric="<%=style_metric :pretty, metric%>" data-metric="<%=id%>" 
+				data-html="true" data-toggle="tooltip-always-metric" data-original-title="<%=style_metric :table, metric%>">
+					<%=style_metric :pretty, metric%>
+				</span>
+				<span class="hover hover-right">
+					<a href="<%= rem_qs :metric, id %>" onClick="this.href = this.href+window.location.hash" data-toggle="tooltip-always-metric" data-original-title="Remove metric">
 						<i class="icon-remove"></i>
 						</a>
 					</span>

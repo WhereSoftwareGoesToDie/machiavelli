@@ -68,9 +68,9 @@ def check_page url, expect_success=true
 	failure = "div.alert-danger"
 
 	expect(page.body.length).to be > 0
-	expect(page).to have_content @chart_title
 
 	if expect_success
+		expect(page).to have_content @chart_title
 		expect(page).to have_css success
 		expect(page).not_to have_css failure
 	else

@@ -38,32 +38,32 @@ class Backend::Sieste < Backend::GenericBackend
 		m.gsub(SEP,":")
 	end
 
-        def get_metric metric, start, stop, step, args={}
+	# Ask sieste for the meta data for an address
+	def get_metric_meta addr
+		return addr if addr.split(DELIM).length > 2
+		addr = addr.split(SEP).last if addr.include? SEP
+		uri = "#{@base_url}/simple/search?origin=#{@origin}&address=#{addr}"
+		result = get_json uri
+		return @alias + SEP + machiavelli_encode(result.first)
+	end
+
+	def get_metric_id m
+		return m unless m.include? DELIM
+		k = keysplit m
+		x = k[0] + SEP + k[1]["address"]
+		x ||= m
+		x
+	end
+
+        def get_metric m, start, stop, step, args={}
 		query = []
 
-		# Sieste's identifcation string...
-		# v1 - uri-encoded full string of metric
-		# v2 - only requires the Address field, and optional is_float flag
-		
-		# TODO assumes address isn't first. Check siestev2 implementation
-		v2 = "address#{KVP}" 
+	 	float = keysplit(get_metric_meta(m))[1]["_float"]
 
-#		require 'pry-debugger'; binding.pry # FAIL TODO String to Int err here
-
-		factor = 1
-
-		if metric.include? v2
-
-			keys = metric.split(DELIM).map{|a| a.split(KVP)}
-			m = keys.select{|a| a[0] == "address"}[0][1]
-
-			# TODO Temporary fix - chevalier not presenting field
-			float = @orign == "4HXR1F" ? false : true
-#			float = true if keys.include? ["is_float"]
-			factor = 1000000000 # vaultaire v2 serves itty bitty seconds since epoch
-		else
-			m = sieste_encode metric
-		end
+		m = get_metric_id m
+			
+		factor = 1000000000
+		m = sieste_encode m
 
 		query << "start=#{start - 200}" 
 		query << "end=#{stop + 10}"
@@ -125,4 +125,12 @@ class Backend::Sieste < Backend::GenericBackend
 		end
 		padded
         end
+
+	def keysplit m
+		b, m = m.split(SEP) if m.include? SEP
+		b ||= ""
+		keys = Hash[*m.split(DELIM).map{|y| y.split(KVP)}.flatten]
+		keys = Hash[keys.map{|k,v| [URI.decode(k), URI.decode(v)] }]
+		return [b,keys]
+	end
 end
