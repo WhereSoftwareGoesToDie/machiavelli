@@ -85,7 +85,7 @@ module Layouts
 
 			b = []
 
-			b << '<ul class="dropdown-menu">'
+			b << '<ul class="dropdown-menu" style="min-width: 0px; left: 0px">'
 			list.each {|l|
 				b << "<li><a href='#{chg_qs(param,l)}'>#{l}</a></li>"
 			}
