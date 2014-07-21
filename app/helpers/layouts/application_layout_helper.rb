@@ -85,7 +85,7 @@ module Layouts
 
 			b = []
 
-			b << '<ul class="dropdown-menu">'
+			b << '<ul class="dropdown-menu" style="min-width: 0px; left: 0px">'
 			list.each {|l|
 				b << "<li><a href='#{chg_qs(param,l)}'>#{l}</a></li>"
 			}
@@ -93,7 +93,9 @@ module Layouts
 			b << '</ul>'
 			a = active.first
 
-			label = (args[:label]) ? "#{param.to_s}:  #{a}  " : a 
+			prompt_value = args[:prompt_value] || a
+
+			label = (args[:label]) ? "#{param.to_s}:  #{prompt_value}  " : prompt_value
 			dropdown(b, {prompt: label}).flatten
 
 		end

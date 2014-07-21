@@ -64,8 +64,9 @@ function showURL(element, url) {
 
 	document.getElementById(element).innerHTML = show;
 } 
-
+function stripHTML(e) { return e.replace(/<(?:.|\n)*?>/gm, '').replace(/(\r\n|\n|\r)/gm,""); }
 function renderError(element, error, detail, url) {
+	error = stripHTML(error);
 	error_alert = "<div class='alert alert-danger'>" + error;
 
 	if (url) { 

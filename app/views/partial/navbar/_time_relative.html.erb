@@ -3,22 +3,34 @@
 input.error { background: #ffebef; color: #480000}
 </style>
 <div class="btn-group">
-	<% navbar_dropdown(:start, ["2w", "1w", "1d", "3h", "1h", "10min"], {label: true}).each do |a| %>
-		<%= a.html_safe %>
-	<% end %>
+<% 
+args = {label: true}
+args[:prompt_value] = "custom" if is_epoch(que_qs(:start)[0])
+navbar_dropdown(:start, ["2w", "1w", "1d", "3h", "1h", "10min"], args).each do |a| %>
+	<%= a.html_safe %>
+<% end %>
 </div>
 <div class="btn-group">
-<% label = que_qs(:stop); 
-field = "10" || (params[:stop].tr("^0-9", '')  if params[:stop])
-if label.empty? || is_epoch(label[0]) then field = "10"; label = ["now"]; end
+<% 
+qs = que_qs(:stop)[0]
+if is_epoch(qs)
+	label = "custom"
+else
+	if qs == ui_default(:stop) || qs == nil 
+		label =  ui_default(:stop)
+	else
+		label =	qs 
+		field = qs.tr("^0-9", '')
+	end
+end
+field ||= "10"
 
-navbar_buttons(:stop, label, {active: true}).each do |a| %><%#= a.html_safe %><%end%>
-<% fie = form_for "time", url: stop_time_path, html: {id: "rel_form"} do |f| %>
+fie = form_for "time", url: stop_time_path, html: {id: "rel_form"} do |f| %>
 	<li style="padding: 3px"><%=f.text_field(:number, value: field, style:"width: 100%", data: {validation: "number", validation_error_msg: "Enter a valid integer"})%></LI>
-	<li style="padding: 3px"><div class="btn-group"><%["min","h","d", "w"].each do |a| %><%= f.submit a, class: "btn btn-default" %><% end %></div></li>
+	<li style="padding: 3px"><div class="btn-group" style="display:flex;"><%["min","h","d", "w"].each do |a| %><%= f.submit a, class: "btn btn-default" %><% end %></div></li>
 	<li style="padding: 3px"><div class="btn-group"><%["now"].each do |a| %><%= f.submit a, class: "btn btn-default" %><% end %></div></li>
 <% end %>
-<% full = "<div class='dropdown-menu'>#{fie}</div>"; (dropdown full, {prompt: "stop: #{label.first}"}).each do |d|%><%= d.html_safe %><% end %>
+<% full = "<div class='dropdown-menu'>#{fie}</div>"; (dropdown full, {prompt: "stop: #{label}"}).each do |d|%><%= d.html_safe %><% end %>
 </div>
 <script>
 $(function() {

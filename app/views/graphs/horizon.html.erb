@@ -32,7 +32,7 @@ colours = safe_array Graph::Horizon.get_colours
 
 	machiavelli = context.machiavelli(window.location.origin);
 	$.each(gon.metrics, function(i,m) {
-		datum.push(machiavelli.metric(m.metric, nice_metrics[i]));
+		datum.push(machiavelli.metric(m.id, nice_metrics[i]));
 	});
 
 	d3.select("#horizon_graph").call(function(div) {

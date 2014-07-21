@@ -15,7 +15,7 @@
 		<span class="input-group-addon"><i class="icon-calendar"></i></span>
 	</div>
 </div>
-<% end #loop %>
+	<% end #loop %>
 
 <div class="btn-group">
 	<%= f.submit "Go", class: "form-control" %>
@@ -35,7 +35,8 @@ $(function() {
 			    up: "icon-arrow-up",
 			    down: "icon-arrow-down"
 			},
-		format: format_string
+			format: format_string,
+			orientation: "left"
                 });
 	<% end %>
 	$.formUtils.addValidator({
