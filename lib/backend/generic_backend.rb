@@ -60,12 +60,13 @@ class Backend::GenericBackend
 
 	# Define any rules to make a metric name stylized. Default, do nothing. 
 	def style_metric style, metric
+		m = URI.decode(metric)
 		if style == :pretty then
-			metric.gsub(SEP, " - ")
+			m.gsub(SEP, " - ").gsub(DELIM, ", ").gsub(KVP, " = ")
 		elsif style == :table then
-			'<p align="left">'+metric.gsub(SEP, "<br>")+"</p>"
+			'<p align="left">'+m.gsub(SEP, "<br>")+"</p>"
 		else
-			metric
+			m
 		end
 	end
 
