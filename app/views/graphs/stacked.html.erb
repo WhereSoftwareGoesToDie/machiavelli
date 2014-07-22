@@ -28,11 +28,11 @@ var config = {}
 config.renderer = '<%= check_param(:render, ["line","area","bar"]) || "line" %>'
 config.stack = <%= to_bool(check_param(:stack, ["on","off"]) || ui_defaults("stack")) %>
 
-<% @gon.metrics.each do |metric| m = metric[:metric] %>
-	metrics.push("<%= m %>");
-	format_metrics.push("<%= style_metric :pretty, m%>")
-	right_links.push("<%= add_qs :right, m%>");
-	left_links.push("<%= rem_qs :right, m%>");
+<% @gon.metrics.each do |m| %>
+	metrics.push("<%= m[:metric] %>");
+	format_metrics.push("<%= style_metric :pretty, m[:metric]%>")
+	right_links.push("<%= add_qs :right, m[:id]%>");
+	left_links.push("<%= rem_qs :right, m[:id]%>");
 <%end%>
 
 var graph;

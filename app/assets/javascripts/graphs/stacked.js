@@ -35,7 +35,7 @@ function flagComplete() {
 }
 var slider; 
 function isRight(d) { 
-	return right_id.indexOf(gon.metrics[d].metric) >= 0;
+	return right_id.indexOf(gon.metrics[d].id) >= 0;
 } 
 
 function noRight() { 
