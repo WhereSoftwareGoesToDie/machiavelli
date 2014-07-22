@@ -51,7 +51,7 @@ function renderStacked(data) {
 
 	min = Number.MAX_VALUE; max = Number.MIN_VALUE;
 
-	if (config.render == "line") { pad = 1} else {pad = 0}
+	if (config.renderer == "line") { pad = 1} else {pad = 0}
 
 	left_range = [min,max];
 	right_range = [min,max];
