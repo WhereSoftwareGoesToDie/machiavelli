@@ -37,10 +37,16 @@ var slider;
 function isRight(d) { 
 	return right_id.indexOf(gon.metrics[d].id) >= 0;
 } 
-
-function noRight() { 
-	return clean(right_id, "").length === 0;
+function hasRight() { 
+	return clean(right_id, "").length != 0;
+}
+function isLeft(d) { 
+	return right_id.indexOf(gon.metrics[d].id) == 0;
 } 
+function hasLeft() { 
+	return gon.metrics.length != clean(right_id,"").length
+} 
+
 function renderStacked(data) {
 
 	var palette = new Rickshaw.Color.Palette({
@@ -70,18 +76,21 @@ function renderStacked(data) {
 		} 
 	}
 
-	if (!noRight()) { 
+	if (hasRight()) { 
 		right_scale = d3.scale.linear().domain(right_range);
 	}
-	left_scale = d3.scale.linear().domain(left_range);
+	if (hasLeft()) { 
+		left_scale = d3.scale.linear().domain(left_range);
+	}
 
 	// Push scales and their metrics into a rickshaw-eatable array
 	series = [];
 	for (n = 0; n < data.length; n++) {
 		colours[n] = palette.color();
-		scale = left_scale;
 		if (isRight(n)) { 
 			scale = right_scale;
+		} else { 
+			scale = left_scale; 
 		}
 		series.push({
 			color: colours[n],
@@ -92,7 +101,6 @@ function renderStacked(data) {
 	}
 
 	// Finally, make the chart
-
 	config.interpolate = "cardinal";
 
 	if (flag == "xkcd") {
@@ -108,27 +116,25 @@ function renderStacked(data) {
 
 	graph.configure(config);
 
+	if (hasLeft()) { 
+		left_axis = new Rickshaw.Graph.Axis.Y.Scaled({
+			element: document.getElementById('y_axis'),
+			graph: graph,
+			orientation: 'left',
+			tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
+			scale: left_scale
+		});
+	}
 
-	// Left Y-Axis will always be around
-	left_axis = new Rickshaw.Graph.Axis.Y.Scaled({
-		element: document.getElementById('y_axis'),
-		graph: graph,
-		orientation: 'left',
-		tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
-		scale: left_scale
-	});
-
-
-	// Right Y-Axis will sometimes be here
-	if (!noRight()) { 
-	right_axis = new Rickshaw.Graph.Axis.Y.Scaled({
-		element: document.getElementById('y_axis_right'),
-		graph: graph,
-		grid: false,
-		orientation: 'right',
-		tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
-		scale: right_scale
-	});
+	if (hasRight()) { 
+		right_axis = new Rickshaw.Graph.Axis.Y.Scaled({
+			element: document.getElementById('y_axis_right'),
+			graph: graph,
+			grid: false,
+			orientation: 'right',
+			tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
+			scale: right_scale
+		});
 	}
 
 	// One X-axis for time
@@ -244,13 +250,10 @@ function generate_legend() {
 		return c.join("");
 	} 
 
-	header = rtd("Left");
-	if (arr[0][1]) { 
-		header += rtd("Right");}
-	else { 
-		header += "<td colspan=5>&nbsp;</td>";
-	}
-
+	emptyHeader = "<td colspan=5>&nbsp;</td>"
+	header = ""
+	if (arr[0][0]) { header += rtd("Left");	} else { header += emptyHeader }
+	if (arr[0][1]) { header += rtd("Right");} else { header += emptyHeader } 
 	table.push(header);
 
 	arr.forEach(function(d) { 
@@ -283,11 +286,11 @@ function generate_legend() {
 		table.push("</tr>");
 	});
 
-	if (!noRight()) { 
-		table.push("<tr><td colspan=6><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
+	if (hasRight()) { 
+		table.push("<tr><td colspan=12><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
 	} else {
 		if (graph.series.length >= 2) { 
-			table.push("<tr><td colspan=6>Click a metric to move it to the Right Axis</td></tr>");
+			table.push("<tr><td colspan=12>Click a metric to move it to the Right Axis</td></tr>");
 		} 
 	}
 	table.push("<table>");
