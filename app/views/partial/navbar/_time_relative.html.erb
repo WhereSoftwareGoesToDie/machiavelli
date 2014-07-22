@@ -5,7 +5,9 @@ input.error { background: #ffebef; color: #480000}
 <div class="btn-group">
 <% 
 args = {label: true}
-args[:prompt_value] = "custom" if is_epoch(que_qs(:start)[0])
+qs = que_qs(:start)[0]
+args[:prompt_value] = is_epoch(qs) ? "custom" : qs
+
 navbar_dropdown(:start, ["2w", "1w", "1d", "3h", "1h", "10min"], args).each do |a| %>
 	<%= a.html_safe %>
 <% end %>
