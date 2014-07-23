@@ -68,12 +68,11 @@ class Backend::Sieste < Backend::GenericBackend
 		query << "start=#{start}" 
 		query << "end=#{stop}"
 		query << "interval=#{step}"
-		query << "origin=#{@origin}"
 		query << "as_double=true" if float
 
 		query_string = "?" + query.join("&")
 	
-		uri = "#{@base_url}/interpolated/#{m}#{query_string}"
+		uri = "#{@base_url}/interpolated/#{@origin}/#{m}#{query_string}"
 
 		if args[:return_url]
 			return uri
