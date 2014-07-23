@@ -21,32 +21,35 @@
 		end
 
 		def display b, show_error=false 
-		%>
-			<%= b.type.titleize %> <%= "'"+b.alias+"'" if b.alias %>
-			<%= b.description %>
-			</br>
-			<% b.settings.each do |k,v| %>
-				<li><%= k %>: <%=v%></li>
+	%>
+		<tr><td colspan=2><%= b.type.titleize %> <%= "'"+b.alias+"'" if b.alias %></td></tr>
+		<% if b.description %>
+			<tr><td colspan=2><%= b.description %></td></tr>
+			<%end %>
+			<% b.settings.sort.each do |k,v| %>
+				<tr><td><%= k %> </td><td> <%=v%></td></tr>
 			<% end %>
 			<%msg = @r.select{|a| a[0] == (b.alias || b.type)}.flatten%>
-			<% unless msg.empty? 
-				m = msg[1] %>
-				<div class='alert-danger'> 
-					<%= "Last error: #{m}" %>
-				</div>
+			<% unless msg.empty?
+				   m = msg[1] %>
+			   <tr class="alert-danger"><td>Error</td><td><%= m %></td></tr>
 			<% end %>
-			<br />
+				<tr><td colspan=2>&nbsp;</td></tr>
 		<% 
 		end #def display
 		%> 
 
 		<div class="col-md-6">
 			<h4>Active Backends</h4>
-			<% active.each do |b| display b; end %>
+			<table class="table">
+				<% active.each do |b| display b; end %>
+			</table>
 		</div>
 		<div class="col-md-6">
 			<h4>Inactive Backends</h4>
-			<% inactive.each do |b| display b, true; end %>
+			<table class="table">
+				<% inactive.each do |b| display b, true; end %>
+			</table>
 			<p><%= link_to "Refresh settings from file, and metrics cache", refresh_path, class: 'btn btn-info' %></p>
 		</div>	
 
