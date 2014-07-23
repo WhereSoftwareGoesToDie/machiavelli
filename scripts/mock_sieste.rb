@@ -8,7 +8,7 @@ def simple; ["JISPVTWX", "EVVDPKOX", "FASXEOMD", "FWNDTEZZ", "WZBXPSXK", "PRBXDC
 def meta_list;  ["host","metric","service"]; end
 
 list_url = "/simple/search"
-metric_url = "/interpolated/:source"
+metric_url = "/interpolated/:origin/:source"
 
 
 get '/' do
