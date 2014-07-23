@@ -94,13 +94,19 @@ function metricURL(base, start, stop, step){
 
 function stopButtonClick() { 
         stopUpdates();
-	$("#autoplay_stop").hide();
-	$("#autoplay_play").show();
+	disableButton("#autoplay_stop_link");
+	enableButton("#autoplay_play_link");
 } 
 function stopAll() {
         stopUpdates();
 	stopButtonClick();
 	//unrenderWaiting();
+}
+function disableButton(b){
+	$(b).addClass("disabled")
+}
+function enableButton(b){
+	$(b).removeClass("disabled")
 }
 
 function metric_sort() {
