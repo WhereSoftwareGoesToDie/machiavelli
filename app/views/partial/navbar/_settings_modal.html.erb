@@ -22,7 +22,9 @@
 
 		def display b, show_error=false 
 		%>
-		<%= b.type.titleize %> <%= "('"+b.alias+"')" if b.alias %> </br>
+			<%= b.type.titleize %> <%= "'"+b.alias+"'" if b.alias %>
+			<%= b.description %>
+			</br>
 			<% b.settings.each do |k,v| %>
 				<li><%= k %>: <%=v%></li>
 			<% end %>
