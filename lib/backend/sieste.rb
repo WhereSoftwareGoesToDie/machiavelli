@@ -55,6 +55,11 @@ class Backend::Sieste < Backend::GenericBackend
 		x
 	end
 
+	def validate_time start, stop
+		# No validation required
+		return start, stop
+	end
+
         def get_metric m, start, stop, step, args={}
 		query = []
 
@@ -65,8 +70,10 @@ class Backend::Sieste < Backend::GenericBackend
 		factor = 1000000000
 		m = sieste_encode m
 
-		query << "start=#{start}" 
-		query << "end=#{stop}"
+		_start, _stop = validate_time(start, stop)
+
+		query << "start=#{_start}"
+		query << "end=#{_stop}"
 		query << "interval=#{step}"
 		query << "as_double=true" if float
 
