@@ -1,8 +1,8 @@
 # Required config/settings.yml > backend > settings parameters: 
-# #  url - the entrypoint for the sieste backend
+# #  url - the entrypoint for the vaultaire backend
 # #  origin - the origin for the data (BETA)
 
-class Backend::Sieste < Backend::GenericBackend
+class Backend::Vaultaire < Backend::GenericBackend
 
         def initialize params={}
 		super
@@ -10,13 +10,13 @@ class Backend::Sieste < Backend::GenericBackend
 		@origin   = mandatory_param :origin
         end
 
-	# Sieste don't need no storage
+	# Vaultaire don't need no storage
         def get_metrics_list
-		raise Backend::Error, "Unable to connect to sieste instance at #{@base_url}" unless is_up? @base_url
+		raise Backend::Error, "Unable to connect to vaultaire instance at #{@base_url}" unless is_up? @base_url
 		return []
         end
 
-	# Sieste is dynamic, yo
+	# Vaultaire is dynamic, yo
 	def search_metric_list q, args={}
 		page = args[:page] || 1
 		page_size = args[:page_size] || 25
@@ -25,20 +25,20 @@ class Backend::Sieste < Backend::GenericBackend
 		result.map{|x| "#{@alias}#{SEP}#{machiavelli_encode x}"}
 	end
 
-	# Convert a string into a uri-transferable sieste metric
-	def sieste_encode m
+	# Convert a string into a uri-transferable vaultaire metric
+	def vaultaire_encode m
 		n = m.gsub(":",SEP)
 		replace = [ ["/", "%2f"], ["_","%5f"]]
 		replace.each { |r| n.gsub!(r[0], r[1]) }
 		n
 	end
 
-	# Convert a sieste-encoded metric into a machiavelli one
+	# Convert a vaultaire-encoded metric into a machiavelli one
 	def machiavelli_encode m
 		m.gsub(SEP,":")
 	end
 
-	# Ask sieste for the meta data for an address
+	# Ask vaultaire for the meta data for an address
 	def get_metric_meta addr
 		return addr if addr.split(DELIM).length > 2
 		addr = addr.split(SEP).last if addr.include? SEP
@@ -63,7 +63,7 @@ class Backend::Sieste < Backend::GenericBackend
 		m = get_metric_id m
 			
 		factor = 1000000000
-		m = sieste_encode m
+		m = vaultaire_encode m
 
 		query << "start=#{start}" 
 		query << "end=#{stop}"
@@ -82,7 +82,7 @@ class Backend::Sieste < Backend::GenericBackend
 
 		if (data.is_a? Hash) then
 			if data[:error] then
-				raise Backend::Error, "Sieste Exception raised: #{data[:error]}"
+				raise Backend::Error, "Vaultaire Exception raised: #{data[:error]}"
 			end
 		end
 			
@@ -92,7 +92,7 @@ class Backend::Sieste < Backend::GenericBackend
 		end
 
 		if data.empty? then
-			raise Backend::Error, "No data returned from sieste query"
+			raise Backend::Error, "No data returned from vaultaire query"
 		end
 
 		if stop - start == step then
