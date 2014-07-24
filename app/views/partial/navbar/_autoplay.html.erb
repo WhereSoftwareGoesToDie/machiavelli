@@ -12,15 +12,15 @@
 		$(document).ready(function() { 
 			if (gon.metrics.length == 0 ) {  $("#autoplay_play").hide(); $("#autoplay_stop").hide() } else { 
 				autoplay = <%= val = params[:play] || Settings.autoplay; val = true if val.nil?; val %>
-			if (autoplay) { 
-				$("#autoplay_play_link").attr("href",window.location.href.split("#")[0])
-				disableButton("#autoplay_play_link")
-				startUpdates()
+				if (autoplay) { 
+					$("#autoplay_play_link").attr("href",window.location.href.split("#")[0])
+					enableStop()
+					startUpdates()
 
-			} else { 
-				$("#autoplay_play_link").attr("href",window.location.href.split("#")[0]+"&play=true")
-				enableButton("#autoplay_stop_link")
-			}
+				} else { 
+					$("#autoplay_play_link").attr("href",window.location.href.split("#")[0]+"&play=true")
+					enablePlay()
+				}
 			}
 		})
 	</script>

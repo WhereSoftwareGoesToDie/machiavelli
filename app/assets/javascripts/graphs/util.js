@@ -94,20 +94,21 @@ function metricURL(base, start, stop, step){
 
 function stopButtonClick() { 
         stopUpdates();
-	disableButton("#autoplay_stop_link");
-	enableButton("#autoplay_play_link");
+	enablePlay();
 } 
 function stopAll() {
         stopUpdates();
 	stopButtonClick();
 	//unrenderWaiting();
 }
-function disableButton(b){
-	$(b).addClass("disabled")
-}
-function enableButton(b){
-	$(b).removeClass("disabled")
-}
+function enableStop() { 
+	$("#autoplay_stop_link").removeClass("disabled")
+	$("#autoplay_play_link").addClass("disabled")
+} 
+function enablePlay() { 
+	$("#autoplay_stop_link").addClass("disabled")
+	$("#autoplay_play_link").removeClass("disabled")
+} 
 
 function metric_sort() {
         $("#graphed_metrics").sortable({
