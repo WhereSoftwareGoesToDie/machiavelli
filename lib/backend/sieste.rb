@@ -8,6 +8,7 @@ class Backend::Sieste < Backend::GenericBackend
 		super
 		@base_url = mandatory_param :url
 		@origin   = mandatory_param :origin
+		@origin_alias   = optional_param :origin_alias, @alias
         end
 
 	# Sieste don't need no storage
