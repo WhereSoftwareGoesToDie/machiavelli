@@ -54,17 +54,17 @@ $('#filter_metrics_select').select2({
 
 			more = true; 
 			$.each(data.metrics, function(i, d) {  
-				ret.push({id: decodeURIComponent(d.id), text: decodeURIComponent(d.text)})
+				ret.push({id: unescape(d.id), text: unescape(d.text)})
 			}) 
 			if (ret.length == 0) { more = false }
 			return { results: ret, more: more};
 		 }, 
 	 }, 
 	formatResult:    function(d){
-		 return decodeURIComponent(d.text);
+		 return unescape(d.text);
 	 }, 
 	formatSelection: function(d){
-		 return decodeURIComponent(d.text); 
+		 return unescape(d.text); 
 	 }
 });
 
