@@ -8,6 +8,7 @@ class Backend::Sieste < Backend::GenericBackend
 		super
 		@base_url = mandatory_param :url
 		@origin   = mandatory_param :origin
+		@origin_alias   = optional_param :origin_alias, @alias
         end
 
 	# Sieste don't need no storage
@@ -22,6 +23,7 @@ class Backend::Sieste < Backend::GenericBackend
 		page_size = args[:page_size] || 25
 		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}&page=#{page - 1}&page_size=#{page_size}"
 		result = json_metrics_list uri
+		result.delete_if{|a| a.include? "%3b"} # semicolon
 		result.map{|x| "#{@alias}#{SEP}#{machiavelli_encode x}"}
 	end
 
@@ -55,6 +57,11 @@ class Backend::Sieste < Backend::GenericBackend
 		x
 	end
 
+	def validate_time start, stop
+		# No validation required
+		return start, stop
+	end
+
         def get_metric m, start, stop, step, args={}
 		query = []
 
@@ -65,8 +72,10 @@ class Backend::Sieste < Backend::GenericBackend
 		factor = 1000000000
 		m = sieste_encode m
 
-		query << "start=#{start}" 
-		query << "end=#{stop}"
+		_start, _stop = validate_time(start, stop)
+
+		query << "start=#{_start}"
+		query << "end=#{_stop}"
 		query << "interval=#{step}"
 		query << "as_double=true" if float
 

@@ -256,6 +256,9 @@ function generate_legend() {
 	if (arr[0][1]) { header += rtd("Right");} else { header += emptyHeader } 
 	table.push(header);
 
+	// Stacked graphs will order last to first, so flip the legend, for sanity
+	if (config.stack) { arr = arr.reverse() }
+
 	arr.forEach(function(d) { 
 		table.push("<tr>");
 

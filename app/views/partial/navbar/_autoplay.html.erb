@@ -1,30 +1,26 @@
 <div class="btn-group">
-	<div id="autoplay_stop">
 		<a id='autoplay_stop_link' type=button class='btn btn-default' onClick='stopButtonClick(); return false' 
 			data-toggle='tooltip-down' data-toggle='button' data-original-title='Click to stop updating graph'
 			><i class='icon-stop'></i>
 		</a>
-	</div>
-	<div id="autoplay_play">
 		<a id='autoplay_play_link' type=button class='btn btn-default'  
 			data-toggle='tooltip-down' data-toggle='button' data-original-title='Click to start updating graph again'
 			href='#'
 			><i class='icon-play'></i>
 		</a>
-	</div>
 	<script>
 		$(document).ready(function() { 
 			if (gon.metrics.length == 0 ) {  $("#autoplay_play").hide(); $("#autoplay_stop").hide() } else { 
 				autoplay = <%= val = params[:play] || Settings.autoplay; val = true if val.nil?; val %>
-			if (autoplay) { 
-				$("#autoplay_play_link").attr("href",window.location.href.split("#")[0])
-				$("#autoplay_play").hide()
-				startUpdates()
+				if (autoplay) { 
+					$("#autoplay_play_link").attr("href",window.location.href.split("#")[0])
+					enableStop()
+					startUpdates()
 
-			} else { 
-				$("#autoplay_play_link").attr("href",window.location.href.split("#")[0]+"&play=true")
-				$("#autoplay_stop").hide()
-			}
+				} else { 
+					$("#autoplay_play_link").attr("href",window.location.href.split("#")[0]+"&play=true")
+					enablePlay()
+				}
 			}
 		})
 	</script>

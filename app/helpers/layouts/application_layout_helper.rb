@@ -125,6 +125,11 @@ module Layouts
 				name = backend[:type]
 				settings = backend[:settings].to_hash.merge({alias: backend[:alias] || backend[:type]})
 			end
+
+		        unless File.exists? File.join(Rails.root,"lib","backend","#{name.downcase()}.rb")
+				raise Backend::Error, "No backend library called #{name} found. Does it exist in lib/backend?"
+			end
+
 			return "Backend::#{name.titleize}".constantize.new settings
 		end
 

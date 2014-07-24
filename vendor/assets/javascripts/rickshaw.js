@@ -3133,7 +3133,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 			.append("rect")
 			.style("cursor", "move")
 			.style("fill", "white")
-			.style("fill-opacity", "0.3")
+			.style("fill-opacity", "0.6")
 			.classed("middle_handle", true);
 
 		middleHandle
