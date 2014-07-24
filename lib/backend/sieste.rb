@@ -23,6 +23,7 @@ class Backend::Sieste < Backend::GenericBackend
 		page_size = args[:page_size] || 25
 		uri = "#{@base_url}/simple/search?origin=#{@origin}&q=#{q}&page=#{page - 1}&page_size=#{page_size}"
 		result = json_metrics_list uri
+		result.delete_if{|a| a.include? "%3b"} # semicolon
 		result.map{|x| "#{@alias}#{SEP}#{machiavelli_encode x}"}
 	end
 
