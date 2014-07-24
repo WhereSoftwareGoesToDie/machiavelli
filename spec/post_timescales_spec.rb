@@ -60,7 +60,7 @@ describe "Post Timescales", :js => true do
 end
 
 def epoch_to_local_date d
-	Time.at(d).strftime("%d/%m/%Y %H:%M:%S %p")
+	Time.at(d).strftime("%d/%m/%Y %I:%M:%S")
 
 end
 
