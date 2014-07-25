@@ -1,0 +1,84 @@
+
+* { -webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box; }
+
+/* MAIN CONTAINER */
+.container	{ margin: 0 auto;  position: relative; }
+
+.container {
+    max-width: 880px; 
+} 
+
+.row {
+	position: relative;
+}
+
+/* SELF CLEARING FLOATS - CLEARFIX METHOD */
+.row:after, .col:after, .clr:after, .group:after { 
+	content: ""; 
+	display: block; 
+	height: 0; 
+	clear: both; 
+	visibility: hidden; }
+
+
+/* DEFAULT ROW STYLES */
+.row, div.clear { padding-bottom: 24px; } /* set according to preference*/
+			
+								  
+/* DEFAULT COLUMN STYLES */
+.col {
+  position: relative;
+  display: block;
+  float: left;
+  width: 100%; 
+}
+
+@media (min-width: 690px) {
+    .col {
+      margin-right: 2%; 
+     } 
+     
+     .wpb_column {
+     	margin-right: 0px;
+     }
+}
+
+/* RESET MARGINS */
+.col.col_last { margin-right: 0; } 
+.col:last-child { margin-right: 0; } 
+
+
+/* COLUMN WIDTH ON DISPLAYS +690px */
+@media (min-width: 690px) {
+	.span_1 { width: 6.5%; }
+	.span_2 { width: 15.0%; }
+	.span_3 { width: 23.5%; }
+	.span_4 { width: 32.0%; }
+	.span_5 { width: 40.5%; }
+	.span_6 { width: 49.0%; }
+	.span_7 { width: 57.5%; }
+	.span_8 { width: 66.0%; }
+	.span_9 { width: 74.5%; }
+	.span_10 { width: 83.0%; }
+	.span_11 { width: 91.5%; }
+	.span_12 { width: 100%; }
+	
+	/* full width content columns */
+	.full-width-content.vc_row-fluid .vc_span2 { width: 16.66%; }
+	.full-width-content.vc_row-fluid .vc_span3 { width: 25%; }
+	.full-width-content.vc_row-fluid .vc_span4 { width: 33.33%; }
+	.full-width-content.vc_row-fluid .vc_span5 { width: 40.5%; }
+	.full-width-content.vc_row-fluid .vc_span6 { width: 50%; }
+	.full-width-content.vc_row-fluid .vc_span7 { width: 57.5%; }
+	.full-width-content.vc_row-fluid .vc_span8 { width: 66.66%; }
+	.full-width-content.vc_row-fluid .vc_span9 { width: 75%; }
+	.full-width-content.vc_row-fluid .vc_span10 { width: 83.0%; }
+	.full-width-content.vc_row-fluid .vc_span11 { width: 91.5%; }
+	.full-width-content.vc_row-fluid .vc_span12 { width: 100%; }
+	
+	.full-width-content.vc_row-fluid .wpb_column { margin-left: 0!important; }
+	.full-width-content.vc_row-fluid .wpb_column .wpb_row, .full-width-content.vc_row-fluid .wpb_column .wpb_wrapper { margin: 0; }
+	
+}
