@@ -43,24 +43,40 @@ describe "Post Timescales", :js => true do
 		# Absolute Time
 		click_icon "calendar"
 
+		now = Time.now().to_i - 12*60*60
+
 		now = Time.now().to_i
-		start = now - 5400 
-		stop = now - 600
-		
-		fill_in "time_start_time", with: epoch_to_local_date(start)
-		fill_in "time_stop_time", with: epoch_to_local_date(stop)
 
-		click_on "Go"
-			
-		expect(current_url).to include "&time=absolute"
-		expect(current_url).to include "&start=#{start}"
-		expect(current_url).to include "&stop=#{stop}"
-
+		time_check now
+		time_check now - 12*60*60 
 	end
 end
 
+def time_check now
+	start = now - 5400 
+	stop = now - 600
+
+
+	nice_start = epoch_to_local_date(start)
+	nice_stop = epoch_to_local_date(stop)
+
+	fill_in "time_start_time", with: nice_start
+	fill_in "time_stop_time", with: nice_stop
+	puts nice_start
+	puts nice_stop
+
+	expect(page).to have_field("time_start_time", with: nice_start)
+
+	click_on "Go"
+		
+	expect(current_url).to include "&time=absolute"
+	expect(current_url).to include "&start=#{start}"
+	expect(current_url).to include "&stop=#{stop}"
+end
+
+
 def epoch_to_local_date d
-	Time.at(d).strftime("%d/%m/%Y %I:%M:%S")
+	Time.at(d).strftime("%d/%m/%Y %H:%M:%S")
 
 end
 
