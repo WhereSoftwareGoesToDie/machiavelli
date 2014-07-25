@@ -1,13 +1,15 @@
 var graph=[];
 var data;
 
+var nanobar = new Nanobar({bg: "#356895" ,id:"#progress"})
+
 function renderStandard(index) { 
+	nanobar.go(1)
 	update = metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step);
                 
 	$.getJSON(update, function(data) {
 		var chart = "chart_" + index;
 		var yaxis = "y_axis_" + index;
-		
 		if (data.error) { 
 			renderError(chart, data.error, null, gon.metrics[index].removeURL); 
 			stopAll(); 
@@ -102,8 +104,13 @@ function updateStandard(){
 
 var complete = 0;
 var slider; 
+function updateProgress() {
+	a = (complete / gon.metrics.length ) * 100
+	nanobar.go(a)
+}
 function renderSlider() { 
 	complete++;
+	updateProgress()
 
         // Render the multiple graph slider only when all the graphing operations have been completed.
         if (complete == gon.metrics.length) { 
