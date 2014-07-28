@@ -83,7 +83,7 @@ def add_metric m, search=m
 
 	# Select the searched for option and enter
 	find(:xpath, "//li/div[contains(.,'#{m}')]").click
-	click_on "Filter"
+	click_on "Render"
 
 end
 
