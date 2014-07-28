@@ -1,10 +1,9 @@
 var graph=[];
 var data;
 
-var nanobar = new Nanobar({bg: "#356895" ,id:"#progress"})
+initProgress();
 
 function renderStandard(index) { 
-	nanobar.go(1)
 	update = metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step);
                 
 	$.getJSON(update, function(data) {
@@ -13,11 +12,13 @@ function renderStandard(index) {
 		if (data.error) { 
 			renderError(chart, data.error, null, gon.metrics[index].removeURL); 
 			stopAll(); 
+			graphDone();
 			return false;
 		} 
 		if (data.length === 0) { 
 			renderError(chart, errorMessage.noData, null, gon.metrics[index].removeURL);
 			stopAll(); 
+			graphDone();
 			return false;
 		}
 		graph[index] = new Rickshaw.Graph({
@@ -61,7 +62,8 @@ function renderStandard(index) {
 		new Rickshaw.Graph.HoverDetail({
 			graph: graph[index],
 			formatter: function (series, x, y) {
-				content = "<span class='date'>"+d3.time.format("%Y-%m-%d %H:%M:%S %Z")(new Date(x*1000)) +"</span><br/>"+
+				content = "<span class='date'>"+
+					d3.time.format("%Y-%m-%d %H:%M:%S %Z")(new Date(x*1000)) +"</span><br/>"+
 					formatData(y);
 				return content;
 			}
@@ -70,7 +72,7 @@ function renderStandard(index) {
 		graph[index].render();
 
 		unrenderWaiting(chart);
-		renderSlider();
+		graphDone();
 	});
 }
 
@@ -104,20 +106,18 @@ function updateStandard(){
 
 var complete = 0;
 var slider; 
-function updateProgress() {
-	a = (complete / gon.metrics.length ) * 100
-	nanobar.go(a)
-}
-function renderSlider() { 
+
+function graphDone() { 
 	complete++;
 	updateProgress()
 
         // Render the multiple graph slider only when all the graphing operations have been completed.
         if (complete == gon.metrics.length) { 
-	slider = new Rickshaw.Graph.RangeSlider.Preview({ 
-                graphs: clean(graph, undefined), 
-                height: 30,
-		element: document.getElementById("multi_slider")//$("#multi_slider")
-                });
-        }
+		doneProgress(); //force
+		slider = new Rickshaw.Graph.RangeSlider.Preview({ 
+			graphs: clean(graph, undefined), 
+			height: 30,
+			element: document.getElementById("multi_slider")
+		});
+	}
 }
