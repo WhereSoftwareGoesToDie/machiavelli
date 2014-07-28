@@ -19,6 +19,8 @@ class GraphsController < ApplicationController
 		step  = params[:step]  || (stop - start).to_i / UI_DEFAULTS[:points]
 		gon.start, gon.stop, gon.step = start, stop, step
 
+		gon.clock = params[:clock] || UI_DEFAULTS[:clock]
+
 		base = obl_qs(:stop, {url: obl_qs(:start) })
 		base = chg_qs(:time, "absolute", {url: base})
 

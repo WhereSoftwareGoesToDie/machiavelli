@@ -12,7 +12,8 @@ module Layouts
 			graph: "standard",
 			time: "relative",
 			render: "line",
-			stack: "off"
+			stack: "off",
+			clock: "local"
 		}
 		
 		def ui_default s
@@ -86,8 +87,9 @@ module Layouts
 			b = []
 
 			b << '<ul class="dropdown-menu" style="min-width: 0px; left: 0px">'
-			list.each {|l|
-				b << "<li><a href='#{chg_qs(param,l)}'>#{l}</a></li>"
+			buttons.each {|l|
+				c = l == p ? "class='active'" : ""
+				b << "<li #{c}><a href='#{chg_qs(param,l)}'>#{l}</a></li>"
 			}
 
 			b << '</ul>'

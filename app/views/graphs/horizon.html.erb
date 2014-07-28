@@ -23,6 +23,8 @@ colours = safe_array Graph::Horizon.get_colours
 		.size(<%=width%>)
 		.stop();
 
+	if (gon.clock == "utc") { context.utcTime(true);}
+
 	datum = [];
 
 	nice_metrics = []
