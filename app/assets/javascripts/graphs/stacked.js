@@ -1,34 +1,39 @@
 var dataChart = [];
 var flag; 
-	function getMetrics(metrics,_flag) {
-		flag = _flag;
-		dataChart = new Array(metrics.length);
-		$.each(metrics, function (i, d) {
+function getMetrics(metrics,_flag) {
+	flag = _flag;
+	dataChart = new Array(metrics.length);
+	$.each(metrics, function (i, d) {
 
-			feed = metricURL(gon.metrics[i].feed, gon.start, gon.stop, gon.step);
-			$.getJSON(feed, function (data) {
-				if (data.error) {
-					renderError("chart", data.error);
-					stopUpdates();
-					return false;
-				}
-				if (data.length === 0) {
-					renderError("chart", errorMessage.noData);
-					stopUpdates();
-					return false;
-				}
-				i = $.map(gon.metrics,function(d){ return d.metric;}).indexOf(d);
-				dataChart[i] = {data: data, name: d};
-				flagComplete();
-			});
+		feed = metricURL(gon.metrics[i].feed, gon.start, gon.stop, gon.step);
+		$.getJSON(feed, function (data) {
+			if (data.error) {
+				renderError("chart", data.error);
+				stopUpdates();
+				doneProgress();
+				return false;
+			}
+			if (data.length === 0) {
+				renderError("chart", errorMessage.noData);
+				stopUpdates();
+				doneProgress();
+				return false;
+			}
+			i = $.map(gon.metrics,function(d){ return d.metric;}).indexOf(d);
+			dataChart[i] = {data: data, name: d};
+			flagComplete();
 		});
-	}
+	});
+}
 
 var complete = 0;
+initProgress();
 
 function flagComplete() {
 	complete++;
+	updateProgress();
 	if (complete == metrics.length) {
+		doneProgress();
 		renderStacked(dataChart);
 		unrenderWaiting();
 	}

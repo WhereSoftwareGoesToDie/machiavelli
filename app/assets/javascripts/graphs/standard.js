@@ -1,21 +1,24 @@
 var graph=[];
 var data;
 
+initProgress();
+
 function renderStandard(index) { 
 	update = metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step);
                 
 	$.getJSON(update, function(data) {
 		var chart = "chart_" + index;
 		var yaxis = "y_axis_" + index;
-		
 		if (data.error) { 
 			renderError(chart, data.error, null, gon.metrics[index].removeURL); 
 			stopAll(); 
+			graphDone();
 			return false;
 		} 
 		if (data.length === 0) { 
 			renderError(chart, errorMessage.noData, null, gon.metrics[index].removeURL);
 			stopAll(); 
+			graphDone();
 			return false;
 		}
 		graph[index] = new Rickshaw.Graph({
@@ -68,7 +71,7 @@ function renderStandard(index) {
 		graph[index].render();
 
 		unrenderWaiting(chart);
-		renderSlider();
+		graphDone();
 	});
 }
 
@@ -102,15 +105,18 @@ function updateStandard(){
 
 var complete = 0;
 var slider; 
-function renderSlider() { 
+
+function graphDone() { 
 	complete++;
+	updateProgress()
 
         // Render the multiple graph slider only when all the graphing operations have been completed.
         if (complete == gon.metrics.length) { 
-	slider = new Rickshaw.Graph.RangeSlider.Preview({ 
-                graphs: clean(graph, undefined), 
-                height: 30,
-		element: document.getElementById("multi_slider")//$("#multi_slider")
-                });
-        }
+		doneProgress(); //force
+		slider = new Rickshaw.Graph.RangeSlider.Preview({ 
+			graphs: clean(graph, undefined), 
+			height: 30,
+			element: document.getElementById("multi_slider")
+		});
+	}
 }

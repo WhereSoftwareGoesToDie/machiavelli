@@ -58,6 +58,17 @@ function rickshawFitToWindow(graph) {
 	}
 	fitSlider();
 } 
+
+function initProgress() { 
+	nanobar = new Nanobar({bg: "#356895" ,id:"#progress"})
+} 
+function updateProgress() {
+	a = (complete / gon.metrics.length ) * 100
+	nanobar.go(a)
+}
+function doneProgress() { 
+	nanobar.go(100)
+} 
 function fitSlider() {
 	if (typeof slider != "undefined" ) { slider.configure({width : new_width, height: 30}); slider.render();}
 }
