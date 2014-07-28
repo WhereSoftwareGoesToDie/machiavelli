@@ -64,7 +64,7 @@ function showURL(element, url) {
 	document.getElementById(element).innerHTML = show;
 } 
 function removeURL(element, url) {
-	rm = "<span class='remove_metric'><a href='"+url+"' target=_blank><i title='Remove grpah' class='icon-remove'></i></a></span>";
+	rm = "<span class='remove_metric'><a href='"+url+"'><i title='Remove graph' class='icon-remove'></i></a></span>";
 	document.getElementById(element).innerHTML = rm;
 }
 
