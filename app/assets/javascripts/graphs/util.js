@@ -61,9 +61,14 @@ function unrenderWaiting(element) {
 }
 function showURL(element, url) { 
 	show = "<span class='data_source'><a href='"+url+"' target=_blank><i title='Open external data source' class='icon-external-link'></i></a></span>";
-
 	document.getElementById(element).innerHTML = show;
 } 
+function removeURL(element, url) {
+	rm = "<span class='remove_metric'><a href='"+url+"' target=_blank><i title='Remove grpah' class='icon-remove'></i></a></span>";
+	document.getElementById(element).innerHTML = rm;
+}
+
+
 function stripHTML(e) { return e.replace(/<(?:.|\n)*?>/gm, '').replace(/(\r\n|\n|\r)/gm,""); }
 function renderError(element, error, detail, url) {
 	error = stripHTML(error);
