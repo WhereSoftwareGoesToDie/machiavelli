@@ -28,6 +28,7 @@ cubism.context = function() {
       start1, stop1, // the start and stop for the next prepare event
       serverDelay = 5e3,
       clientDelay = 5e3,
+      utcTime = false,
       event = d3.dispatch("prepare", "beforechange", "change", "focus"),
       scale = context.scale = d3.time.scale().range([0, size]),
       timeout,
@@ -98,6 +99,19 @@ cubism.context = function() {
     serverDelay = +_;
     return update();
   };
+
+  // Tag the horizon graph as being in UTC, true/false
+  context.utcTime = function(_) { 
+	  if (!arguments.length) return utcTime;
+	  utcTime = _;
+	  d =  d3.time.scale()
+	  if (_) { //true
+		  d =  d3.time.scale.utc()
+	  }
+	   scale = context.scale = d.range([0, size])
+
+	  return update();
+  }
 
   // The client delay is the amount of additional time we wait to fetch those
   // metrics from the server. The client and server delay combined represent the
@@ -185,6 +199,9 @@ cubism_contextPrototype.cube = function(host) {
 };
 
 var cubism_cubeFormatDate = d3.time.format.iso;
+if (cubism.context().utcTime()) { 
+	var cubism_cubeFormatDate = d3.time.format.utc.iso;
+} 
 /* librato (http://dev.librato.com/v1/post/metrics) source
  * If you want to see an example of how to use this source, check: https://gist.github.com/drio/5792680
  */
@@ -1300,9 +1317,14 @@ cubism_contextPrototype.axis = function() {
       "tickFormat");
 };
 
-var cubism_axisFormatSeconds = d3.time.format("%H:%M:%S"),
-    cubism_axisFormatMinutes = d3.time.format("%H:%M"),
-    cubism_axisFormatDays = d3.time.format("%B %d");
+
+d = d3.time.format
+if (cubism.context().utcTime()) { d = d3.time.format.utc; } 
+
+var cubism_axisFormatSeconds = d("%H:%M:%S"),
+    cubism_axisFormatMinutes = d("%H:%M"),
+    cubism_axisFormatDays = d("%B %d");
+
 cubism_contextPrototype.rule = function() {
   var context = this,
       metric = cubism_identity;
