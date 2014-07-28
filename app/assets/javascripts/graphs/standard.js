@@ -50,7 +50,7 @@ function renderStandard(index) {
 
 		new Rickshaw.Graph.Axis.Time({
 			graph: graph[index],
-			timeFixture: new Rickshaw.Fixtures.Time.Precise.Local()
+			timeFixture: getTimeFixture()
 		});
 
 		dynamicWidth(graph[index]);
@@ -59,8 +59,7 @@ function renderStandard(index) {
 		new Rickshaw.Graph.HoverDetail({
 			graph: graph[index],
 			formatter: function (series, x, y) {
-				content = "<span class='date'>"+d3.time.format("%Y-%m-%d %H:%M:%S %Z")(new Date(x*1000)) +"</span><br/>"+
-					formatData(y);
+				content = "<span class='date'>"+ getD3Time(x) +"</span><br/>"+formatData(y);
 				return content;
 			}
 		});

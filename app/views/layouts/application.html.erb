@@ -40,6 +40,7 @@
 			<div id="navbar-buttons">
 				<ul class="nav navbar-top-links navbar-right" style="margin-top:10px; margin-right: 10px">
 				<% if que_qs(:metric).join("").length > 0 %>
+					<%= render partial: "partial/navbar/clock_changer" %>
 					<%= render partial: "partial/navbar/autoplay" if get_param(:time) == "relative" && get_param(:stop) == "now" %>
 					<%= render partial: "partial/navbar/graphs" %>
 					<% if get_param(:time) == "absolute" %> 
