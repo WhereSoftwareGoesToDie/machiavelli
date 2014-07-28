@@ -1,0 +1,21 @@
+<%= include_gon %>
+<div class="btn-group">
+	<a id="utc_time" type="button" class="btn btn-default" data-toggle="tooltip-down" 
+		data-original-title="UTC Time" href="<%=root_path + chg_qs(:clock, "utc") %>">
+		<i class="icon-globe"></i></i>
+	</a>
+	<a id="local_time" type="button" class="btn btn-default" data-toggle="tooltip-down" 
+		data-original-title="Local Time" href="<%=root_path + chg_qs(:clock, "local") %>">
+		<i class="icon-time"></i></i>
+	</a>
+</div>
+<script>
+$(function() {
+	if (gon.clock == "utc") { 
+		$("#utc_time").addClass("active"); 
+	}
+	if (gon.clock == "local") { 
+		$("#local_time").addClass("active"); 
+	}
+})
+</script>

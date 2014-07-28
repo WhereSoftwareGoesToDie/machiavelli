@@ -5,6 +5,21 @@ var errorMessage = {
 function formatData(d) { 
 	return Rickshaw.Fixtures.Number.formatKMBT_round(parseFloat(d),0,0,4);
 } 
+function getTimeFixture() { 
+	if (gon.clock == "utc") { return new Rickshaw.Fixtures.Time.Precise()
+	} else { return new Rickshaw.Fixtures.Time.Precise.Local() }
+}
+function getD3Time(x) { 
+	f_string = "%Y-%m-%d %H:%M:%S %Z"
+	date = new Date(x*1000)
+	if (gon.clock == "utc") { 
+		d = d3.time.format.utc(f_string)
+	} else { 
+		d = d3.time.format(f_string)
+	} 
+	return d(date)
+} 
+
 function zoomtoselected() { 
 	$(window).on('hashchange', function() {
 		hash = window.location.hash.slice(1).split(",");
