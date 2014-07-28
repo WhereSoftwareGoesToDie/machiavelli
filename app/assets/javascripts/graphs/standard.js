@@ -43,6 +43,7 @@ function renderStandard(index) {
 		new Rickshaw.Graph.Axis.Y( {
 			graph: graph[index],
 			orientation: 'left',
+			interpolate: 'monotone',
 		   	pixelsPerTick: 30,
 			tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
 			element: document.getElementById(yaxis)

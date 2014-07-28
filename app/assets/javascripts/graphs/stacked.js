@@ -101,7 +101,7 @@ function renderStacked(data) {
 	}
 
 	// Finally, make the chart
-	config.interpolate = "cardinal";
+	config.interpolate = "monotone";
 
 	if (flag == "xkcd") {
 		config.interpolate = "xkcd";
