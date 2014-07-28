@@ -12,7 +12,8 @@ module Layouts
 			graph: "standard",
 			time: "relative",
 			render: "line",
-			stack: "off"
+			stack: "off",
+			clock: "local"
 		}
 		
 		def ui_default s
