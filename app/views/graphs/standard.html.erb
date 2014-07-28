@@ -11,7 +11,9 @@
 <span id="zoomtoselected" class="no_link zoomtoselected"></span>
 <% @gon.metrics.each_with_index do |m, index| metric = m[:metric]; id = m[:id]%>
 <div class="graph_title">
-	<h4><a href="#" data-toggle="tooltip-always-metric" data-html="true" 
+	<h4>
+		<div id="remove_metric_<%=index%>" class="remove_metric"></div>
+		<a href="#" data-toggle="tooltip-always-metric" data-html="true" 
 			data-original-title="<%= style_metric :table, metric%>" class="plaid"><%= style_metric :pretty, metric %></a>
 		<div id="metric_<%=index%>_url" class="metric_url"></div>
 	</h4>
@@ -26,6 +28,7 @@ color.push(palette.color());
 renderWaiting("chart_<%=index%>");
 renderStandard(<%=index%>);
 showURL("metric_<%=index%>_url", gon.metrics[<%=index%>].sourceURL);
+removeURL("remove_metric_<%=index%>", gon.metrics[<%=index%>].removeURL);
 </script>
 <% end %>
 

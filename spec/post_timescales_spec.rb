@@ -47,8 +47,8 @@ describe "Post Timescales", :js => true do
 
 		now = Time.now().to_i
 
-		time_check now
-		time_check now - 12*60*60 
+		time_check now            # Now
+		time_check now - 12*60*60 # 12 hours ago (AM/PM Test)
 	end
 end
 
@@ -56,14 +56,11 @@ def time_check now
 	start = now - 5400 
 	stop = now - 600
 
-
 	nice_start = epoch_to_local_date(start)
 	nice_stop = epoch_to_local_date(stop)
 
 	fill_in "time_start_time", with: nice_start
 	fill_in "time_stop_time", with: nice_stop
-	puts nice_start
-	puts nice_stop
 
 	expect(page).to have_field("time_start_time", with: nice_start)
 

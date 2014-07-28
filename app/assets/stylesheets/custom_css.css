@@ -44,7 +44,12 @@ input.error {
 .side-menu .find { padding-left: 22px}
 
 .data_source { display: inline }
-.data_source a, .data_source a:hover  { font-size: small; color: #666; text-decoration: none}
+.data_source i { font-size:0.8em; color: #666; text-decoration: none}
+
+.remove_metric { display:inline; z-index:100; }
+.remove_metric a { color: #ccc; text-decoration: none}
+.remove_metric a:hover { color: #666 }
+
 
 #zoomtoselected { display:inline; position: relative;
 top: -25px;

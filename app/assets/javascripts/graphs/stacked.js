@@ -106,7 +106,7 @@ function renderStacked(data) {
 	}
 
 	// Finally, make the chart
-	config.interpolate = "cardinal";
+	config.interpolate = "monotone";
 
 	if (flag == "xkcd") {
 		config.interpolate = "xkcd";
@@ -145,7 +145,7 @@ function renderStacked(data) {
 	// One X-axis for time
 	new Rickshaw.Graph.Axis.Time({
 		graph: graph,
-		timeFixture: new Rickshaw.Fixtures.Time.Precise.Local()
+		timeFixture: getTimeFixture()
 	});
 
 	/////
@@ -171,7 +171,7 @@ function renderStacked(data) {
 		graph: graph,
 		formatter: function(series, x, y, fx, fy, d) {
 			var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
-			var date = '<span class="date"> '+new Date(x * 1000).toString()+'</span>';
+			var date = '<span class="date"> '+getD3Time(x)+'</span>';
 			var content = swatch + format_metrics[d.order - 1] + ": " + y.toFixed(4) + "<br>"+ date; 
 			return content;
 		},
