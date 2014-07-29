@@ -13,7 +13,7 @@ module Layouts
 			time: "relative",
 			render: "line",
 			stack: "off",
-			clock: "local"
+			clock: "utc"
 		}
 		
 		def ui_default s
