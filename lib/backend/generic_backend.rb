@@ -9,6 +9,7 @@ class Backend::GenericBackend
 		@params = params
 		@alias = optional_param :alias, name
 	end
+	def self.description; name.split("::").last; end
 
 	# Return an array of uniquely defined metrics
 	def get_metrics_list

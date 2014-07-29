@@ -135,6 +135,14 @@ module Layouts
 			return "Backend::#{name.titleize}".constantize.new settings
 		end
 
+		def backend_description name
+			unless File.exists? File.join(Rails.root,"lib","backend","#{name.downcase()}.rb")
+				return name
+			end
+			return "Backend::#{name.titleize}".constantize.description
+		end
+
+
 		def backends 
 			list = []
 			Settings.backends.each {|b|
