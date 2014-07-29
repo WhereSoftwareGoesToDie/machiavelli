@@ -11,6 +11,8 @@ class Backend::Sieste < Backend::GenericBackend
 		@origin_alias   = optional_param :origin_alias, @alias
         end
 
+	def self.description; "Vaultaire"; end
+
 	# Sieste don't need no storage
         def get_metrics_list
 		raise Backend::Error, "Unable to connect to sieste instance at #{@base_url}" unless is_up? @base_url

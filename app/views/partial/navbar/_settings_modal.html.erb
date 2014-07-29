@@ -22,7 +22,7 @@
 
 		def display b, show_error=false 
 	%>
-		<tr><td colspan=2><%= b.type.titleize %> <%= "'"+b.alias+"'" if b.alias %></td></tr>
+		<tr><td colspan=2><%= backend_description b.type %> <%= "'"+b.alias+"'" if b.alias %></td></tr>
 		<% if b.description %>
 			<tr><td colspan=2><%= b.description %></td></tr>
 			<%end %>
