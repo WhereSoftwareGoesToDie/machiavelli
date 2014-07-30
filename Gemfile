@@ -1,18 +1,11 @@
 source 'https://rubygems.org'
 gem 'rails'
 gem 'rails_config'
-gem 'therubyracer'
-gem 'sass-rails' 
 gem 'uglifier'
-gem 'coffee-rails'
 
 gem 'gon'
 gem 'color'
 gem 'redis'
-
-gem 'coveralls', require: false, group: :test
-gem 'simplecov', '~> 0.7.1'
-gem 'sinatra'
 
 gem "git-version-bump"
 
@@ -31,6 +24,9 @@ group :development do
 	gem "rspec-rails"
 	gem "selenium-webdriver"
 	gem "sinatra-reloader"
+	gem 'coveralls', require: false, group: :test
+	gem 'simplecov', '~> 0.7.1'
+	gem 'sinatra'
 end
 
 group :debugging do
