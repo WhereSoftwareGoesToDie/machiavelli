@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 gem 'rails'
 gem 'rails_config'
 gem 'uglifier'
+gem 'sass-rails'
 
 gem 'gon'
 gem 'color'
