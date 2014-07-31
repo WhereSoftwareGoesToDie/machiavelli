@@ -3,7 +3,7 @@ gem 'rails'
 gem 'rails_config'
 gem 'uglifier'
 gem 'sass-rails'
-
+gem 'therubyracer'
 gem 'gon'
 gem 'color'
 gem 'redis'
