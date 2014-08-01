@@ -393,12 +393,13 @@ disabled look for disabled choices in the results dropdown
 }
 
 .select2-more-results.select2-active {
-    background: #f4f4f4 url('select2-spinner.gif') no-repeat 100%;
+    background: #ffffff url('select2-spinner.gif') no-repeat 100%;
+    margin-top: -20px
 }
 
 .select2-more-results {
     background: #f4f4f4;
-    display: list-item;
+    display: list-item; 
 }
 
 /* disabled styles */
