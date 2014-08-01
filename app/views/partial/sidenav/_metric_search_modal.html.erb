@@ -28,13 +28,13 @@ $(".sortable").each(function(i,el){
 $('#filter_metrics_select').select2({
 	placeholder: "Search for a metric",
 	openOnEnter: false,
-	quietMillis: 2000,
 	allowSelectAllNone: true,
 	multiple: true,
 	initSelection: function(element,callback) { 
 		callback(metrics);
 	},
 	ajax: {
+		quietMillis: 500,
 		url: '/source/', 
 		dataType: 'jsonp',
 		data: function(term, page) {
@@ -60,9 +60,6 @@ $('#filter_metrics_select').select2({
 			return { results: ret, more: more};
 		 }, 
 	 }, 
-//	formatResult:    function(d){
-//		 return unescape(d.text);
-//	 }, 
 	formatSelection: function(d){
 		 return unescape(d.text); 
 	 }
