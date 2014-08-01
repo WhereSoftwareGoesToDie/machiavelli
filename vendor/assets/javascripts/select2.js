@@ -365,21 +365,40 @@ the specific language governing permissions and limitations under the Apache Lic
         dest.attr("class", replacements.join(" "));
     }
 
-
+	// Extended to match multiple terms, delimited by space
     function markMatch(text, term, markup, escapeMarkup) {
-        var match=stripDiacritics(text.toUpperCase()).indexOf(stripDiacritics(term.toUpperCase())),
-            tl=term.length;
+        var text_ = stripDiacritics(text.toUpperCase())
+        var term_ = stripDiacritics(term.toUpperCase())
 
-        if (match<0) {
+	var index = []
+
+	var terms = term_.split(" ").filter(function(e){return e}); 
+
+	var start = 0
+        $.each(terms, function(i, t) {
+	    var x = text_.substring(start, text_.length).indexOf(t) + start
+            index.push([x, t.length]);
+            start = x+t.length
+
+        })
+
+        if (index.length === 0) {
             markup.push(escapeMarkup(text));
             return;
         }
 
-        markup.push(escapeMarkup(text.substring(0, match)));
-        markup.push("<span class='select2-match'>");
-        markup.push(escapeMarkup(text.substring(match, match + tl)));
-        markup.push("</span>");
-        markup.push(escapeMarkup(text.substring(match + tl, text.length)));
+	var point = 0
+	$.each(index, function(i, pair) {
+              var  i = pair[0];
+              var len = pair[1];
+              markup.push(escapeMarkup(text.substring(point, i)));
+              markup.push("<span class='select2-match'>");
+              markup.push(escapeMarkup(text.substring(i, i + len)));
+              markup.push("</span>");
+              point = i + len;
+	})
+
+        markup.push(escapeMarkup(text.substring(point, text_.length)));
     }
 
     function defaultEscapeMarkup(markup) {
