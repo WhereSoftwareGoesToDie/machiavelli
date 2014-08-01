@@ -58,6 +58,9 @@ class MetricsController < ApplicationController
 		end
 
 		list.flatten!
+	
+		# Sort it outselves
+		list.sort!{|i,j| i[:text] <=> j[:text]}
 
 		if params[:callback] then
 			render json: "#{params[:callback]}({metrics:#{list.to_json}});"
