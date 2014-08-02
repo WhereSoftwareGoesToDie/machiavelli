@@ -62,7 +62,6 @@ class MetricsController < ApplicationController
 		# Sort it outselves
 		list.sort!{|i,j| i[:text] <=> j[:text]}
 
-		binding.pry if page.to_i > 1
 		if params[:callback] then
 			render json: "#{params[:callback]}({metrics:#{list.to_json}});"
 		else
