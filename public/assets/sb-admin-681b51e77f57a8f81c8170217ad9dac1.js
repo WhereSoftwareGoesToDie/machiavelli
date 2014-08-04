@@ -1,0 +1,1 @@
+$(function(){$("#side-menu").metisMenu()}),$(function(){$(window).bind("load resize",function(){width=this.window.innerWidth>0?this.window.innerWidth:this.screen.width,768>width?$("div.sidebar-collapse").addClass("collapse"):$("div.sidebar-collapse").removeClass("collapse")})});
