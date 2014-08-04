@@ -1,5 +1,5 @@
 #!/bin/bash
 
-set -e
+#set -e
 
-sudo allah stop machiavelli_${APP_ENV}_unicorn
+#sudo allah stop machiavelli_${APP_ENV}_unicorn
