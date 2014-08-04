@@ -12,7 +12,7 @@ Machiavelli::Application.configure do
 
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = false
-  config.action_controller.perform_caching = true
+  #config.action_controller.perform_caching = true
 
   # Enable Rack::Cache to put a simple HTTP cache in front of your application
   # Add `rack-cache` to your Gemfile before enabling this.
@@ -27,7 +27,7 @@ Machiavelli::Application.configure do
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = true #false
+  config.assets.compile = false
 
   # Generate digests for assets URLs.
   config.assets.digest = true
@@ -63,7 +63,7 @@ Machiavelli::Application.configure do
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found).
-  config.i18n.fallbacks = true
+  # config.i18n.fallbacks = true
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
