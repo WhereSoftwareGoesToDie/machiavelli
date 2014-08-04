@@ -19,11 +19,11 @@ echo "Installing gems..."
 chruby-exec "$(cat .ruby-version)" -- bundle install --deployment --without 'development test'
 
 
-if [ ${APP_ENV} = 'production' ]; then
-	date
-	echo "Precompiling site assets..."
-	chruby-exec "$(cat .ruby-version)" -- RAILS_ENV=${APP_ENV} bundle exec rake assets:precompile
-fi
+#if [ ${APP_ENV} = 'production' ]; then
+#	date
+#	echo "Precompiling site assets..."
+#	chruby-exec "$(cat .ruby-version)" -- RAILS_ENV=${APP_ENV} bundle exec rake assets:precompile
+#fi
 
 sudo allah restart machiavelli_${APP_ENV}_unicorn
 
