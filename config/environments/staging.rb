@@ -12,10 +12,6 @@ Machiavelli::Application.configure do
   # preloads Rails for running tests, you may have to set it to true.
   config.eager_load = false
 
-  # Configure static asset server for tests with Cache-Control for performance.
-  config.serve_static_assets  = true
-  config.static_cache_control = "public, max-age=3600"
-
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
@@ -30,10 +26,9 @@ Machiavelli::Application.configure do
   config.active_support.deprecation = :stderr
 
   # Copy Production Configurations to do with Compilation of Assets
-	
-  # Do not fallback to assets pipeline if a precompiled asset is missed.
+  config.assets.digest = true	
   config.assets.compile = false
-  config.serve_static_assets = false
+  config.serve_static_assets = true
 
   # Precompile additional assets.
   # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
