@@ -133,8 +133,7 @@ when "production"
 	unless tag
 		failexit "You must specify a tagged version to push to production. Perhaps #{prev_tag}?"
 	end
-	puts "Pushing to 02 because scared"
-	git_push "02", tag
+	git_push "production", tag
 when "commit"
 	git_commit "-v" 
 when "upcoming_version" 
@@ -176,7 +175,7 @@ when "release"
 	write_version v
 	git_commit @version_file, "bump to version #{v}" 
 	
-	run "git version-bump #{ARGV[1]}"
+	run "git version-bump -n #{ARGV[1]}"
 	run "git release"
 when "update_github";
 	puts "Just pushing to origin, don't mind me"
