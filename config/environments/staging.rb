@@ -28,4 +28,19 @@ Machiavelli::Application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
+
+  # Copy Production Configurations to do with Compilation of Assets
+	
+  # Do not fallback to assets pipeline if a precompiled asset is missed.
+  config.assets.compile = false
+
+  # Precompile additional assets.
+  # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
+  config.assets.precompile += %w( *.js *.css )
+  config.assets.precompile << /\.(?:svg|eot|woff|ttf)\z/
+
+  # Compress JavaScripts and CSS.
+  config.assets.js_compressor = :uglifier
+  config.assets.css_compressor = :sass
+
 end
