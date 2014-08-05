@@ -47,8 +47,8 @@ end
 def compile_if_required env
 	if compile? 
 		compile_assets ARGV[0]
+		git_commit nil, "compile assets"
 	end
-	git_commit nil, "compile assets"
 end
 
 def git_commit file=nil, message=nil
