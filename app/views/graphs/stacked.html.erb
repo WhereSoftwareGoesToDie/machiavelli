@@ -1,9 +1,7 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= stylesheet_link_tag    "graphs/stacked" %>
-<script src="/assets/graphs/stacked.js"></script>
-<% if dckx %>
-<%= stylesheet_link_tag    "graphs/dckx" %>
-<%end%>
+<%= javascript_include_tag "graphs/stacked.js" %>
+<%= stylesheet_link_tag    "graphs/dckx" if dckx %>
 <div class="slider" id="slider"></div>
 <span id="zoomtoselected" class="no_link zoomtoselected"></span>
 <div id="chart_container">
