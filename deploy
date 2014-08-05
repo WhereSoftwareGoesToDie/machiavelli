@@ -12,6 +12,10 @@
 def run a, env={}
 	puts ">>#{env unless env.empty?} #{a}"
 	system(env,a)
+	if $?.exitstatus != 0
+		puts "!!! I see a failed system call.  #{a} exited state #{$?.exitstatus}"
+		exit
+	end
 end
 
 def compile?
