@@ -43,17 +43,16 @@ end
 def compile_if_required env
 	if compile? 
 		compile_assets ARGV[0]
-	else
-	       	puts "No assets changed, no compile"
-       	end
+	end
 	git_commit nil, "compile assets"
 end
 
 def git_commit file=nil, message=nil
-	file ||= "-a"
-	msg ||= "bump repo"
-	run "git add #{file}"
-	run "git commit #{file} -m '#{msg}'"
+	add_flag = file || "-A"
+	commit_flag = file || "-a"
+	message ||= "bump repo"
+	run "git add #{add_flag}"
+	run "git commit #{commit_flag} -m '#{message}'"
 end
 
 def gvb_version
