@@ -79,12 +79,17 @@ end
 
 def up_version x
 	m = case x 
-		when /^maj?o?r?$/;  [1,0,0]
-		when /^min?o?r?$/;  [0,1,0] 
-		when /^pa?t?c?h?$/; [0,0,1]
+		when /^maj?o?r?$/;  [1,"0","0"]
+		when /^min?o?r?$/;  [0, 1 ,"0"] 
+		when /^pa?t?c?h?$/; [0, 0 , 1 ]
 	end
 	gvb = gvb_version
-	m.each_with_index{|g, i| gvb[i] += g }
+	m.each_with_index{|g, i| 
+		if g == "0"
+			gvb[i] = 0 
+		else 
+			gvb[i] += g
+		end	}
 	show_version gvb
 end
 
