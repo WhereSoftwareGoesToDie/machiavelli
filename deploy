@@ -1,0 +1,180 @@
+#!/usr/bin/env ruby
+#
+# Automating the development flow
+#
+# Assumptions: 
+#   git-version-bump available locally
+#   deploy_(staging|production) git remote endpoints setup
+#   authentication and authorization to staging, production, and github repos
+
+@version_file = ".gvb_version"
+
+def run a, env={}
+	puts ">>#{env unless env.empty?} #{a}"
+	system(env,a)
+end
+
+def compile?
+	unless File.exists?("public/assets/")
+		puts "No folder known as public/assets, compile to create"
+		return true
+	end
+	if Dir[File.join("public/assets/", '**', '*')].count { |file| File.file?(file) } == 0
+		puts "No files in public/assets, compile to create"
+		return true
+	end
+
+	
+	diff = `git diff app/assets/ vendor/assets/`.strip()
+	if diff.empty? 
+		puts "No differences in assets. Not compiling"
+		return false
+	else 
+		puts "I see assets changes. I will compile."
+		return true
+	end
+end
+
+def compile_assets env
+	puts "Call compile with #{env}"
+	run "bundle exec rake assets:precompile", {"RAILS_ENV" => env}
+end
+
+def compile_if_required env
+	if compile? 
+		compile_assets ARGV[0]
+	else
+	       	puts "No assets changed, no compile"
+       	end
+	git_commit nil, "compile assets"
+end
+
+def git_commit file=nil, message=nil
+	file ||= "-a"
+	msg ||= "bump repo"
+	run "git add #{file}"
+	run "git commit #{file} -m '#{msg}'"
+end
+
+def gvb_version
+	require 'git-version-bump'
+	[GVB.major_version, GVB.minor_version, GVB.patch_version]
+end
+
+def show_version v=nil
+	v ||= gvb_version
+	v.join "."
+end
+
+def prev_tag 
+	`git describe --always`.strip.gsub(/-\d+-g[0-9a-f]+$/, '')
+end
+
+def get_diffs
+	`git log --format='# %h  %s' #{prev_tag}..HEAD`
+end
+
+def up_version x
+	m = case x 
+		when /^maj?o?r?$/;  [1,0,0]
+		when /^min?o?r?$/;  [0,1,0] 
+		when /^pa?t?c?h?$/; [0,0,1]
+	end
+	gvb = gvb_version
+	m.each_with_index{|g, i| gvb[i] += g }
+	show_version gvb
+end
+
+def write_version v
+	File.open(@version_file,"w") {|f| f.write(v)}
+end
+
+def git_branch
+	`git branch`.split("\n").detect{|a| a.include? "*"}[2..-1]
+end
+
+def update_github
+	run "git push origin #{git_branch}"
+end
+
+def git_push name, branch=nil
+	branch ||= git_branch
+	force = "--force" if @force
+	run "git push deploy_#{name} #{branch}:master #{force}"
+end
+
+def failexit msg
+	puts msg
+	exit
+end
+
+###########################################
+
+if ARGV.empty?
+	failexit "push - commands: (push) staging, production; (github) release"
+end
+
+@force = true if ARGV.include? "--force"
+
+case ARGV[0]
+when "staging" 
+	compile_if_required ARGV[0]
+	git_push ARGV[0] 
+when "production"
+	tag = ARGV[1]
+	unless tag
+		failexit "You must specify a tagged version to push to production. Perhaps #{prev_tag}?"
+	end
+	puts "Pushing to 02 because scared"
+	git_push "02", tag
+when "commit"
+	git_commit "-v" 
+when "upcoming_version" 
+	vb = ARGV[1]
+	unless vb
+		failexit "I can't tell you the version I'll become unless you give me something to work with"
+	end
+	v = up_version vb
+	puts "If you invoke me with #{vb} I'll go up to version v#{v}"
+when "update_assets"
+	compile_if_required ARGV[0]
+when "release"
+	unless git_branch == "master"
+		failexit "Cannot release unless we are on master"
+	end
+
+	if `git version-bump show`.include? "dirty"
+		failexit "Dirty tree. Cannot release"
+	end
+	v = up_version ARGV[1]
+		
+
+	if @force	
+		puts "Forcing release"
+	else
+		puts "\nNew version will be #{v}"
+		puts "\nDiffs that will be in this new version\n"
+		puts get_diffs
+		puts "\nYou will be prompted to create release notes if you accept\n"
+		print "Are you sure this the right version? (y|scared): "
+
+		STDOUT.flush; resp = STDIN.gets.chomp
+		unless resp.downcase() == "y"
+			failexit "I'm cancelling that order."
+		end
+	end
+
+	compile_assets "production"
+	write_version v
+	git_commit @version_file, "bump to version #{v}" 
+	
+	run "git version-bump #{ARGV[1]}"
+	run "git release"
+when "update_github";
+	puts "Just pushing to origin, don't mind me"
+	update_github
+else 
+	puts "I don't understand #{ARGV[0]}"
+end
+
+
