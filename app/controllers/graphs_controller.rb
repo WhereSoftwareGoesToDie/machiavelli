@@ -11,6 +11,13 @@ class GraphsController < ApplicationController
 	end
 # GET
 	def index # index.html
+
+		# This is a test
+		new_metrics = que_qs(:metric)
+		@metrics = new_metrics.map{|m| Metric.new m }
+		puts @metrics[0].titleize if @metrics.length > 0
+		# ty
+
 		gon.metrics = []
 
 		start = to_epoch(get_param(:start))
@@ -84,7 +91,6 @@ class GraphsController < ApplicationController
 		end
 		redirect_to root_path
 	end
-
 # POST
 	def submit #searching 
 		metrics = params[:filter][:metrics_select]
