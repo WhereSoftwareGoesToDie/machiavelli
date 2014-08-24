@@ -11,13 +11,14 @@ class GraphsController < ApplicationController
 	end
 # GET
 	def index # index.html
-
+=begin
 		# This is a test
 		new_metrics = que_qs(:metric)
 		@metrics = new_metrics.map{|m| Metric.new m }
 		puts @metrics[0].titleize if @metrics.length > 0
+		binding.pry
 		# ty
-
+=end
 		gon.metrics = []
 
 		start = to_epoch(get_param(:start))
@@ -32,7 +33,12 @@ class GraphsController < ApplicationController
 		base = chg_qs(:time, "absolute", {url: base})
 
 		gon.base = base
-		
+	
+
+		new_metrics = que_qs(:metric)
+		gon.metrics = new_metrics.map{|m| Metric.new m }
+
+=begin
 		selected_metrics.each_with_index do |m,i|
 			b = (init_backend m)
 			metric_meta = b.get_metric_meta(m)
@@ -47,7 +53,7 @@ class GraphsController < ApplicationController
 			}
 
 		end
-
+=end
 		@gon = gon
 
 		if stop < start
