@@ -19,7 +19,7 @@ function getMetrics(metrics,_flag) {
 				doneProgress();
 				return false;
 			}
-			i = $.map(gon.metrics,function(d){ return d.metric;}).indexOf(d);
+			i = $.map(gon.metrics,function(d){ return d.id;}).indexOf(d);
 			dataChart[i] = {data: data, name: d};
 			flagComplete();
 		});

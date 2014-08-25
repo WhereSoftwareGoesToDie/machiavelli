@@ -31,7 +31,6 @@ class Store
                 
 		r = redis_conn
                 
-		binding.pry
 		metrics.each {|m|
                         r.set "#{REDIS_KEY}:#{@origin_id}:#{m}", 1
                 }
