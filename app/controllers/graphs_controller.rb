@@ -2,6 +2,7 @@ require 'redis'
 
 class GraphsController < ApplicationController
 	include Layouts::ApplicationLayoutHelper
+	include Helpers
 
 	def all_metrics; backend.get_cached_metrics_list; end
 	def selected_metrics url=nil; 
@@ -11,14 +12,6 @@ class GraphsController < ApplicationController
 	end
 # GET
 	def index # index.html
-=begin
-		# This is a test
-		new_metrics = que_qs(:metric)
-		@metrics = new_metrics.map{|m| Metric.new m }
-		puts @metrics[0].titleize if @metrics.length > 0
-		binding.pry
-		# ty
-=end
 		gon.metrics = []
 
 		start = to_epoch(get_param(:start))
@@ -49,22 +42,6 @@ class GraphsController < ApplicationController
 			gon.metrics << g
 	       	}
 
-=begin
-		selected_metrics.each_with_index do |m,i|
-			b = (init_backend m)
-			metric_meta = b.get_metric_meta(m)
-			metric_id = b.get_metric_id(m)
-			gon.metrics[i] = { 
-				metric: metric_meta,
-				id: metric_id,
-				feed: "/metric/?metric="+metric_id,
-				live: b.live?,
-				sourceURL: b.get_metric_url(m.split(SEP).last,start,stop,step),
-				removeURL: rem_qs(:metric, m)
-			}
-
-		end
-=end
 		@gon = gon
 
 		if stop < start
@@ -83,7 +60,7 @@ class GraphsController < ApplicationController
 
 	def refresh # refresh button
 	
-		init_backend.delete_metrics_cache
+		delete_metrics_cache
 		Settings.reload!
 		errors = []
 
@@ -93,10 +70,10 @@ class GraphsController < ApplicationController
 			inactive_backends = []; refresh_errors :remove
 			Settings.origins.each do |o|
 				begin
-					b = o[1]
-					backend = Object.const_get(b.store).new b.store_settings
-					backend.refresh_metrics_cache
-				rescue Backend::Error => e
+					origin, settings = o
+					store = Object.const_get(settings.store).new origin, settings
+					store.refresh_metrics_cache
+				rescue Store::Error => e
 					inactive_backends << [o[0], e]
 					errors << e
 				end

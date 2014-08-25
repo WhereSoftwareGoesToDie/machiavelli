@@ -1,5 +1,3 @@
-require 'uri'
-
 class MetricsController < ApplicationController
 	
 	include Layouts::ApplicationLayoutHelper
@@ -23,16 +21,18 @@ class MetricsController < ApplicationController
 		step   = (params[:step] || STEP).to_i
 
 		begin
-			metric = get_metric(m, start, stop, step)
+			metric = Metric.new(m).get_metric(start, stop, step)
 			render json: metric	
-		rescue StandardError, Backend::Error => e
+		rescue StandardError, Store::Error => e
 			render json: { error: e.to_s } 
 			return
 		end
 	end
 
-	def list 
-		b = [params[:backend] || backends].flatten
+	def list
+
+		settings_origins =  Settings.origins.map{|a,b| a.to_s}
+		b = [params[:origin] || settings_origins].flatten
 
 		search = params[:q] || "*"
 
@@ -46,10 +46,14 @@ class MetricsController < ApplicationController
 
 		b.each do |x|
 			begin
-				be = init_backend x
-				ret = be.search_metric_list(search, { page: page.to_i, page_size: page_size.to_i})
-				list << ret.map{|r| {id: be.get_metric_id(r), text: be.style_metric(:pretty, r)}}
-			rescue Backend::Error, Errno::ECONNREFUSED => e
+				origin, settings = Settings.origins.find{|o,k| o.to_s == x}
+				be = (Object.const_get settings.store).new origin, settings
+				ret = be.search_metrics(search, { page: page.to_i, page_size: page_size.to_i})
+				ret.each do |r| 
+					m = Metric.new r
+					list << {id: m.id, text: m.titleize}
+				end
+			rescue Store::Error, Errno::ECONNREFUSED => e
 				 unless  params[:callback] then
 					 render json: { error: e.to_s } 
 					 return
@@ -66,11 +70,4 @@ class MetricsController < ApplicationController
 		end
 		
 	end
-	
-# Functions
-	def get_metric m, start, stop, step
-		metric = m.split(SEP).last
-		(init_backend m).get_metric metric, start, stop, step
-	end
-
 end

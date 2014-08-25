@@ -1,5 +1,5 @@
 class Demowave < Source
 	def titleize str
-		"Sinusoidal Wave"
+		"Demonstration Sinusoidal Wave"
 	end
 end

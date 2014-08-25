@@ -1,9 +1,12 @@
 class Metric
+	include Helpers
 	def initialize metric
-		@origin_id, @metric_id = metric.split(SEP)
-		@settings = Settings.origins[@origin_id]
-		@store = Object.const_get(@settings.store).new @settings.store_settings
-		@source = Object.const_get(@settings.source).new 
+		metric_id = get_id metric
+		@origin_id, @metric_id = metric_id.split(SEP)
+		_, s = origin_settings @origin_id
+		@settings = s
+		@store = Object.const_get(s.store).new @origin_id, s
+		@source = Object.const_get(s.source).new 
 	end
 
 	def origin_id; @origin_id; end
@@ -11,7 +14,7 @@ class Metric
 
 	def titleize
 		meta = @source.titleize metadata
-		return "#{@origin_id} - #{meta}"
+		return "#{@settings.title || @origin_id} - #{meta}"
 	end
 
 	def counter?
@@ -38,7 +41,7 @@ class Metric
 	end
 	
 	def get_metric start, stop, step
-		@store.get_metric id, start, stop, step
+		@store.get_metric self, start, stop, step
 	end
 
 	def metadata_table
@@ -46,15 +49,36 @@ class Metric
 	end
 	
 	def id
-		"#{@origin_id}#{SEP}#{@metric_id}"
+		build_id
 	end
 
 	def live?
 		@store.live?
 	end
 
+	def build_id o=@origin_id, m=@metric_id
+		"#{o}#{SEP}#{m}"
+	end
+
+	def get_id str
+		return str if is_id? str
+		if is_metadata? str
+			if str.include? SEP
+				# Origin~[meta]
+				origin, str = str.split(SEP) 
+			end
+			@metadata = str
+			# Split to get address, and rebuild
+			keys = keysplit(str)
+			return build_id origin, keys["address"]
+
+		elsif if_metric_id? str
+			binding.pry
+		end
+	end
+
 	# Locator16~Word62
-        def is_origin_id? str
+        def is_id? str
                 match = [KVP,DELIM]
                 return false if match.any? {|w| str.include? w}
                 return true
@@ -67,10 +91,9 @@ class Metric
         end
 
         # Word62 only   
-        def is_id? str
+        def is_metric_id? str
                 match = [KVP,DELIM,SEP]
                 return false if match.any? {|w| str.include? w}
                 return true
         end
-		
 end

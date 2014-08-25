@@ -1,7 +1,10 @@
 class Vaultaire < Store
-	def initialize settings
-		@origin_id = settings.origin
-		@base_url = settings.host
+
+	include Helpers
+
+	def initialize origin, settings
+		super
+		@base_url = mandatory_param :host, "store_settings"
 	end
 
 	def metadata metric_id
@@ -38,10 +41,22 @@ class Vaultaire < Store
                 return start, stop
 	end
 
+	def refresh_metrics_cache
+		# Do nothing. This backend isn't cached
+	end
+
+	def search_metrics q, args={}
+		page = args[:page] || 1
+                page_size = args[:page_size] || 25
+                uri = "#{@base_url}/simple/search?origin=#{@origin_id}&q=#{q}&page=#{page - 1}&page_size=#{page_size}"
+                result = json_metrics_list uri
+                result.map{|x| "#{@origin_id}#{SEP}#{machiavelli_encode x}"}
+	end
+
 	def get_metric_url m, start, stop, step 
 		query = []
 
-		metakeys = m.source.keysplit(m.metadata)
+		metakeys = keysplit(m.metadata)
 		float = metakeys["_float"]
                 
 		_start, _stop = validate_time(start, stop)
@@ -56,22 +71,21 @@ class Vaultaire < Store
                 uri = "#{@base_url}/interpolated/#{@origin_id}/#{m.metric_id}#{query_string}"
 
 		return uri
-
 	end
 
 	def get_metrics_list
 		return []
 	end
 
-	def get_metric start, stop, step
-		uri = get_metric_url start, stop, step
+	def get_metric m, start, stop, step
+		uri = get_metric_url m, start, stop, step
 
                 factor = 1000000000
                 data = json_metrics uri
 
                 if (data.is_a? Hash) then
                         if data[:error] then
-                                raise Backend::Error, "Sieste Exception raised: #{data[:error]}"
+                                raise Store::Error, "Sieste Exception raised: #{data[:error]}"
                         end
                 end
 
@@ -81,7 +95,7 @@ class Vaultaire < Store
                 end
 
                 if data.empty? then
-                        raise Backend::Error, "No data returned from sieste query"
+                        raise Store::Error, "No data returned from sieste query"
                 end
 
                 if stop - start == step then

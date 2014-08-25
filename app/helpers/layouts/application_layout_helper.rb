@@ -5,6 +5,9 @@ require 'git-version-bump'
 
 module Layouts
 	module ApplicationLayoutHelper
+
+		include Helpers
+
 		UI_DEFAULTS = {	
 			start: "3h",
 			stop: "now",
@@ -104,10 +107,12 @@ module Layouts
 
 	# Backend Helpers
 		def style_metric style, metric
+			binding.pry
 			(init_backend metric).style_metric style, metric
 		end
 
 		def metric_id metric
+			binding.pry
 			(init_backend metric).get_metric_id metric
 		end
 
@@ -117,6 +122,7 @@ module Layouts
 		# Name, and settings? Use settings and name, as given
 
 		def init_backend name=nil, settings=nil
+			binding.pry
 			return Backend::GenericBackend.new if name.nil?
 
 			unless settings
@@ -136,29 +142,21 @@ module Layouts
 		end
 
 		def backend_description name
+			binding.pry
 			unless File.exists? File.join(Rails.root,"lib","backend","#{name.downcase()}.rb")
 				return name
 			end
 			return "Backend::#{name.titleize}".constantize.description
 		end
 
-
-		def backends 
-			list = []
-			Settings.backends.each {|b|
-				list << (b.alias || b.type)
-			}
-			list
-		end
-
 		def refresh_errors method=:show, error=nil
 			one = "#"; two = "$"; key = "Machiavelli:RefreshErrors"
 			if method == :save
-				init_backend.redis_conn.set key, error.map{|a| a.join(one)}.join(two)
+				redis_conn.set key, error.map{|a| a.join(one)}.join(two)
 			elsif method == :remove
-				init_backend.redis_conn.del key
+				redis_conn.del key
 			else
-				e = init_backend.redis_conn.get key 
+				e = redis_conn.get key 
 				return [[]] if e.nil?
 				e.split(two).map{|a| a.split(one)}
 			end

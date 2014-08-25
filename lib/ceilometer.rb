@@ -1,14 +1,16 @@
-require 'uri'
+# Collector: https://github.com/anchor/ceilometer-publisher-vaultaire
 
 class Ceilometer < Source
+	include Helpers
 	def titleize metric
-		@origin = "4YL1CF" ## TODO - dynamic this
 
 		keys = keysplit(metric)
 		nice = []
 
 		display_name = nil
 =begin
+		# Given the metadata for a OpenStack object, this should return human readable metric names
+		@origin = "4YL1CF" ## TODO - dynamic this
 		if keys["counter_name"] then
 			if (keys["counter_name"].include? "network.") then
 				uri = "#{@base_url}/simple/search?origin=#{@origin_id}&q=*memory*#{keys["instance_id"]}*"
