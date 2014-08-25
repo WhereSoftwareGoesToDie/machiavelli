@@ -93,7 +93,7 @@ shared_examples 'refresh metrics' do |type|
 		visit "/refresh"
 
 		expect(page).not_to have_css "div.alert-danger"
-		visit "/source/"
+		visit "/search/"
                 expect(page).to have_content type
 
                 metrics = r.keys metric_key
@@ -123,9 +123,18 @@ def add_config config
 	visit "/refresh"
 end
 
+def type_config type, settings
+	make_config type,type,type,"Source",settings
+end
+
+def make_config id, title, store, source, store_settings={}
+	config = {origins: { id => { store: store, source: source, title: title, store_settings: store_settings }}}
+	config.to_yaml
+end
+
 def test_config type
 	expect(page).not_to have_css "div.alert-danger"
-	visit "/source/"
+	visit "/search/"
 	expect(page).to have_content type
 end
 

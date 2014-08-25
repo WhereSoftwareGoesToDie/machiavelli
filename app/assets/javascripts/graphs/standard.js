@@ -5,7 +5,6 @@ initProgress();
 
 function renderStandard(index) { 
 	update = metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step);
-                
 	$.getJSON(update, function(data) {
 		var chart = "chart_" + index;
 		var yaxis = "y_axis_" + index;

@@ -1,6 +1,6 @@
 require 'color'
 
-class Graph::Horizon < Graph
+class Horizon < Graph
 	GRAPH_COLOUR = Settings.horizon_color || "#006d2c"
 	
 	def self.get_colours

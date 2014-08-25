@@ -91,8 +91,8 @@ module Helpers
 		end
 	end
 
-	def optional_param p, default
-		param = @settings[p.to_sym]
+	def optional_param p, default, sub=nil
+		param = sub ? @settings[sub][p.to_sym] : @settings[p.to_sym]
 		if param.nil?
 			return default
 		else

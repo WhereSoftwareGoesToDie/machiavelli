@@ -50,6 +50,11 @@ class Vaultaire < Store
                 page_size = args[:page_size] || 25
                 uri = "#{@base_url}/simple/search?origin=#{@origin_id}&q=#{q}&page=#{page - 1}&page_size=#{page_size}"
                 result = json_metrics_list uri
+
+		# Beta Sieste - remove known bad metadata items
+		result.delete_if{|a| a.include? "%3b"} # semicolon
+                result.delete_if{|a| !a.include? DELIM} # remove address-only listings
+
                 result.map{|x| "#{@origin_id}#{SEP}#{machiavelli_encode x}"}
 	end
 

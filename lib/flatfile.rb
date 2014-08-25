@@ -1,9 +1,9 @@
 class Flatfile < Store
-	def initialize params={}
+	def initialize origin, settings
 		super
-		@file      = mandatory_param :file_name
-		@metric    = mandatory_param :metric
-		@delimiter = optional_param  :delimiter, ","
+		@file      = mandatory_param :file_name, "store_settings"
+		@metric    = mandatory_param :metric, "store_settings"
+		@delimiter = optional_param  :delimiter, ",", "store_settings"
 
 		@base_url  = @file #synonym for is_up error msg
 	end
@@ -20,17 +20,22 @@ class Flatfile < Store
 		false # Flat files don't auto update, therefore cannot be assumed to be live
 	end
 
+	def metadata str
+		str
+	end
+
 	def get_metrics_list
 		test_file
 		[@metric]	
         end
 
-        def get_metric m, start=nil, stop=nil, step=nil, args={}
-		test_file
+	def get_metric_url m, start,stop,step
+		 return "file://#{Rails.root}/#{@file}"
 
-		if args[:return_url]
-			return "file://#{Rails.root}/#{@file}"
-		end
+	end
+
+        def get_metric m, start=nil, stop=nil, step=nil
+		test_file
 		
 		data = []
 		File.open(@file).each_line do |line|

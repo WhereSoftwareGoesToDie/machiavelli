@@ -30,7 +30,7 @@ class GraphsController < ApplicationController
 
 		new_metrics = que_qs(:metric)
 		gon.metrics = []
-	
+
 		@metrics = new_metrics.map{|m| Metric.new(m)}
 
 		new_metrics.each_with_index{|mstr, i|
@@ -58,7 +58,6 @@ class GraphsController < ApplicationController
 		# Everything should be ok from here on out
 		@graph = get_param(:graph)
 	end
-
 	def refresh # refresh button
 	
 		delete_metrics_cache

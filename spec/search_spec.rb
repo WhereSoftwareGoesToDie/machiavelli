@@ -10,10 +10,10 @@ describe "Search", :js => true do
 
 		backends = []
 		metric.each do |m|
-			backends << "{type: 'Flatfile', alias: '#{m}', settings: { file_name: 'public/flatfile_1s.csv', metric: '#{m}'}}"
+			backends << { m => {source: "Source", store: "Flatfile", title: m, store_settings: { file_name: 'public/flatfile_1s.csv', metric: m}}}
 		end
 
-		add_config "backends: [#{backends.join(",")}]"
+		add_config "origins: [#{backends.join(",")}]".to_yaml
 		test_config metric[0]
 	
 		visit "/"
