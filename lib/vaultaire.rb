@@ -9,6 +9,13 @@ class Vaultaire < Store
 		return machiavelli_encode(r)
 	end
 
+	def metadata_table metric
+		 ret = URI.decode(metric).strip
+                 sep = [[SEP,"</td></tr><tr><td>"],[KVP,"</td><td> - "],[DELIM,"</td></tr><tr><td>"]]
+                 sep.each {|a| ret.gsub!(a[0],a[1])}
+                 '<table style="text-align: left"><tr><td colspan=2>'+ret+'</table>'
+	end
+
 	# Convert a string into a uri-transferable sieste metric
         def sieste_encode m
                 n = m.gsub(":",SEP)
@@ -22,17 +29,22 @@ class Vaultaire < Store
 	        m.gsub(SEP,":")
 	end
 
+	def validate_time start, stop
+		limit_start = 1405916335 # collectors 2.1 staart
+                if start < limit_start
+                        puts "Limit start to #{limit_start}"
+                        start = limit_start
+                end
+                return start, stop
+	end
 
-	def get_metric_url m, start, stop, step, args={}
+	def get_metric_url m, start, stop, step 
 		query = []
 
-                float = keysplit(get_metric_meta(m))[1]["_float"]
-
-                m = get_metric_id m
-
-                m = sieste_encode m
-
-                _start, _stop = validate_time(start, stop)
+		metakeys = m.source.keysplit(m.metadata)
+		float = metakeys["_float"]
+                
+		_start, _stop = validate_time(start, stop)
 
                 query << "start=#{_start}"
                 query << "end=#{_stop}"
@@ -41,14 +53,18 @@ class Vaultaire < Store
 
                 query_string = "?" + query.join("&")
 
-                uri = "#{@base_url}/interpolated/#{@origin}/#{m}#{query_string}"
+                uri = "#{@base_url}/interpolated/#{@origin_id}/#{m.metric_id}#{query_string}"
 
 		return uri
 
 	end
 
-	def get_metric m, start, stop, step, args={}
-		uri = get_metric_url  m, start, stop, step, args={}
+	def get_metrics_list
+		return []
+	end
+
+	def get_metric start, stop, step
+		uri = get_metric_url start, stop, step
 
                 factor = 1000000000
                 data = json_metrics uri

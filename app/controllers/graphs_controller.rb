@@ -36,7 +36,18 @@ class GraphsController < ApplicationController
 	
 
 		new_metrics = que_qs(:metric)
-		gon.metrics = new_metrics.map{|m| Metric.new m }
+		gon.metrics = []
+	
+		@metrics = new_metrics.map{|m| Metric.new(m)}
+
+		new_metrics.each_with_index{|mstr, i|
+		       	g = {}
+			g[:feed]       = "/metric/?metric=#{mstr}"	
+		 #	g[:counter] = true if m.counter? ##TODO Incorporate vaultaire based metadata
+			g[:sourceURL] = @metrics[i].get_metric_url start, stop, step
+			g[:removeURL] = rem_qs(:metric, mstr)
+			gon.metrics << g
+	       	}
 
 =begin
 		selected_metrics.each_with_index do |m,i|
@@ -76,17 +87,17 @@ class GraphsController < ApplicationController
 		Settings.reload!
 		errors = []
 
-		if Settings.backends.nil?
+		if Settings.origins.nil?
 			flash[:error] = ui_message(:no_backends)
 		else 
 			inactive_backends = []; refresh_errors :remove
-			Settings.backends.each do |b|
+			Settings.origins.each do |o|
 				begin
-					settings = b.settings.to_hash.merge({alias: b.alias||b.type})
-					backend = init_backend b.type, settings
-					backend.refresh_metrics_cache # b.alias
+					b = o[1]
+					backend = Object.const_get(b.store).new b.store_settings
+					backend.refresh_metrics_cache
 				rescue Backend::Error => e
-					inactive_backends << [(b.alias||b.type), e]
+					inactive_backends << [o[0], e]
 					errors << e
 				end
 			end

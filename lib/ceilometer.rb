@@ -4,7 +4,7 @@ class Ceilometer < Source
 	def titleize metric
 		@origin = "4YL1CF" ## TODO - dynamic this
 
-		keys = keysplit(metric).last
+		keys = keysplit(metric)
 		nice = []
 
 		display_name = nil
@@ -35,7 +35,6 @@ class Ceilometer < Source
 		nice << keys["counter_name"]
 		nice << keys["counter_type"]
 		nice << keys["_unit"]
-		binding.pry
 		return URI.decode(nice.join(" - "))
 	end
 end

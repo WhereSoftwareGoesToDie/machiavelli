@@ -15,8 +15,49 @@ class Store
 		return m
 	end
 
-	def live
+	def metadata_table m
+		'<p align="left">'+m.gsub(SEP, "<br>")+"</p>"
+	end
+
+	def live?
 		true
+	end
+
+	def get_metric
+		raise NotImplemented
+	end
+	
+        def refresh_metrics_cache _alias=nil
+                metrics = get_metrics_list
+
+                r = redis_conn
+
+                metrics.each {|m|
+                        r.set "#{REDIS_KEY}:#{@origin_id}:#{m}", 1
+                }
+        end
+
+	def json_metrics_list uri, args={}
+                get_json uri, args, "Error retriving #{@store} metrics list"
+        end
+
+        def json_metrics uri, args={}
+                get_json uri, args, "Error retriving #{@store} metric"
+        end
+
+	
+
+        REDIS_KEY = Settings.metrics_key || "Machiavelli.Metrics"
+
+        def redis_conn
+                host = Settings.redis_host || "127.0.0.1"
+                port = Settings.redis_port || 6379
+                Redis.new(host: host, port: port)
+        end
+
+
+	def get_metric_url
+		raise NotImplemented
 	end
 
 	# Precond:  valid URI, optional error parsing lambda
@@ -58,5 +99,28 @@ class Store
                 end
 
         end
+
+
+        # Get the parameter named p, or fail
+        def mandatory_param p
+                param = @settings[p.to_sym]
+                if param.nil?
+                        raise Store::Error, "Must provide #{p} value"
+                else
+                        param
+                end
+        end
+
+        def optional_param p, default
+                param = @settings[p.to_sym]
+                if param.nil?
+                        return default
+                else
+                        param
+                end
+        end
+
 end
+class Store::Error < StandardError; end
+
 

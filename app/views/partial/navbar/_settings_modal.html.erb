@@ -10,9 +10,9 @@
 		keys = [] 
 		keys = @r.map{|a| a[0] } unless @r.empty?
 
-		if Settings.backends then
-			Settings.backends.each do |b| 
-				if keys.include? (b.alias || b.type) then
+		if Settings.origins then
+			Settings.origins.each do |b| 
+				if keys.include? (b[0]) then
 					inactive << b
 				else 
 					active << b
@@ -20,16 +20,16 @@
 			end
 		end
 
-		def display b, show_error=false 
-	%>
-		<tr><td colspan=2><%= backend_description b.type %> <%= "'"+b.alias+"'" if b.alias %></td></tr>
-		<% if b.description %>
-			<tr><td colspan=2><%= b.description %></td></tr>
-			<%end %>
-			<% b.settings.sort.each do |k,v| %>
-				<tr><td><%= k %> </td><td> <%=v%></td></tr>
+		def display b, show_error=false
+			id, settings = b %>
+		<tr><td colspan=2><%= settings.store %> <%= "'"+settings.title+"'" %></td></tr>
+		<% settings.sort.each do |k,v| 
+			val = v
+			val = v.map{|a,b| "#{a}: #{b}"}.join("<br>").html_safe unless v.is_a? String
+			%>
+				<tr><td><%= k %> </td><td> <%=val%></td></tr>
 			<% end %>
-			<%msg = @r.select{|a| a[0] == (b.alias || b.type)}.flatten%>
+			<%msg = @r.select{|a| a[0] == id}.flatten%>
 			<% unless msg.empty?
 				   m = msg[1] %>
 			   <tr class="alert-danger"><td>Error</td><td><%= m %></td></tr>

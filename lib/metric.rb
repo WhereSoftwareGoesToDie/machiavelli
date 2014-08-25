@@ -1,15 +1,25 @@
 class Metric
 	def initialize metric
 		@origin_id, @metric_id = metric.split(SEP)
-
 		@settings = Settings.origins[@origin_id]
 		@store = Object.const_get(@settings.store).new @settings.store_settings
 		@source = Object.const_get(@settings.source).new 
 	end
 
+	def origin_id; @origin_id; end
+	def metric_id; @metric_id; end
+
 	def titleize
 		meta = @source.titleize metadata
 		return "#{@origin_id} - #{meta}"
+	end
+
+	def counter?
+		@store.counter?
+	end
+
+	def source
+		@source
 	end
 	
 	def feed
@@ -23,11 +33,23 @@ class Metric
 		return @metadata
 	end
 	
-	def id
-		@metric_id
+	def get_metric_url start, stop, step
+		@store.get_metric_url self, start, stop, step
+	end
+	
+	def get_metric start, stop, step
+		@store.get_metric id, start, stop, step
 	end
 
-	def live
+	def metadata_table
+		@store.metadata_table metadata
+	end
+	
+	def id
+		"#{@origin_id}#{SEP}#{@metric_id}"
+	end
+
+	def live?
 		@store.live?
 	end
 
