@@ -42,7 +42,7 @@ describe "Sieste", :js => true do
 
 		context "Host #{sieste_host} with origin #{origin}" do
 			before :each do 
-				add_config sieste_config({host: sieste_host, origin: origin})
+				add_config type_config(type, {host: sieste_host, origin: origin})
 				test_config type
 			end
 
@@ -63,11 +63,7 @@ end
 
 describe "broken sieste" do
 	it "doesn't work with an unconnectable sieste instance" do
-		add_config sieste_config({ host: 'http://idontwork.nope.org', origin: 'POTATO'})
+		add_config type_config("Vaultaire", { host: 'http://idontwork.nope.org', origin: 'POTATO'})
 		expect_json_error "/source"
 	end
-end
-def name; "Vaultaire"; end
-def sieste_config settings
-	make_config name, name, name, "Nagios",settings
 end

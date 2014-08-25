@@ -124,6 +124,11 @@ def add_config config
 	visit "/refresh"
 end
 
+def config_file file
+	Settings.reload_from_files(file)
+	visit "/refresh"
+end
+
 def type_config type, settings
 	make_config type, type, type, "Source", settings
 end
