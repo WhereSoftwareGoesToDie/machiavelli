@@ -17,6 +17,7 @@ require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/webkit'
 require 'binding_of_caller'
+require 'rails_config'
 require 'redis'
 
 TEMP_YML = "temp_settings.yml"
@@ -32,8 +33,8 @@ Capybara.javascript_driver = :webkit unless ENV["BROWSER"] == "firefox"
 RSpec.configure do |config|
 	config.include Capybara::DSL
 	config.mock_with :rspec
-	config.fail_fast = true
-#	config.order = "random"
+#	config.fail_fast = true
+	config.order = "random"
 end
 
 shared_examples 'a graph' do |metric|
@@ -124,7 +125,7 @@ def add_config config
 end
 
 def type_config type, settings
-	make_config type,type,type,"Source",settings
+	make_config type, type, type, "Source", settings
 end
 
 def make_config id, title, store, source, store_settings={}

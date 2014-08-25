@@ -13,7 +13,8 @@ describe "Search", :js => true do
 			backends << { m => {source: "Source", store: "Flatfile", title: m, store_settings: { file_name: 'public/flatfile_1s.csv', metric: m}}}
 		end
 
-		add_config "origins: [#{backends.join(",")}]".to_yaml
+		#TODO This breaks the rails_config. Unsure why.
+		add_config = {origins:  backends}.to_yaml
 		test_config metric[0]
 	
 		visit "/"

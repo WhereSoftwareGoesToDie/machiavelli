@@ -105,7 +105,9 @@ module Layouts
 
 		end
 
-	# Backend Helpers
+# Backend Helpers
+		# These shouldn't have to be here any more ever.
+=begin
 		def style_metric style, metric
 			binding.pry
 			(init_backend metric).style_metric style, metric
@@ -140,7 +142,6 @@ module Layouts
 
 			return "Backend::#{name.titleize}".constantize.new settings
 		end
-
 		def backend_description name
 			binding.pry
 			unless File.exists? File.join(Rails.root,"lib","backend","#{name.downcase()}.rb")
@@ -148,6 +149,7 @@ module Layouts
 			end
 			return "Backend::#{name.titleize}".constantize.description
 		end
+=end
 
 		def refresh_errors method=:show, error=nil
 			one = "#"; two = "$"; key = "Machiavelli:RefreshErrors"

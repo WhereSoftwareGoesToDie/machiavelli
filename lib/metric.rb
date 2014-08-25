@@ -1,3 +1,4 @@
+require 'pry-debugger'
 class Metric
 	include Helpers
 	def initialize metric
@@ -72,8 +73,8 @@ class Metric
 			keys = keysplit(str)
 			return build_id origin, keys["address"]
 
-		elsif if_metric_id? str
-			binding.pry
+		elsif is_metric_id? str
+			return build_id @origin_id, str
 		end
 	end
 
