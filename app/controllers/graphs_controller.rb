@@ -35,11 +35,13 @@ class GraphsController < ApplicationController
 
 		new_metrics.each_with_index{|mstr, i|
 		       	g = {}
-			g[:feed]       = "/metric/?metric=#{mstr}"	
 			g[:id]        = @metrics[i].id
-		 #	g[:counter] = true if m.counter? ##TODO Incorporate vaultaire based metadata
+			g[:feed]      = @metrics[i].feed
+			g[:live]      = @metrics[i].live?
 			g[:sourceURL] = @metrics[i].get_metric_url start, stop, step
 			g[:removeURL] = rem_qs(:metric, mstr)
+
+		 #	g[:counter] = true if m.counter? ##TODO Incorporate vaultaire based metadata
 			gon.metrics << g
 	       	}
 
