@@ -1,6 +1,8 @@
 # Collector: https://github.com/anchor/vaultaire-collector-nagios
 class Nagios < Source
 	include Helpers
+
+	# Humanize the title for the perfdata feed. Handles both v1 and v2 style Vaultaire metadata
 	def titleize metric 
 		keys = keysplit(metric)
 

@@ -1,8 +1,12 @@
+# Library filers file
 module Helpers
+
+	# Wrapper for getting json, with relevant error message
 	def json_metrics_list uri, args={}
 		get_json uri, args, "Error retriving #{@store} metrics list"
 	end
 
+	# Wrapper for getting json, with relevant error message
 	def json_metrics uri, args={}
 		get_json uri, args, "Error retriving #{@store} metric"
 	end
@@ -16,7 +20,8 @@ module Helpers
                         return false
                 end
         end
-
+	
+	# Given an origin ID, find the key/value in the settings file and return it, plus the search key
 	def origin_settings ostr
 		Settings.origins.find{|o,k| o.to_s == ostr.to_s}
 	end
@@ -28,15 +33,17 @@ module Helpers
                 keys
         end
 
+	# Base parent key for all our Redis doings
         REDIS_KEY = Settings.metrics_key || "Machiavelli.Metrics"
   
+	# Create a redis connection object
         def redis_conn
                 host = Settings.redis_host || "127.0.0.1"
                 port = Settings.redis_port || 6379
                 Redis.new(host: host, port: port)
         end
 
-	# Get the parameter named p, or fail
+	# Remove all keys from the redis
 	def delete_metrics_cache
                 r = redis_conn
                 keys = r.keys REDIS_KEY+'*'
@@ -82,6 +89,7 @@ module Helpers
 		end
 	end
 
+	# For a given key, ensure it exists in the Settings hash. Fail if this is not the case
 	def mandatory_param p, sub=nil
 		param = sub ? @settings[sub][p.to_sym] : @settings[p.to_sym]
 		if param.nil?
@@ -91,6 +99,7 @@ module Helpers
 		end
 	end
 
+	# For a given key, check if it exists in the Settings hash. Otherwise, shrug and use the default given.
 	def optional_param p, default, sub=nil
 		param = sub ? @settings[sub][p.to_sym] : @settings[p.to_sym]
 		if param.nil?

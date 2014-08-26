@@ -1,8 +1,12 @@
 require 'color'
 
+# Horizon extension of Graph
 class Horizon < Graph
+
+	# Default: Anchor blue
 	GRAPH_COLOUR = Settings.horizon_color || "#006d2c"
 	
+	# Given the base graph colour, create a range of hues from the inverse to the colour itself in a range. 
 	def self.get_colours
 		tint_range(complement GRAPH_COLOUR) + tint_range(GRAPH_COLOUR, reverse: true)
 	end
@@ -30,7 +34,7 @@ class Horizon < Graph
 	end
 
 	# Given a html color, establish it's complement on the color wheel
- 	# Uses the 'color' library
+ 	# Uses the 'color' library 
 	def self.complement base	
 		hsl = (Color::RGB.from_html base).to_hsl
 		hsl.hue = (hsl.hue + 180) % 360

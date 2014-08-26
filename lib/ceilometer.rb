@@ -1,7 +1,8 @@
 # Collector: https://github.com/anchor/ceilometer-publisher-vaultaire
-
 class Ceilometer < Source
 	include Helpers
+
+	# Take a metric metadata string, and return a human readable title
 	def titleize metric
 
 		keys = keysplit(metric)

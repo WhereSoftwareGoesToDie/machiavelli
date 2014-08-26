@@ -1,5 +1,6 @@
-require 'net/http'
+# Class for extracting data from Graphite (https://github.com/graphite-project/graphite-web)
 
+require 'net/http'
 class Graphite < Store
 
 	def initialize origin,settings
@@ -7,10 +8,12 @@ class Graphite < Store
 		@base_url = mandatory_param :url, "store_settings"
 	end
 
-	def get_metrics_list # m,start,stop,step
+	# Return Graphite's internal metrics list
+	def get_metrics_list
 		json_metrics_list "#{@base_url}/metrics/index.json"
 	end
 
+	# For a given metric, return a Graphite json feed URL
 	def get_metric_url metric, start=nil, stop=nil, step=nil
 		m = metric.metric_id
 		url = 	@base_url + 
@@ -24,6 +27,8 @@ class Graphite < Store
 
 		return url
 	end
+
+	# Retrieve data for a graphite metric
 	def get_metric metric, start=nil, stop=nil, step=nil
 		url = get_metric_url metric,start,stop,step
 		m = metric.metric_id
@@ -41,8 +46,8 @@ class Graphite < Store
 			metric << {x: node[1], y: node[0] } 
 		end
 
+		# Ensure a hard limit on the size of the array before returning
 		points = (stop - start)/step
-
 		return metric.take(points)
 	end
 end

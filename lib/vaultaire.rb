@@ -1,23 +1,25 @@
+# Storage for Vaultaire TSDB (https://github.com/anchor/vaultaire) via it's RESTful backend (https://github.com/anchor/sieste)
 class Vaultaire < Store
-
 	include Helpers
 
 	def initialize origin, settings
 		super
-	#	@origin_id = settings.store_settings.origin
 		@base_url = mandatory_param :host, "store_settings"
 	end
 
+	# Sieste can be used to query for a metric's metadata based on it's origin and metric_id alone
 	def metadata metric_id
 		r = get_json("#{@base_url}/simple/search?origin=#{@origin_id}&address=#{metric_id}").first
 		return machiavelli_encode(r)
 	end
 
+	# Split the metadata into nice pieces and make a HTML table.
 	def metadata_table metric
-		 ret = URI.decode(metric).strip
-                 sep = [[SEP,"</td></tr><tr><td>"],[KVP,"</td><td> - "],[DELIM,"</td></tr><tr><td>"]]
-                 sep.each {|a| ret.gsub!(a[0],a[1])}
-                 '<table style="text-align: left"><tr><td colspan=2>'+ret+'</table>'
+		# TODO function assumes origin within metadatastring, formats out weird without it
+		ret = URI.decode(metric).strip
+		sep = [[SEP,"</td></tr><tr><td>"],[KVP,"</td><td> - "],[DELIM,"</td></tr><tr><td>"]]
+		sep.each {|a| ret.gsub!(a[0],a[1])}
+		'<table style="text-align: left"><tr><td colspan=2>'+ret+'</table>'
 	end
 
 	# Convert a string into a uri-transferable sieste metric
@@ -33,6 +35,7 @@ class Vaultaire < Store
 	        m.gsub(SEP,":")
 	end
 
+	# Monkeypatch to prevent data pulls from when there is known to not be data
 	def validate_time start, stop
 		limit_start = 1405916335 # collectors 2.1 staart
                 if start < limit_start
@@ -42,10 +45,7 @@ class Vaultaire < Store
                 return start, stop
 	end
 
-	def refresh_metrics_cache
-		# Do nothing. This backend isn't cached
-	end
-
+	# Use Sieste to search for metrics given an origin id and a query string
 	def search_metrics q, args={}
 		page = args[:page] || 1
                 page_size = args[:page_size] || 25
@@ -59,6 +59,7 @@ class Vaultaire < Store
                 result.map{|x| "#{@origin_id}#{SEP}#{machiavelli_encode x}"}
 	end
 
+	# Generate the url for the datastream for a given metric
 	def get_metric_url m, start, stop, step 
 		query = []
 
@@ -79,10 +80,16 @@ class Vaultaire < Store
 		return uri
 	end
 
+	# Do nothing. This backend isn't cached
+	def refresh_metrics_cache
+	end
+
+	# Return an empty array. This backend isn't cached
 	def get_metrics_list
 		return []
 	end
 
+	# Get the metric data from sieste/vaultaire, and do some basic validations on the result
 	def get_metric m, start, stop, step
 		uri = get_metric_url m, start, stop, step
 
@@ -131,9 +138,8 @@ class Vaultaire < Store
                 (last_point+step..stop).step(step).each do |x|
                         padded << {x: x, y: nil}
                 end
-
-                padded
-
 		
+		# And return 
+                padded
 	end
 end
