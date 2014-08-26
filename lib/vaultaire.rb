@@ -4,6 +4,7 @@ class Vaultaire < Store
 
 	def initialize origin, settings
 		super
+		@origin_id = settings.store_settings.origin
 		@base_url = mandatory_param :host, "store_settings"
 	end
 
