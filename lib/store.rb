@@ -17,6 +17,9 @@ class Store
 	def live?
 		true
 	end
+	def metadata m
+		m
+	end
 
 	def get_metrics_list
 		raise NotImplemented
