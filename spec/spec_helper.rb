@@ -19,7 +19,6 @@ require 'capybara/webkit'
 require 'binding_of_caller'
 require 'rails_config'
 require 'redis'
-require 'pry-debugger'
 TEMP_YML = "temp_settings.yml"
 REDIS_METRIC_KEY = "Machiavelli.Metrics"
 
