@@ -1,3 +1,5 @@
+require 'net/http'
+require 'uri'
 # Library filers file
 module Helpers
 
