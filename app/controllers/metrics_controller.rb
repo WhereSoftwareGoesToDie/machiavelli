@@ -1,13 +1,15 @@
+# Controller for Metrics
+# Because metrics can come from many source, we serve them from our own itty bitty endpoint, passing them through the ruby server-side code and preventing their exposure directly to the user.
 class MetricsController < ApplicationController
 	
 	include Layouts::ApplicationLayoutHelper
 
-	helper_method :init_backend
 
 	START = 60*60*3
 	STOP  = 0
 	STEP = 10
-# GET
+
+	# Basic GET point - given a metric name only, and provided or default 3st parameters, get the metric information
 	def get
 		unless params[:metric] then
 			render json: {error: "must provide a metric"}
@@ -29,6 +31,7 @@ class MetricsController < ApplicationController
 		end
 	end
 
+	# List all the metrics available, limited by search terms if given
 	def list
 
 		settings_origins =  Settings.origins.map{|a,b| a.to_s}
@@ -44,6 +47,7 @@ class MetricsController < ApplicationController
 		search.gsub!(" ","*") 
 		list = []
 
+		# For all the backends, search their metric listings
 		b.each do |x|
 			begin
 				origin, settings = Settings.origins.find{|o,k| o.to_s == x}
@@ -54,6 +58,7 @@ class MetricsController < ApplicationController
 					list << {id: m.id, text: m.titleize}
 				end
 			rescue Store::Error, Errno::ECONNREFUSED => e
+				 # Do not render errors if we are in an AJAX callback
 				 unless  params[:callback] then
 					 render json: { error: e.to_s } 
 					 return
@@ -64,8 +69,10 @@ class MetricsController < ApplicationController
 		list.flatten!
 
 		if params[:callback] then
+			# Generate a nice AJAX callback listing
 			render json: "#{params[:callback]}({metrics:#{list.to_json}});"
 		else
+			# Just return the IDs. Not usually called from the UI.
 			render json: list.map{|x| x[:id]}.to_json
 		end
 		

@@ -138,8 +138,9 @@ class Vaultaire < Store
                 (last_point+step..stop).step(step).each do |x|
                         padded << {x: x, y: nil}
                 end
-		
-		# And return 
-                padded
+
+		# Ensure a hard limit on the size of the array before returning
+		points = (stop - start)/step
+                padded.take(points)
 	end
 end
