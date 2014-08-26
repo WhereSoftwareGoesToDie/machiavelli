@@ -46,7 +46,7 @@ end
 
 def compile_if_required env
 	if compile? 
-		compile_assets ARGV[0]
+		compile_assets env
 		git_commit nil, "compile assets"
 	end
 end
@@ -144,7 +144,9 @@ when "upcoming_version"
 	v = up_version vb
 	puts "If you invoke me with #{vb} I'll go up to version v#{v}"
 when "update_assets"
-	compile_if_required ARGV[0]
+	compile_if_required ARGV[1]
+when "precompile"
+	compile_assets ARGV[1]
 when "release"
 	unless git_branch == "master"
 		failexit "Cannot release unless we are on master"
