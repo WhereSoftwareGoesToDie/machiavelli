@@ -31,9 +31,9 @@ group :development do
 	gem 'sinatra'
 end
 
-group :debugging do
+#group :debugging do
 	gem "pry-debugger"
 	gem "pry-rescue"
 	gem "pry-stack_explorer"
-end
+#end
 
