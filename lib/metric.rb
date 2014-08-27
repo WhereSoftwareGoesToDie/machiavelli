@@ -9,7 +9,7 @@ class Metric
 		@origin_id, @metric_id = metric_id.split(SEP)
 		@settings = origin_settings(@origin_id).last
 		@store = Object.const_get(@settings.store).new @origin_id, @settings
-		@source = Object.const_get(@settings.source).new 
+		@source = Object.const_get(@settings.source).new @origin_id, @settings 
 	end
 
 	# origin_id accessor function
