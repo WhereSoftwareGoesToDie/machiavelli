@@ -9,32 +9,39 @@ class Ceilometer < Source
 		nice = []
 
 		display_name = nil
-=begin
+
+
 		# Given the metadata for a OpenStack object, this should return human readable metric names
-		@origin = "4YL1CF" ## TODO - dynamic this
+		# Only attempt to use a nicer name if we get sufficient metadata back from our calls
 		if keys["counter_name"] then
+
+			# Create a Store object from the settings file to search metrics for us
+			store = (Object.const_get @settings.store).new @origin_id, @settings
+
 			if (keys["counter_name"].include? "network.") then
-				uri = "#{@base_url}/simple/search?origin=#{@origin_id}&q=*memory*#{keys["instance_id"]}*"
-				result = keysplit(machiavelli_encode((get_json uri).first))
-				display_name = "(#{result.last["hostname"]})"
+				search = store.search_metrics "*memory*#{keys["instance_id"]}*"
+				if search.length >= 1
+					result = keysplit(search.first)
+					display_name = "(#{result.last["hostname"]})"
+				end
 			end
 			if keys["counter_name"] == "image.download" || keys["counter_name"] == "image.serve" then
-				uri = "#{@base_url}/simple/search?origin=#{@origin_id}&q=*gauge*image*#{keys["resource_id"]}*"
-				test = get_json uri
-				test = test.select{|m| m.include? "resource%5fid~#{keys["resource_id"]}," }
-				test = test.select{|m| m.include? "counter%5fname~image," } if test.length > 1
-				result = keysplit(machiavelli_encode test.first)
-				display_name = "(#{result.last["name"]})"
+				search = store.search_metrics "*gauge*image*#{keys["resource_id"]}*"
+				if search.length >= 1
+					result = search.select{|m| m.include? "resource%5fid~#{keys["resource_id"]}," }
+					result = keysplit(result.first)
+					display_name = "(#{result.last["name"]})"
+				end
 			end
 		end
-=end
+
+		# If we found a nicer name, use that. Otherwise, try and default it
 		if display_name
 			nice << display_name
 		else
 			nice << (keys["display_name"] || keys["name"] || keys["id"])
 		end
 
-		nice << (keys["display_name"] || keys["name"] || keys["id"])
 		nice << keys["counter_name"]
 		nice << keys["counter_type"]
 		nice << keys["_unit"]
