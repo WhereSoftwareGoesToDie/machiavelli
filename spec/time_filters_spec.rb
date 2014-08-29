@@ -6,12 +6,12 @@ describe "Time", :js => true do
 		
 		before :each do
 			metric = "datastream"
-			backend = "{type: 'Flatfile', alias: '#{metric}', settings: { file_name: 'public/flatfile_15s.csv', metric: '#{metric}'}}"
+			type = "Flatfile"
+			add_config type_config(type, { file_name: 'public/flatfile_15s.csv', metric: metric})
 
-			add_config "backends: [#{backend}]"
 			test_config metric
-			@base_url = "?metric=#{metric}~#{metric}"
-			@chart_title = "#{metric} - #{metric}"
+			@base_url = "?metric=#{type}~#{metric}"
+			@chart_title = "#{type} - #{metric}"
 		end
 
 		it "in relative formats" do

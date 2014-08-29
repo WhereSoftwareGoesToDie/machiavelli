@@ -8,12 +8,13 @@ describe "Search", :js => true do
 		url_metrics  = metric.select{|x| x.include? search}.map{|x| "#{x}~#{x}"}
 		nice_metrics = metric.select{|x| x.include? search}.map{|x| "#{x} - #{x}"}
 
-		backends = []
+		backends = {}
 		metric.each do |m|
-			backends << "{type: 'Flatfile', alias: '#{m}', settings: { file_name: 'public/flatfile_1s.csv', metric: '#{m}'}}"
+			backends[m] = {source: "Source", store: "Flatfile", title: m, store_settings: { file_name: 'public/flatfile_1s.csv', metric: m}}
 		end
 
-		add_config "backends: [#{backends.join(",")}]"
+		config = {origins: backends}.to_yaml
+		add_config config
 		test_config metric[0]
 	
 		visit "/"

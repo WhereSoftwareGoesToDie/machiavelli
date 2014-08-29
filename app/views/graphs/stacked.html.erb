@@ -1,9 +1,7 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= stylesheet_link_tag    "graphs/stacked" %>
-<script src="/assets/graphs/stacked.js"></script>
-<% if dckx %>
-<%= stylesheet_link_tag    "graphs/dckx" %>
-<%end%>
+<%= javascript_include_tag "graphs/stacked.js" %>
+<%= stylesheet_link_tag    "graphs/dckx" if dckx %>
 <div class="slider" id="slider"></div>
 <span id="zoomtoselected" class="no_link zoomtoselected"></span>
 <div id="chart_container">
@@ -28,11 +26,11 @@ var config = {}
 config.renderer = '<%= check_param(:render, ["line","area","bar"]) || "line" %>'
 config.stack = <%= to_bool(check_param(:stack, ["on","off"]) || ui_defaults("stack")) %>
 
-<% @gon.metrics.each do |m| %>
-	metrics.push("<%= m[:metric] %>");
-	format_metrics.push("<%= style_metric :pretty, m[:metric]%>")
-	right_links.push("<%= add_qs :right, m[:id]%>");
-	left_links.push("<%= rem_qs :right, m[:id]%>");
+<% @metrics.each do |m| %>
+	metrics.push("<%= m.id %>");
+	format_metrics.push("<%= m.titleize%>")
+	right_links.push("<%= add_qs :right, m.id%>");
+	left_links.push("<%= rem_qs :right, m.id%>");
 <%end%>
 
 var graph;

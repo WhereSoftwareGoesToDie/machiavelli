@@ -4,4 +4,13 @@
 backends: [ 
         { type: "simple", alias: "Simple", settings: { url: "http://localhost:4567"}}
 ]
+origins:
+        "Simple": {
+                store: "Simple",
+                source: "Source",
+                title: "Simple",
+                store_settings: {
+                        url: "http://localhost:4567",
+                }
+        }
 

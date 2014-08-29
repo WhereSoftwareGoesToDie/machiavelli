@@ -15,7 +15,7 @@ describe "Simple backend", :js => true do
 	end
 
 	before :each do
-		add_config "backends: [{ type: '#{type}', settings: { url: '#{host}'}}]"
+		add_config type_config(type, {url: "#{host}"})
 		test_config type
 	end
 

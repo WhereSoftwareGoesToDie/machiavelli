@@ -1,7 +1,7 @@
 <div class="modal" id="settingsModal" role="dialog" aria-labelledby="settingsModal" aria-hidden="true">
 	<div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h4 class="modal-title" id="settingsModalLabel">Settings</h4>
+		<h4 class="modal-title" id="settingsModalLabel">Settings - Metric Origins</h4>
 	</div>
 	<div class="modal-body">
 		<% ui_message(:no_backends) if Settings.backends.nil? %>
@@ -10,9 +10,9 @@
 		keys = [] 
 		keys = @r.map{|a| a[0] } unless @r.empty?
 
-		if Settings.backends then
-			Settings.backends.each do |b| 
-				if keys.include? (b.alias || b.type) then
+		if Settings.origins then
+			Settings.origins.each do |b| 
+				if keys.include? (b[0].to_s) then
 					inactive << b
 				else 
 					active << b
@@ -20,35 +20,33 @@
 			end
 		end
 
-		def display b, show_error=false 
-	%>
-		<tr><td colspan=2><%= backend_description b.type %> <%= "'"+b.alias+"'" if b.alias %></td></tr>
-		<% if b.description %>
-			<tr><td colspan=2><%= b.description %></td></tr>
-			<%end %>
-			<% b.settings.sort.each do |k,v| %>
-				<tr><td><%= k %> </td><td> <%=v%></td></tr>
+		def display b, show_error=false
+			id, settings = b
+			m = @r.select{|a| a[0] == id.to_s}.flatten[1] if show_error
+	       	%>
+			<tr <%="class=alert-danger" if m%>>
+				<%[id,settings.title,settings.store,settings.source].each{|s| td s}%>
+			<% settings.sort.each do |k,v| 
+				unless v.is_a? String then
+				%><%td v.map{|a,b| "#{a}: #{b}"}.join("<br>")%>
+			<%      end
+			end%></tr>
+			<% if m then %>
+				<tr <%="class=alert-danger" if m%>><td> - Error Encountered:</td><td colspan=4><%= m %></td></tr>
 			<% end %>
-			<%msg = @r.select{|a| a[0] == (b.alias || b.type)}.flatten%>
-			<% unless msg.empty?
-				   m = msg[1] %>
-			   <tr class="alert-danger"><td>Error</td><td><%= m %></td></tr>
-			<% end %>
-				<tr><td colspan=2>&nbsp;</td></tr>
-		<% 
+			<%  
 		end #def display
+		def th s;%><th><%=s.to_s.html_safe%></th><%end
+		def td s;%><td><%=s.to_s.html_safe%></td><%end
 		%> 
 
-		<div class="col-md-6">
-			<h4>Active Backends</h4>
+	<div class="col-md-12">
 			<table class="table">
+				<tr><% ["Origin ID","Title","Store","Source","Settings"].each{|s| th s}%></tr>
 				<% active.each do |b| display b; end %>
-			</table>
-		</div>
-		<div class="col-md-6">
-			<h4>Inactive Backends</h4>
-			<table class="table">
+			<% unless inactive.empty? %>
 				<% inactive.each do |b| display b, true; end %>
+			<% end %>
 			</table>
 			<p><%= link_to "Refresh settings from file, and metrics cache", refresh_path, class: 'btn btn-info' %></p>
 		</div>	
