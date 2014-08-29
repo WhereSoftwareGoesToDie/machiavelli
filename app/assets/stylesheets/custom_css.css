@@ -51,6 +51,9 @@ input.error {
 .remove_metric a:hover { color: #666 }
 
 
+.select_results { padding: 10px}
+.select_results > div{ padding: 5px}
+
 #zoomtoselected { display:inline; position: relative;
 top: -25px;
 left: 30px;} 
