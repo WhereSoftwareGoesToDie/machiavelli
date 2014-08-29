@@ -33,3 +33,6 @@ temp_settings.yml
 
 # Ignore 
 lib/extensions
+
+# Ignore special settings files for specs
+spec/*.yml

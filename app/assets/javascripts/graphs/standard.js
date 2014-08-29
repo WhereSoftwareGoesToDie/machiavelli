@@ -5,7 +5,6 @@ initProgress();
 
 function renderStandard(index) { 
 	update = metricURL(gon.metrics[index].feed, gon.start, gon.stop, gon.step);
-                
 	$.getJSON(update, function(data) {
 		var chart = "chart_" + index;
 		var yaxis = "y_axis_" + index;
@@ -39,7 +38,7 @@ function renderStandard(index) {
 		if (min == Number.MAX_VALUE) { min=0; max=0; }
 
 		graph[index].configure({min: min - 0.5, max: max + 0.5});
-		if (gon.metrics[index].metric.indexOf("uom:c") != -1 )  { 
+		if (gon.metrics[index].counter)  { 
 			graph[index].configure({interpolation: 'step'});
 		}
 

@@ -7,7 +7,7 @@
 <div id="horizon_graph" style="position:relative; width:<%=width%>px"></div>
 
 <% def safe_array a; ("['"+a.join("','")+"']").html_safe; end
-colours = safe_array Graph::Horizon.get_colours
+colours = safe_array Horizon.get_colours
 %>
 
 <script>
@@ -27,15 +27,10 @@ colours = safe_array Graph::Horizon.get_colours
 
 	datum = [];
 
-	nice_metrics = []
-	<% @gon.metrics.each do |met| m = met[:metric] %>
-		nice_metrics.push("<%=style_metric :pretty, m%>");
-	<% end %>
-
 	machiavelli = context.machiavelli(window.location.origin);
-	$.each(gon.metrics, function(i,m) {
-		datum.push(machiavelli.metric(m.id, nice_metrics[i]));
-	});
+	<% @metrics.each do |m| %>
+	datum.push(machiavelli.metric("<%=m.id%>","<%=m.titleize%>"));
+	<% end %>
 
 	d3.select("#horizon_graph").call(function(div) {
 		div.append("div")

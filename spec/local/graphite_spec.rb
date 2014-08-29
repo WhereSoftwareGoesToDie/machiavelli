@@ -15,7 +15,7 @@ describe "Graphite", :js => true do
         end
 
 	before :each do 
-		add_config "backends: [{ type: '#{type}', settings: {url: '#{graphite_host}'}}]"
+		add_config type_config(type, {url: graphite_host}) 
 		test_config type
 	end
 
@@ -34,7 +34,7 @@ end
 
 describe "broken graphite" do
 	it "doesn't work with an unconnectable graphite instance" do
-		add_config "backends: [{ type: 'graphite', settings: { url: 'http://idontwork.nope.org'}}]"
+		add_config type_config('Graphite', { url: 'http://idontwork.nope.org'})
 		expect_page_error "/refresh"
 	end
 end

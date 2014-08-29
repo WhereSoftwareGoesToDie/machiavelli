@@ -3,20 +3,19 @@ require './generate_flatfile'
 describe "Post Timescales", :js => true do
 
 	it "Returns valid data using the GUI and POST searches" do
-		metric = ["thing_one"]
-		
-		url_metrics  = metric.map{|x| "#{x}~#{x}"}
-		nice_metrics = metric.map{|x| "#{x} - #{x}"}
+		m = "thing_one"
+		type = "Flatfile"
+		i = [type,m]
+
+		url_metrics  = i.join("~")
+		nice_metrics = i.join(" - ")
 
 		backends = []
-		metric.each do |m|
-			backends << "{type: 'Flatfile', alias: '#{m}', settings: { file_name: 'public/flatfile_1s.csv', metric: '#{m}'}}"
-		end
 
-		add_config "backends: [#{backends.join(",")}]"
-		test_config metric[0]
+		add_config type_config(type,{file_name: "public/flatfile_1s.csv", metric: m})
+		test_config m
 	
-		visit "/?metric=#{url_metrics[0]}"
+		visit "/?metric=#{url_metrics}"
 
 		# Relative time is default
 		expect(page.body).to include "icon-calendar"

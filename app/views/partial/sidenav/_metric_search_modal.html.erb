@@ -35,7 +35,7 @@ $('#filter_metrics_select').select2({
 		callback(metrics);
 	},
 	ajax: {
-		url: '/source/', 
+		url: '/search/', 
 		dataType: 'jsonp',
 		data: function(term, page) {
 			if (term.length == 0) { 

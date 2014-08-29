@@ -17,8 +17,8 @@ require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/webkit'
 require 'binding_of_caller'
+require 'rails_config'
 require 'redis'
-
 TEMP_YML = "temp_settings.yml"
 REDIS_METRIC_KEY = "Machiavelli.Metrics"
 
@@ -36,7 +36,7 @@ RSpec.configure do |config|
 #	config.order = "random"
 end
 
-shared_examples 'a graph' do |metric|
+shared_examples 'a graph' do |metric, title|
 	if ENV["BACKDATE_TEST"] 
 	       range = ["1w","2w"]
 	else 
@@ -44,20 +44,20 @@ shared_examples 'a graph' do |metric|
 	end
 
 	range.each do |t|
-		time_css_button metric, "standard", t, ["#multi_slider","#chart_0",".x_tick"]
-		time_css_button metric, "stacked",  t, [".rickshaw_graph","#chart_container",".y_axis"]
-		time_css_button metric, "horizon",  t, [".horizon","#horizon_graph",".axis"]
+		time_css_button metric, title, "standard", t, ["#multi_slider","#chart_0",".x_tick"]
+		time_css_button metric, title, "stacked",  t, [".rickshaw_graph","#chart_container",".y_axis"]
+		time_css_button metric, title, "horizon",  t, [".horizon","#horizon_graph",".axis"]
 	end
 end
 
 
-def time_css_button metric, type, time, css
+def time_css_button metric, title, type, time, css
 	it "and should generate valid css for #{metric}, type #{type} for time #{time}" do
 		visit "/?metric=#{metric}&graph=#{type}&start=#{time}"  
 		wait_for_ajax type, metric, time
 		
 		expect(page).not_to have_css "div.alert-danger"
-		expect(page).to have_content metric.split("~").first # .join(" - ") 
+		expect(page).to have_content title #metric.split("~").first # .join(" - ") 
 
 		m = metric.split(/[,:~]/)
 		if m.include? "hostname"
@@ -71,8 +71,8 @@ def time_css_button metric, type, time, css
 	end
 end
 
-shared_examples 'refresh metrics' do |type|
-	it "can refresh metrics of type #{type}" do
+shared_examples 'refresh metrics' do |origin,type|
+	it "can refresh metrics of type #{type} and origin #{origin}" do
 		r = Redis.new()
 
 		metric_key = REDIS_METRIC_KEY+"*"
@@ -88,16 +88,18 @@ shared_examples 'refresh metrics' do |type|
 
                 visit current_path
 
-                expect(page).not_to have_content type
+                expect(page).not_to have_content origin
 
 		visit "/refresh"
 
 		expect(page).not_to have_css "div.alert-danger"
-		visit "/source/"
-                expect(page).to have_content type
+		visit "/search/"
+                expect(page).to have_content origin
 
                 metrics = r.keys metric_key
-		if type != "Sieste" then
+
+		#Check cache for metrics, but not Vaultaire
+		if type != "Vaultaire" then
 			expect(metrics.length).to be > 0 
 		end
 	end
@@ -123,9 +125,23 @@ def add_config config
 	visit "/refresh"
 end
 
+def type_config type, settings
+	make_config type, type, type, "Source", settings
+end
+
+def wrap_config o, set
+	config = {origins: { o => set}}
+	config.to_yaml
+end
+
+def make_config id, title, store, source, store_settings={}
+	config = {origins: { id => { store: store, source: source, title: title, store_settings: store_settings }}}
+	config.to_yaml
+end
+
 def test_config type
 	expect(page).not_to have_css "div.alert-danger"
-	visit "/source/"
+	visit "/search/"
 	expect(page).to have_content type
 end
 

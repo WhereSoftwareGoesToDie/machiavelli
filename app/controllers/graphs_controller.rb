@@ -1,18 +1,15 @@
 require 'redis'
 
+# Control the main Graphs GUI
 class GraphsController < ApplicationController
 	include Layouts::ApplicationLayoutHelper
+	include Helpers
 
-	def all_metrics; backend.get_cached_metrics_list; end
-	def selected_metrics url=nil; 
-		m = []; url ||= request.url
-		m = CGI::parse(URI::parse(url).query)["metric"] if URI::parse(url).query; 
-		m
-	end
-# GET
-	def index # index.html
+	# Main index of the system
+	def index
 		gon.metrics = []
 
+		# Get the parameters from the UI, or use defaults.
 		start = to_epoch(get_param(:start))
 		stop  = to_epoch(get_param(:stop))
 
@@ -25,24 +22,29 @@ class GraphsController < ApplicationController
 		base = chg_qs(:time, "absolute", {url: base})
 
 		gon.base = base
-		
-		selected_metrics.each_with_index do |m,i|
-			b = (init_backend m)
-			metric_meta = b.get_metric_meta(m)
-			metric_id = b.get_metric_id(m)
-			gon.metrics[i] = { 
-				metric: metric_meta,
-				id: metric_id,
-				feed: "/metric/?metric="+metric_id,
-				live: b.live?,
-				sourceURL: b.get_metric_url(m.split(SEP).last,start,stop,step),
-				removeURL: rem_qs(:metric, m)
-			}
+	
 
-		end
+		# Get all the metrics, and build up a javascript blob with their useful bits
+		new_metrics = que_qs(:metric)
+		gon.metrics = []
+
+		@metrics = new_metrics.map{|m| Metric.new(m)}
+
+		new_metrics.each_with_index{|mstr, i|
+		       	g = {}
+			g[:id]        = @metrics[i].id
+			g[:feed]      = @metrics[i].feed
+			g[:live]      = @metrics[i].live?
+			g[:sourceURL] = @metrics[i].get_metric_url start, stop, step
+			g[:removeURL] = rem_qs(:metric, mstr)
+
+		 #	g[:counter] = true if m.counter? ##TODO Incorporate vaultaire based metadata
+			gon.metrics << g
+	       	}
 
 		@gon = gon
 
+		# Validate the times before continuing on
 		if stop < start
 			flash.now[:error] = "Start time has to be before stop time"
 			return
@@ -57,26 +59,33 @@ class GraphsController < ApplicationController
 		@graph = get_param(:graph)
 	end
 
-	def refresh # refresh button
-	
-		init_backend.delete_metrics_cache
+	# Refresh the settings file and cached metrics. UI button within the settings modal
+	def refresh
+		
+		# Remove all the redis data	
+		delete_metrics_cache
+
+		# Reload all settings files (rails_config)
 		Settings.reload!
 		errors = []
 
-		if Settings.backends.nil?
+		# For all the origins, if available, confirm if they are up, and refresh their cache of metrics
+		if Settings.origins.nil?
 			flash[:error] = ui_message(:no_backends)
 		else 
 			inactive_backends = []; refresh_errors :remove
-			Settings.backends.each do |b|
+			Settings.origins.each do |o|
 				begin
-					settings = b.settings.to_hash.merge({alias: b.alias||b.type})
-					backend = init_backend b.type, settings
-					backend.refresh_metrics_cache # b.alias
-				rescue Backend::Error => e
-					inactive_backends << [(b.alias||b.type), e]
+					origin, settings = o
+					store = Object.const_get(settings.store).new origin, settings
+					store.refresh_metrics_cache
+				rescue Store::Error => e
+					inactive_backends << [o[0], e]
 					errors << e
 				end
 			end
+
+			# Store the information about why the store refresh failed. 
 			unless errors.empty?
 				flash[:error] = errors.join("<br/>").html_safe 
 				refresh_errors :save, inactive_backends
@@ -85,15 +94,19 @@ class GraphsController < ApplicationController
 		redirect_to root_path
 	end
 
-# POST
-	def submit #searching 
+	# Metrics modal search POST submission
+	def submit
 		metrics = params[:filter][:metrics_select]
-		metrics = metrics.split(";") # select2 modal separator: ";", changed purposefully. Will break if metrics contain semicolon. 
+
+		# select2 modal separator: ";", changed purposefully. Will break if metrics contain semicolon. 
+		metrics = metrics.split(";") 
+
 		metrics.reject! { |c| c.empty? or c.include?("0000")} 
 		redirect_to root_path + chg_qs(:metric, metrics, {url: :referer})
 	end
 
-	def stop_time #changing stop parameter
+	# Relative Time form POST submission
+	def stop_time
 		if params[:commit] == "now"
 			redirect_to root_path + obl_qs(:stop, {url: :referer})
 		else 
@@ -102,6 +115,7 @@ class GraphsController < ApplicationController
 		end
 	end
 
+	# Absolute time form POST submission
 	def absolute_time 
 		start = Time.parse(params[:time][:start_time]).to_i
 		stop = Time.parse(params[:time][:stop_time]).to_i
