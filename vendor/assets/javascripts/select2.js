@@ -2933,14 +2933,14 @@ the specific language governing permissions and limitations under the Apache Lic
         addSelectedChoice: function (data) {
             var enableChoice = !data.locked,
                 enabledItem = $(
-                    "<div class='select2-search-choice'>" +
-                    "    <a href='#' onclick='return false;' class='select2-search-choice-close' tabindex='-1'><i class='icon-remove'></i></a>" +
-                    "    <div></div>" +
-                    "</div>"),
+                    "<li class='select2-search-choice'>" +
+		    "    <div></div>" +
+                    "    <a href='#' onclick='return false;' class='select2-search-choice-close' tabindex='-1'></a>" + 
+                    "</li>"),
                 disabledItem = $(
-                    "<div class='select2-search-choice select2-locked'>" +
+                    "<li class='select2-search-choice select2-locked'>" +
                     "<div></div>" +
-                    "</div>");
+                    "</li>");
             var choice = enableChoice ? enabledItem : disabledItem,
                 id = this.id(data),
                 val = this.getVal(),
@@ -2976,10 +2976,10 @@ the specific language governing permissions and limitations under the Apache Lic
               }));
             }
 
-            choice.data("select2-data", data);
-            //choice.insertBefore(this.searchContainer);
-	    var table = $("#selection");
-            choice.insertBefore(table);
+           choice.insertBefore(this.searchContainer);
+           // choice.data("select2-data", data);
+	   // var table = $("#selection");
+           // choice.insertBefore(table);
 
             val.push(id);
             this.setVal(val);

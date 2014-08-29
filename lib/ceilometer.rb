@@ -22,7 +22,7 @@ class Ceilometer < Source
 				search = store.search_metrics "*memory*#{keys["instance_id"]}*"
 				if search.length >= 1
 					result = keysplit(search.first)
-					display_name = "(#{result.last["hostname"]})"
+					display_name = "(#{result["hostname"]})"
 				end
 			end
 			if keys["counter_name"] == "image.download" || keys["counter_name"] == "image.serve" then
@@ -30,7 +30,7 @@ class Ceilometer < Source
 				if search.length >= 1
 					result = search.select{|m| m.include? "resource%5fid~#{keys["resource_id"]}," }
 					result = keysplit(result.first)
-					display_name = "(#{result.last["name"]})"
+					display_name = "(#{result["name"]})"
 				end
 			end
 		end
