@@ -1,9 +1,3 @@
-# SETTINGS
-#
-
-backends: [ 
-        { type: "simple", alias: "Simple", settings: { url: "http://localhost:4567"}}
-]
 origins:
         "Simple": {
                 store: "Simple",
