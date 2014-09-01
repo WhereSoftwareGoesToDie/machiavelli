@@ -73,7 +73,7 @@ function doneProgress() {
 	nanobar.go(100)
 } 
 function fitSlider() {
-	if (typeof slider != "undefined" ) { slider.configure({width : new_width, height: 30}); slider.render();}
+	if (typeof slider != "undefined" ) { slider.configure({width : new_width}); slider.render();}
 }
 
 function dynamicWidth(graph) { 

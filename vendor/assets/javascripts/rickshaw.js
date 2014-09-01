@@ -2883,24 +2883,23 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		}, this);
 
 		if ('width' in args || 'height' in args) {
-
 			if (this.widthFromGraph) {
 				this.config.width = this.graphs[0].width;
 			}
 
 			if (this.heightFromGraph) {
 				this.config.height = this.graphs[0].height * this.heightRatio;
-				this.previewHeight = this.config.height;
 			}
 
-			this.previews.forEach(function(preview) {
+			this.previewHeight = this.config.height - (this.config.frameTopThickness * 2);
 
-				var height = this.previewHeight / this.graphs.length - this.config.frameTopThickness * 2;
+			this.previews.forEach(function(preview) {
+				var height = this.previewHeight / this.graphs.length;
 				var width = this.config.width - this.config.frameHandleThickness * 2;
 				preview.setSize({ width: width, height: height });
 
 				if (this.svg) {
-					var svgHeight = height + this.config.frameHandleThickness * 2;
+					var svgHeight = this.config.height;
 					var svgWidth = width + this.config.frameHandleThickness * 2;
 					this.svg.style("width", svgWidth + "px");
 					this.svg.style("height", svgHeight + "px");
