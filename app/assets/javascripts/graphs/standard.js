@@ -107,7 +107,6 @@ var slider;
 
 function graphDone() { 
 	complete++;
-	updateProgress()
 
         // Render the multiple graph slider only when all the graphing operations have been completed.
         if (complete == gon.metrics.length) { 
@@ -117,5 +116,7 @@ function graphDone() {
 			height: 30,
 			element: document.getElementById("multi_slider")
 		});
-	}
+	} else {
+		updateProgress()
+	}	
 }

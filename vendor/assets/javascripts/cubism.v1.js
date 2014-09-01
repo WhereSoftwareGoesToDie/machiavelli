@@ -480,7 +480,8 @@ cubism_contextPrototype.machiavelli= function(host) {
   var source = {},
       context = this;
 
-  source.metric = function(target, metricName) {
+  source.metric = function(target, metricName, postEffect) {
+    postEffect = postEffect || function(){};
     metricName = metricName || target
     var metric = context.metric(function(start, stop, step, callback) {
 	feed = host + "/metric/?metric="
@@ -492,7 +493,7 @@ cubism_contextPrototype.machiavelli= function(host) {
           , function(data) {
           if (!data || data.length == 0) return callback(new Error("error loading data - no data returned"));
           if (data.error) return callback(new Error("machiavelli error: "+data.error));
-          callback(null, data.map(function(d) { return d.y} ))
+          callback(postEffect(), data.map(function(d) { return d.y} ))
       });
     }, metricName);
     return metric;

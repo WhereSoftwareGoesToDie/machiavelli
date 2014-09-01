@@ -31,11 +31,12 @@ initProgress();
 
 function flagComplete() {
 	complete++;
-	updateProgress();
 	if (complete == metrics.length) {
 		doneProgress();
 		renderStacked(dataChart);
 		unrenderWaiting();
+	} else { 
+		updateProgress();
 	}
 }
 var slider; 
