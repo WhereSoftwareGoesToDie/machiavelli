@@ -107,15 +107,21 @@ var slider;
 
 function graphDone() { 
 	complete++;
-	updateProgress()
 
         // Render the multiple graph slider only when all the graphing operations have been completed.
         if (complete == gon.metrics.length) { 
 		doneProgress(); //force
+
+		g = clean(graph, undefined) // Only pass in the successful graphs
+
+		if (g.length == 0) { return } // Do not create a slider if there are no successful graphs
+
 		slider = new Rickshaw.Graph.RangeSlider.Preview({ 
-			graphs: clean(graph, undefined), 
+			graphs: g, 
 			height: 30,
 			element: document.getElementById("multi_slider")
 		});
-	}
+	} else {
+		updateProgress()
+	}	
 }

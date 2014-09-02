@@ -365,21 +365,40 @@ the specific language governing permissions and limitations under the Apache Lic
         dest.attr("class", replacements.join(" "));
     }
 
-
+	// Extended to match multiple terms, delimited by space
     function markMatch(text, term, markup, escapeMarkup) {
-        var match=stripDiacritics(text.toUpperCase()).indexOf(stripDiacritics(term.toUpperCase())),
-            tl=term.length;
+        var text_ = stripDiacritics(text.toUpperCase())
+        var term_ = stripDiacritics(term.toUpperCase())
 
-        if (match<0) {
+	var index = []
+
+	var terms = term_.split(" ").filter(function(e){return e}); 
+
+	var start = 0
+        $.each(terms, function(i, t) {
+	    var x = text_.substring(start, text_.length).indexOf(t) + start
+            index.push([x, t.length]);
+            start = x+t.length
+
+        })
+
+        if (index.length === 0) {
             markup.push(escapeMarkup(text));
             return;
         }
 
-        markup.push(escapeMarkup(text.substring(0, match)));
-        markup.push("<span class='select2-match'>");
-        markup.push(escapeMarkup(text.substring(match, match + tl)));
-        markup.push("</span>");
-        markup.push(escapeMarkup(text.substring(match + tl, text.length)));
+	var point = 0
+	$.each(index, function(i, pair) {
+              var  i = pair[0];
+              var len = pair[1];
+              markup.push(escapeMarkup(text.substring(point, i)));
+              markup.push("<span class='select2-match'>");
+              markup.push(escapeMarkup(text.substring(i, i + len)));
+              markup.push("</span>");
+              point = i + len;
+	})
+
+        markup.push(escapeMarkup(text.substring(point, text_.length)));
     }
 
     function defaultEscapeMarkup(markup) {
@@ -420,7 +439,6 @@ the specific language governing permissions and limitations under the Apache Lic
             quietMillis = options.quietMillis || 100,
             ajaxUrl = options.url,
             self = this;
-
         return function (query) {
             window.clearTimeout(timeout);
             timeout = window.setTimeout(function () {
@@ -2853,7 +2871,6 @@ the specific language governing permissions and limitations under the Apache Lic
 
         // multi
         onSelect: function (data, options) {
-
             if (!this.triggerSelect(data)) { return; }
 
             this.addSelectedChoice(data);
@@ -2913,8 +2930,8 @@ the specific language governing permissions and limitations under the Apache Lic
             var enableChoice = !data.locked,
                 enabledItem = $(
                     "<li class='select2-search-choice'>" +
-                    "    <div></div>" +
-                    "    <a href='#' onclick='return false;' class='select2-search-choice-close' tabindex='-1'></a>" +
+		    "    <div></div>" +
+                    "    <a href='#' onclick='return false;' class='select2-search-choice-close' tabindex='-1'></a>" + 
                     "</li>"),
                 disabledItem = $(
                     "<li class='select2-search-choice select2-locked'>" +
@@ -2955,8 +2972,10 @@ the specific language governing permissions and limitations under the Apache Lic
               }));
             }
 
-            choice.data("select2-data", data);
-            choice.insertBefore(this.searchContainer);
+           choice.insertBefore(this.searchContainer);
+           // choice.data("select2-data", data);
+	   // var table = $("#selection");
+           // choice.insertBefore(table);
 
             val.push(id);
             this.setVal(val);
@@ -3311,7 +3330,7 @@ the specific language governing permissions and limitations under the Apache Lic
         formatInputTooShort: function (input, min) { var n = min - input.length; return "Please enter " + n + " or more character" + (n == 1? "" : "s"); },
         formatInputTooLong: function (input, max) { var n = input.length - max; return "Please delete " + n + " character" + (n == 1? "" : "s"); },
         formatSelectionTooBig: function (limit) { return "You can only select " + limit + " item" + (limit == 1 ? "" : "s"); },
-        formatLoadMore: function (pageNumber) { return "Loading more results…"; },
+        formatLoadMore: function (pageNumber) { return "."; },
         formatSearching: function () { return "Searching…"; },
         formatDropdownHeader: function () { return undefined; },
         formatDropdownFooter: function () { return undefined; },

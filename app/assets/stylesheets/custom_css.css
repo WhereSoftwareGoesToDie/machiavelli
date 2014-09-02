@@ -46,10 +46,13 @@ input.error {
 .data_source { display: inline }
 .data_source i { font-size:0.8em; color: #666; text-decoration: none}
 
-.remove_metric { display:inline; z-index:100; }
+.remove_metric { display:inline; z-index:100; float:right; margin-right: 40px }
 .remove_metric a { color: #ccc; text-decoration: none}
 .remove_metric a:hover { color: #666 }
 
+
+.select_results { padding: 10px}
+.select_results > div{ padding: 5px}
 
 #zoomtoselected { display:inline; position: relative;
 top: -25px;

@@ -29,8 +29,11 @@ class Metric
 
 	# Get the human readable metric title from the available metadata, and prepend the title, or the origin_id
 	def titleize
-		meta = @source.titleize metadata
-		return "#{@settings.title || @origin_id} - #{meta}"
+		if @title.nil?
+			meta = @source.titleize metadata
+			@title = "#{@settings.title || @origin_id} - #{meta}"
+		end
+		return @title
 	end
 
 	# Generate the metric controller feed for the metric	
@@ -40,10 +43,10 @@ class Metric
 
 	# metadata accessor function, but generate it only once
 	def metadata
-		if @metadata.nil?
-			@metadata = @store.metadata @metric_id
+		if @meta.nil?
+			@meta = @store.metadata @metric_id
 		end
-		return @metadata
+		return @meta
 	end
 	
 	# Use the store to generate the metric's external url
@@ -84,7 +87,7 @@ class Metric
 				# Origin~[meta]
 				origin, str = str.split(SEP) 
 			end
-			@metadata = str
+			@meta = str
 			# Split to get address, and rebuild
 			keys = keysplit(str)
 			return build_id origin, keys["address"]

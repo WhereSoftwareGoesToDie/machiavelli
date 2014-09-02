@@ -22,6 +22,8 @@ colours = safe_array Horizon.get_colours
 		.step(gon.step*1000) //1e3)
 		.size(<%=width%>)
 		.stop();
+	
+	initProgress();
 
 	if (gon.clock == "utc") { context.utcTime(true);}
 
@@ -29,8 +31,11 @@ colours = safe_array Horizon.get_colours
 
 	machiavelli = context.machiavelli(window.location.origin);
 	<% @metrics.each do |m| %>
-	datum.push(machiavelli.metric("<%=m.id%>","<%=m.titleize%>"));
+	datum.push(machiavelli.metric("<%=m.id%>","<%=m.titleize%>", updateProgress));
+
 	<% end %>
+
+	$(document).ajaxComplete(doneProgress);
 
 	d3.select("#horizon_graph").call(function(div) {
 		div.append("div")

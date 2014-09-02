@@ -67,6 +67,9 @@ class MetricsController < ApplicationController
 		end
 
 		list.flatten!
+	
+		# Sort it outselves
+		list.sort!{|i,j| i[:text] <=> j[:text]}
 
 		if params[:callback] then
 			# Generate a nice AJAX callback listing

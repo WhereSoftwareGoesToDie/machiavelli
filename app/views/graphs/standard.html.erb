@@ -12,10 +12,10 @@
 <% @metrics.each_with_index do |m, index| %>
 <div class="graph_title">
 	<h4>
-		<div id="remove_metric_<%=index%>" class="remove_metric"></div>
 		<a href="#" data-toggle="tooltip-always-metric" data-html="true" 
 			data-original-title="<%= m.metadata_table %>" class="plaid"><%= m.titleize %></a>
 		<div id="metric_<%=index%>_url" class="metric_url"></div>
+		<div id="remove_metric_<%=index%>" class="remove_metric"></div>
 	</h4>
 </div>
 <div id="chart_container">

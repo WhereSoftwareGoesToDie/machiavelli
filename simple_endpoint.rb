@@ -18,7 +18,7 @@ end
 
 get '/source/:source' do
 	content_type :json
-
+sleep 0.1	
 	[:start, :stop, :step].each do |p|
 		return { error: "Must provide #{p}"}.to_json unless params[p]
 	end

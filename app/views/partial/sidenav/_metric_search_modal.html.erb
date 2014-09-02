@@ -7,10 +7,10 @@
 		<h4 class="modal-title" id="myModalLabel">Search metrics</h4>
 	</div>
 	<%= form_for "filter", url: submit_path do |f| %>
-	<div class="modal-body"> 
-		<%= f.hidden_field(:metrics_select, style:"width: 100%", value: "0000") %>
+	<div class="modal-body">
+			<%= f.hidden_field(:metrics_select, style:"width: 100%", value: "0000") %>
 		<div class="modal-footer">
-		<%= f.submit "Render", class: "btn btn-default" %>
+			<%= f.submit "Render", class: "btn btn-default" %>
 		</div>
 	</div>
 	<% end %>
@@ -28,13 +28,13 @@ $(".sortable").each(function(i,el){
 $('#filter_metrics_select').select2({
 	placeholder: "Search for a metric",
 	openOnEnter: false,
-	quietMillis: 500,
 	allowSelectAllNone: true,
 	multiple: true,
 	initSelection: function(element,callback) { 
 		callback(metrics);
 	},
 	ajax: {
+		quietMillis: 500,
 		url: '/search/', 
 		dataType: 'jsonp',
 		data: function(term, page) {
@@ -60,16 +60,13 @@ $('#filter_metrics_select').select2({
 			return { results: ret, more: more};
 		 }, 
 	 }, 
-	formatResult:    function(d){
-		 return unescape(d.text);
-	 }, 
 	formatSelection: function(d){
 		 return unescape(d.text); 
 	 }
 });
 
 $(document).ready(function() { $(".select2-results").css("overflow-x","auto"); })
-
+ 
 $('#filter_metrics').on('shown.bs.modal', function() {
 	$('input:visible:first').focus();
 })
