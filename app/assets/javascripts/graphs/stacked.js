@@ -238,12 +238,6 @@ function generate_legend() {
 		}
 	}
 
-	arr = [];
-	len = Math.max(left.length, right.length) ;
-	for (var j = 0; j < len; j++) { 
-		arr.push([left[j],right[j]]);
-	} 
-
 	showURLs = [];
 	removeURLs = [];
 
@@ -252,24 +246,28 @@ function generate_legend() {
 	function rtd(side) { 
 		c = [];
 
-		["&nbsp","&nbsp","average","deviation","bounds"].forEach(function(d){
+		["&nbsp","average","deviation","bounds","&nbsp"].forEach(function(d){
 			c.push("<td align='right'>"+d+"</td>");
 		});
-		c.splice(1,0, "<td>"+side+" Axis</td>");
+		
+		if ( left.length > 0 && right.length > 0 ) {  c.splice(1,0, "<td>"+side+" Axis</td>"); }
+		else { c.splice(1,0,"<td>&nbsp;</td>")}
 		return c.join("");
 	} 
 
-	emptyHeader = "<td colspan=6>&nbsp;</td>"
-	header = ""
-	if (arr[0][0]) { header += rtd("Left");	} else { header += emptyHeader }
-	if (arr[0][1]) { header += rtd("Right");} else { header += emptyHeader } 
-	table.push(header);
 
 	// Stacked graphs will order last to first, so flip the legend, for sanity
-	if (config.stack) { arr = arr.reverse() }
+	if (config.stack) { left = left.reverse(); right = right.reverse()  }
 
-	arr.forEach(function(d) { 
-		table.push("<tr>");
+	if (left[0]) { table.push(rtd("Left"))	} 
+	left.forEach(function(d){ row = tableize(d); table.push(row) })
+
+	if (right[0]) { table.push("<tr><td>&nbsp;</td></tr>"); table.push(rtd("Right"))}
+	right.forEach(function(d){ row = tableize(d); table.push(row) })
+
+	function tableize(e) { //arr.forEach(function(d) { 
+		var t = []; 
+		t.push("<tr>");
 
 		function databit(data, tooltip) { 
 			s = "<td class='table_detail' align='right' data-toggle='tooltip-shuffle' nowrap ";
@@ -277,38 +275,32 @@ function generate_legend() {
 			return s;
 		} 
 
-		d.forEach(function(e) {
-			if (typeof(e) == "object") { 
-				y = arr_f(e.ydata);
+		y = arr_f(e.ydata);
 
-				el = ["<td class='legend-color' style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
-				el.push("<td class='legend-metric'><a href='"+e.link +  
-					"' data-toggle='tooltip-shuffle' data-original-title='"+ 
-					e.tooltip+"'>"+e.metric+"</a> <div id='"+e.show_url+"' class='metric_url' style='display:inline'></div></td>");
-			       el.push("<td style='width: 10px'><div id='"+e.remove_url+"' style='display:inline'></div></td>");
-				el.push(databit(fix(y.mean), y.mean));
-				el.push(databit(fix(y.deviation), y.deviation));
-				el.push(databit(fix(y.min) + ", " + fix(y.max), y.min +" - "+ y.max));
-				table.push(el.join(""));
-				showURLs.push([e.show_url, e.sourceURL]);
-				removeURLs.push([e.remove_url, e.removeURL]);
+		el = ["<td class='legend-color' style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
+		el.push("<td class='legend-metric'><a href='"+e.link +  
+			"' data-toggle='tooltip-shuffle' data-original-title='"+ 
+			e.tooltip+"'>"+e.metric+"</a> <div id='"+e.show_url+"' class='metric_url' style='display:inline'></div></td>");
+		el.push(databit(fix(y.mean), y.mean));
+		el.push(databit(fix(y.deviation), y.deviation));
+		el.push(databit(fix(y.min) + ", " + fix(y.max), y.min +" - "+ y.max));
+		el.push("<td style='width: 10px'><div id='"+e.remove_url+"' style='display:inline'></div></td>");
+		t.push(el.join(""));
+		showURLs.push([e.show_url, e.sourceURL]);
+		removeURLs.push([e.remove_url, e.removeURL]);
 
-			} else { 
-				table.push("<td colspan=5>&nbsp;</td>");
-			} 
-
-		});
-		table.push("</tr>");
-	});
+		t.push("</tr>");
+		return t.join("");
+	};
 
 	if (hasRight()) { 
-		table.push("<tr><td colspan=12><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
+		table.push("<tr><td colspan=99><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
 	} else {
 		if (graph.series.length >= 2) { 
-			table.push("<tr><td colspan=14>Click a metric to move it to the Right Axis</td></tr>");
+			table.push("<tr><td colspan=99>Click a metric to move it to the Right Axis</td></tr>");
 		} 
 	}
-	table.push("<table>");
+	table.push("</table>");
 
 	legend.innerHTML = table.join("\n");
 
