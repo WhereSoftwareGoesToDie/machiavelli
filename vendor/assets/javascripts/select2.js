@@ -2871,8 +2871,6 @@ the specific language governing permissions and limitations under the Apache Lic
 
         // multi
         onSelect: function (data, options) {
-	    saveSearch(); // Fire Search Saving Option
-
             if (!this.triggerSelect(data)) { return; }
 
             this.addSelectedChoice(data);
@@ -2920,8 +2918,6 @@ the specific language governing permissions and limitations under the Apache Lic
 
             if (!options || !options.noFocus)
                 this.focusSearch();
-
-	    afterSelect(); //Fire search rentry option
         },
 
         // multi

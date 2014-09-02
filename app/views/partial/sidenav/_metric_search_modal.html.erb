@@ -71,17 +71,4 @@ $('#filter_metrics').on('shown.bs.modal', function() {
 	$('input:visible:first').focus();
 })
 
-search = ""
-
-//When search option selected, save what was used to search
-function saveSearch() {
-	search = $("#s2id_autogen1").val()
-}
-
-// Once select option finishes, use the saved value to populate the filter
-function afterSelect() {
-	if (search.length > 0)
-	$("#s2id_filter_metrics_select").select2("search",search);
-}
-
 </script>
