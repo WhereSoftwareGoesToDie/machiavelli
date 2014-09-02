@@ -222,8 +222,10 @@ function generate_legend() {
 
 		obj.ydata = visibleData(d.data);
 		obj.sourceURL = gon.metrics[i].sourceURL;
+		obj.removeURL = gon.metrics[i].removeURL;
 		obj.index = i;
-		obj.div_name = "metric_"+i+"_url";
+		obj.show_url = "metric_"+i+"_showurl";
+		obj.remove_url = "metric_"+i+"_removeurl";
 
 		if (isRight(i)) { 
 			obj.link = left_links[i];
@@ -243,20 +245,21 @@ function generate_legend() {
 	} 
 
 	showURLs = [];
+	removeURLs = [];
 
 	table = ["<table class='table table-condensed borderless' width='100%'>"];
 
 	function rtd(side) { 
 		c = [];
 
-		["&nbsp","average","deviation","bounds"].forEach(function(d){
+		["&nbsp","&nbsp","average","deviation","bounds"].forEach(function(d){
 			c.push("<td align='right'>"+d+"</td>");
 		});
 		c.splice(1,0, "<td>"+side+" Axis</td>");
 		return c.join("");
 	} 
 
-	emptyHeader = "<td colspan=5>&nbsp;</td>"
+	emptyHeader = "<td colspan=6>&nbsp;</td>"
 	header = ""
 	if (arr[0][0]) { header += rtd("Left");	} else { header += emptyHeader }
 	if (arr[0][1]) { header += rtd("Right");} else { header += emptyHeader } 
@@ -281,12 +284,15 @@ function generate_legend() {
 				el = ["<td class='legend-color' style='width: 10px; background-color: "+e.colour+"'>&nbsp</td>"];
 				el.push("<td class='legend-metric'><a href='"+e.link +  
 					"' data-toggle='tooltip-shuffle' data-original-title='"+ 
-					e.tooltip+"'>"+e.metric+"</a> <div id='"+e.div_name+"' class='metric_url' style='display:inline'></div></td>");
+					e.tooltip+"'>"+e.metric+"</a> <div id='"+e.show_url+"' class='metric_url' style='display:inline'></div></td>");
+			       el.push("<td style='width: 10px'><div id='"+e.remove_url+"' style='display:inline'></div></td>");
 				el.push(databit(fix(y.mean), y.mean));
 				el.push(databit(fix(y.deviation), y.deviation));
 				el.push(databit(fix(y.min) + ", " + fix(y.max), y.min +" - "+ y.max));
 				table.push(el.join(""));
-				showURLs.push([e.div_name, e.sourceURL]);
+				showURLs.push([e.show_url, e.sourceURL]);
+				removeURLs.push([e.remove_url, e.removeURL]);
+
 			} else { 
 				table.push("<td colspan=5>&nbsp;</td>");
 			} 
@@ -299,7 +305,7 @@ function generate_legend() {
 		table.push("<tr><td colspan=12><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
 	} else {
 		if (graph.series.length >= 2) { 
-			table.push("<tr><td colspan=12>Click a metric to move it to the Right Axis</td></tr>");
+			table.push("<tr><td colspan=14>Click a metric to move it to the Right Axis</td></tr>");
 		} 
 	}
 	table.push("<table>");
@@ -308,6 +314,10 @@ function generate_legend() {
 
 	showURLs.forEach(function(d){
 		showURL(d[0],d[1]);
+	});
+
+	removeURLs.forEach(function(d) { 
+		removeURL(d[0],d[1]);
 	});
 
 	$("[data-toggle='tooltip-shuffle']").tooltip({ 
