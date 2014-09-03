@@ -27,7 +27,7 @@ Machiavelli::Application.configure do
 
   # Copy Production Configurations to do with Compilation of Assets
   config.assets.digest = true	
-  config.assets.compile = false
+  config.assets.compile = true
   config.serve_static_assets = true
 
   # Precompile additional assets.
@@ -36,7 +36,7 @@ Machiavelli::Application.configure do
   config.assets.precompile << /\.(?:svg|eot|woff|ttf)\z/
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = :uglifier
-  config.assets.css_compressor = :sass
+#  config.assets.js_compressor = :uglifier
+#  config.assets.css_compressor = :sass
 
 end
