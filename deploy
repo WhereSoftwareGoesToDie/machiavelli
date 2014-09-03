@@ -105,7 +105,7 @@ def update_github
 	run "git push origin #{git_branch}"
 end
 
-def git_push name, branch=nil
+def git_deploy name, branch=nil
 	branch ||= git_branch
 	force = "--force" if @force
 	run "git push deploy_#{name} #{branch}:master #{force}"
@@ -126,14 +126,15 @@ end
 
 case ARGV[0]
 when "staging" 
-	compile_if_required ARGV[0]
-	git_push ARGV[0] 
+	compile_assets ARGV[0]
+	git_commit "public/assets", "assets"
+	git_deploy ARGV[0] 
 when "production"
 	tag = ARGV[1]
 	unless tag
 		failexit "You must specify a tagged version to push to production. Perhaps #{prev_tag}?"
 	end
-	git_push "production", tag
+	git_deploy "production", tag
 when "commit"
 	git_commit "-v" 
 when "upcoming_version" 
