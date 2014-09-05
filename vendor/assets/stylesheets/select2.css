@@ -399,6 +399,7 @@ disabled look for disabled choices in the results dropdown
 
 .select2-more-results {
     background: #f4f4f4;
+    color: #ffffff;
     display: list-item; 
 }
 
