@@ -10,7 +10,8 @@ class Vaultaire < Store
 	# Sieste can be used to query for a metric's metadata based on it's origin and metric_id alone
 	def metadata metric_id
 		r = get_json("#{@base_url}/simple/search?origin=#{@origin_id}&address=#{metric_id}").first
-		return machiavelli_encode(r)
+		return machiavelli_encode(r) if r
+		return metric_id
 	end
 
 	# Split the metadata into nice pieces and make a HTML table.
