@@ -2972,10 +2972,8 @@ the specific language governing permissions and limitations under the Apache Lic
               }));
             }
 
+           choice.data("select2-data", data);
            choice.insertBefore(this.searchContainer);
-           // choice.data("select2-data", data);
-	   // var table = $("#selection");
-           // choice.insertBefore(table);
 
             val.push(id);
             this.setVal(val);
