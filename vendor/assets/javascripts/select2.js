@@ -365,7 +365,7 @@ the specific language governing permissions and limitations under the Apache Lic
         dest.attr("class", replacements.join(" "));
     }
 
-	// Extended to match multiple terms, delimited by space
+    // Extended to match multiple terms, delimited by space
     function markMatch(text, term, markup, escapeMarkup) {
         var text_ = stripDiacritics(text.toUpperCase())
         var term_ = stripDiacritics(term.toUpperCase())
@@ -376,10 +376,8 @@ the specific language governing permissions and limitations under the Apache Lic
 
 	var start = 0
         $.each(terms, function(i, t) {
-	    var x = text_.substring(start, text_.length).indexOf(t) + start
-            index.push([x, t.length]);
-            start = x+t.length
-
+	    var hits = indiciesOf(text_,t);
+	    $.each(hits, function(i, x) { index.push([x, t.length]) })
         })
 
         if (index.length === 0) {
@@ -387,8 +385,10 @@ the specific language governing permissions and limitations under the Apache Lic
             return;
         }
 
+	index = index.sort();
+
 	var point = 0
-	$.each(index, function(i, pair) {
+	$.each(index, function(y, pair) {
               var  i = pair[0];
               var len = pair[1];
               markup.push(escapeMarkup(text.substring(point, i)));
@@ -400,6 +400,17 @@ the specific language governing permissions and limitations under the Apache Lic
 
         markup.push(escapeMarkup(text.substring(point, text_.length)));
     }
+
+    function indiciesOf(text, search) {
+	var start = 0;
+	var index, indices = []
+	while ((index = text.indexOf(search, start)) > -1) {
+	    indices.push(index);
+            start = index + search.length;
+	}
+	return indices;
+    }
+
 
     function defaultEscapeMarkup(markup) {
         var replace_map = {
