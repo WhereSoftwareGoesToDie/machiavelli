@@ -385,7 +385,7 @@ the specific language governing permissions and limitations under the Apache Lic
             return;
         }
 
-	index = index.sort();
+	index = index.sort(function(a,b){return a-b});
 
 	var point = 0
 	$.each(index, function(y, pair) {
