@@ -6,6 +6,7 @@ class Iptraffic < Source
 	# Use the useful parts of the metadata as the title
 	def titleize metric 
 		keys = keysplit(metric)
+		nice = []
 		nice << keys["ip"]
 		nice << case keys["bytes"]
 		when "rx"; " bytes received"
