@@ -19,8 +19,8 @@ class Vaultaire < Store
 		t = URI.decode(metric).strip.split(DELIM).map{|a| a.split(KVP)}
 
 		table = ""
-		t.each {|a| 
-			table += "<tr><td>"+a[0]+"</td><td> = "+a[1]+"</td></tr>"
+		t.each {|a|
+			table += "<tr><td>#{a[0]}</td><td> = #{a[1]}</td></tr>"
 		}
 
 		header = "<tr><td>#{@origin_id}</td><td> - #{self.class.name}</td></tr>"
