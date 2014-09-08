@@ -1,5 +1,6 @@
 require 'net/http'
 require 'uri'
+require 'ostruct'
 # Library filers file
 module Helpers
 
@@ -25,7 +26,12 @@ module Helpers
 	
 	# Given an origin ID, find the key/value in the settings file and return it, plus the search key
 	def origin_settings ostr
-		Settings.origins.find{|o,k| o.to_s == ostr.to_s}
+		settings = Settings.origins.find{|o,k| o.to_s == ostr.to_s}
+		unless settings
+			# Use a Error store, default Source if no settings found
+			return [ostr,OpenStruct.new({store: "Errorstore", source: "Source"})] 
+		end
+		settings
 	end
 
 	# Take a string of SEP, KVP, and DELIM ops and split it into a nice hash

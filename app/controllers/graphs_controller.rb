@@ -27,20 +27,22 @@ class GraphsController < ApplicationController
 		# Get all the metrics, and build up a javascript blob with their useful bits
 		new_metrics = que_qs(:metric)
 		gon.metrics = []
+		@metrics = []
 
-		@metrics = new_metrics.map{|m| Metric.new(m)}
+		new_metrics.each do |metric|
+			m = Metric.new(metric)
+			@metrics << m
 
-		new_metrics.each_with_index{|mstr, i|
-		       	g = {}
-			g[:id]        = @metrics[i].id
-			g[:feed]      = @metrics[i].feed
-			g[:live]      = @metrics[i].live?
-			g[:sourceURL] = @metrics[i].get_metric_url start, stop, step
-			g[:removeURL] = rem_qs(:metric, mstr)
-
+			g = {}
+			g[:id]        = m.id
+			g[:feed]      = m.feed
+			g[:live]      = m.live?
+			g[:sourceURL] = m.get_metric_url start, stop, step
+			g[:removeURL] = rem_qs(:metric, metric)
 		 #	g[:counter] = true if m.counter? ##TODO Incorporate vaultaire based metadata
+
 			gon.metrics << g
-	       	}
+		end
 
 		@gon = gon
 

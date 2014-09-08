@@ -10,16 +10,21 @@ class Vaultaire < Store
 	# Sieste can be used to query for a metric's metadata based on it's origin and metric_id alone
 	def metadata metric_id
 		r = get_json("#{@base_url}/simple/search?origin=#{@origin_id}&address=#{metric_id}").first
-		return machiavelli_encode(r)
+		return machiavelli_encode(r) if r
+		return metric_id
 	end
 
 	# Split the metadata into nice pieces and make a HTML table.
 	def metadata_table metric
-		# TODO function assumes origin within metadatastring, formats out weird without it
-		ret = URI.decode(metric).strip
-		sep = [[SEP,"</td></tr><tr><td>"],[KVP,"</td><td> - "],[DELIM,"</td></tr><tr><td>"]]
-		sep.each {|a| ret.gsub!(a[0],a[1])}
-		'<table style="text-align: left"><tr><td colspan=2>'+ret+'</table>'
+		t = URI.decode(metric).strip.split(DELIM).map{|a| a.split(KVP)}
+
+		table = ""
+		t.each {|a| 
+			table += "<tr><td>"+a[0]+"</td><td> = "+a[1]+"</td></tr>"
+		}
+
+		header = "<tr><td>#{@origin_id}</td><td> - #{self.class.name}</td></tr>"
+		return "<table style='text-align: left'>#{header}#{table}</table>"
 	end
 
 	# Convert a string into a uri-transferable sieste metric

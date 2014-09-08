@@ -365,7 +365,7 @@ the specific language governing permissions and limitations under the Apache Lic
         dest.attr("class", replacements.join(" "));
     }
 
-	// Extended to match multiple terms, delimited by space
+    // Extended to match multiple terms, delimited by space
     function markMatch(text, term, markup, escapeMarkup) {
         var text_ = stripDiacritics(text.toUpperCase())
         var term_ = stripDiacritics(term.toUpperCase())
@@ -376,10 +376,8 @@ the specific language governing permissions and limitations under the Apache Lic
 
 	var start = 0
         $.each(terms, function(i, t) {
-	    var x = text_.substring(start, text_.length).indexOf(t) + start
-            index.push([x, t.length]);
-            start = x+t.length
-
+	    var hits = indiciesOf(text_,t);
+	    $.each(hits, function(i, x) { index.push([x, t.length]) })
         })
 
         if (index.length === 0) {
@@ -387,8 +385,10 @@ the specific language governing permissions and limitations under the Apache Lic
             return;
         }
 
+	index = index.sort(function(a,b){return a-b});
+
 	var point = 0
-	$.each(index, function(i, pair) {
+	$.each(index, function(y, pair) {
               var  i = pair[0];
               var len = pair[1];
               markup.push(escapeMarkup(text.substring(point, i)));
@@ -400,6 +400,17 @@ the specific language governing permissions and limitations under the Apache Lic
 
         markup.push(escapeMarkup(text.substring(point, text_.length)));
     }
+
+    function indiciesOf(text, search) {
+	var start = 0;
+	var index, indices = []
+	while ((index = text.indexOf(search, start)) > -1) {
+	    indices.push(index);
+            start = index + search.length;
+	}
+	return indices;
+    }
+
 
     function defaultEscapeMarkup(markup) {
         var replace_map = {
@@ -3328,8 +3339,8 @@ the specific language governing permissions and limitations under the Apache Lic
         formatInputTooShort: function (input, min) { var n = min - input.length; return "Please enter " + n + " or more character" + (n == 1? "" : "s"); },
         formatInputTooLong: function (input, max) { var n = input.length - max; return "Please delete " + n + " character" + (n == 1? "" : "s"); },
         formatSelectionTooBig: function (limit) { return "You can only select " + limit + " item" + (limit == 1 ? "" : "s"); },
-        formatLoadMore: function (pageNumber) { return "."; },
-        formatSearching: function () { return "Searching…"; },
+        formatLoadMore: function (pageNumber) { return "_"; },
+        formatSearching: function () { return "Searching..."; },
         formatDropdownHeader: function () { return undefined; },
         formatDropdownFooter: function () { return undefined; },
         allowSelectAllNone: false,

@@ -63,7 +63,11 @@ function renderStacked(data) {
 
 	min = Number.MAX_VALUE; max = Number.MIN_VALUE;
 
-	if (config.renderer == "line") { pad = 1} else {pad = 0}
+	// Padding - depending on the domain, both scalar and ratio padding are used. So set both.
+	var scalarPad = 1
+	var ratioPad = 0.1
+
+	if (config.renderer != "line") { scalarPad = 0 }
 
 	left_range = [min,max];
 	right_range = [min,max];
@@ -76,16 +80,19 @@ function renderStacked(data) {
 			}
 		} 
 		if (isRight(n)) { 
-			right_range = [ Math.min(min, right_range[0]) - pad , Math.max(max, right_range[1]) + pad ];
+			right_range = [ Math.min(min, right_range[0]), Math.max(max, right_range[1])];
 		} else { 
-			left_range = [ Math.min(min, left_range[0]) - pad, Math.max(max, left_range[1]) + pad ];
+			left_range = [ Math.min(min, left_range[0]), Math.max(max, left_range[1])];
 		} 
 	}
 
 	if (hasRight()) { 
+		right_range = [right_range[0] - scalarPad, right_range[1] + scalarPad] //Scalar Padding
 		right_scale = d3.scale.linear().domain(right_range);
 	}
+
 	if (hasLeft()) { 
+		left_range = [left_range[0] - scalarPad, left_range[1] + scalarPad] //Scalar Padding
 		left_scale = d3.scale.linear().domain(left_range);
 	}
 
@@ -98,6 +105,7 @@ function renderStacked(data) {
 		} else { 
 			scale = left_scale; 
 		}
+
 		series.push({
 			color: colours[n],
 			data: data[n].data,
@@ -109,6 +117,29 @@ function renderStacked(data) {
 	// Finally, make the chart
 	config.interpolate = "monotone";
 
+
+	//Ratio Padding - defaults from rickshaw.js
+	padY = 0.02
+	padX = 0
+
+	if (hasRight() && hasLeft() ) {
+		d = [Math.min(left_scale.domain()[0], right_scale.domain()[0]),
+	             Math.max(left_scale.domain()[1], right_scale.domain()[1])]
+	} else if (hasRight()) {
+		d = right_scale.domain()
+	} else {
+		d = left_scale.domain()
+	}
+
+	if (d[0] >= -2 && d[1] <= 2) { // -1 -> 1, plus scalar padding
+		padY = ratioPadding
+	}
+
+	padArray = {top: padY, right: padX, bottom: padY, left: padX}
+
+	config.padding = padArray
+
+	// ...
 	if (flag == "xkcd") {
 		config.interpolate = "xkcd";
 	}
