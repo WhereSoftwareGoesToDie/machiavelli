@@ -1,6 +1,7 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= stylesheet_link_tag    "graphs/standard" %>
 <%= javascript_include_tag "graphs/standard" %>
+<%= javascript_include_tag "clizia" %>
 <%= include_gon %>
 
 <script>
@@ -23,6 +24,10 @@
 	<div class="chart"  id="<%="chart_#{index}"%>"></div>
 </div>
 
+<div id="chart_container">
+	<div class="y_axis" id="clizia_y"></div>
+	<div class="chart" id="clizia"></div>
+</div>
 <script>
 color.push(palette.color());
 renderWaiting("chart_<%=index%>");
@@ -33,7 +38,7 @@ removeURL("remove_metric_<%=index%>", gon.metrics[<%=index%>].removeURL);
 <% end # @gon%>
 
 <script>
-var intervalID; 
+var intervalID;
 function stopUpdates() { clearInterval(intervalID);} 
 function startUpdates() { intervalID = updateStandard();} 
 zoomtoselected()
