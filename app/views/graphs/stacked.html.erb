@@ -1,4 +1,5 @@
 <%= javascript_include_tag "rickshaw" %>
+<%= javascript_include_tag "clizia" %>
 <%= stylesheet_link_tag    "graphs/stacked" %>
 <%= javascript_include_tag "graphs/stacked.js" %>
 <%= stylesheet_link_tag    "graphs/dckx" if dckx %>
@@ -8,9 +9,9 @@
 	<div class="y_axis" id="y_axis"></div>
 	<div class="chart"  id="chart"></div>
 	<div class="y_axis right_axis" id="y_axis_right"></div>
-	<div class="x_axis" id="x_axis"></div>
 	<div class="legend" id="legend-dual"></div>
 </div>
+
 <script>
 var data = [], metrics =  [], format_metrics = [], right_links = [], left_links = [];
 var reset = "<%= obl_qs :right%>";
@@ -36,10 +37,23 @@ config.stack = <%= to_bool(check_param(:stack, ["on","off"]) || ui_defaults("sta
 var graph;
 renderWaiting("chart");
 <% if dckx %>
-	data = getMetrics(metrics,"xkcd");
+//	data = getMetrics(metrics,"xkcd");
 <% else %>
-	data = getMetrics(metrics);
+//	data = getMetrics(metrics);
 <% end %>
+
+chart = new Clizia.Graph.Rickshaw.Stacked({
+	metric: gon.metrics[0], 
+	chart: "chart", 
+	yaxis: "y_axis", 
+	start: gon.start, 
+	legend: "legend-dual",
+	y2axis: "y_axis_right", 
+	stop: gon.stop, 
+	step: gon.step})
+
+chart.render()
+
 
 var intervalID;
 function startUpdates() { intervalID = updateStacked(); } 
