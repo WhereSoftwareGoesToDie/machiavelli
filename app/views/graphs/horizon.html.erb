@@ -1,4 +1,5 @@
 <%= javascript_include_tag "cubism.v1" %>
+<%= javascript_include_tag "clizia" %>
 <%= stylesheet_link_tag    "cubism" %>
 <%= stylesheet_link_tag    "graphs/horizon" %>
 
@@ -6,11 +7,17 @@
 
 <div id="horizon_graph" style="position:relative; width:<%=width%>px"></div>
 
+<div id="clizia" style="position:relative; width: <%=width%>px"></div>
+
 <% def safe_array a; ("['"+a.join("','")+"']").html_safe; end
 colours = safe_array Horizon.get_colours
 %>
 
 <script>
+
+	chart = Clizia.Graph.Horizon({metric: gon.metrics, chart: "clizia", color: <%=colours %>})
+	chart.render()
+
 	function stopUpdates() { context.stop(); }
 	function startUpdates() { context.start(); } 
 
@@ -28,7 +35,7 @@ colours = safe_array Horizon.get_colours
 	if (gon.clock == "utc") { context.utcTime(true);}
 
 	datum = [];
-
+/*
 	machiavelli = context.machiavelli(window.location.origin);
 	<% @metrics.each do |m| %>
 	datum.push(machiavelli.metric("<%=m.id%>","<%=m.titleize%>", updateProgress));
@@ -59,5 +66,6 @@ colours = safe_array Horizon.get_colours
 	// On mousemove, reposition the chart values to match the rule.
 	context.on("focus", function(i) {
 		d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
-	});
+			});
+		*/
 </script>
