@@ -34,6 +34,11 @@ renderWaiting("chart_<%=index%>");
 renderStandard(<%=index%>);
 showURL("metric_<%=index%>_url", gon.metrics[<%=index%>].sourceURL);
 removeURL("remove_metric_<%=index%>", gon.metrics[<%=index%>].removeURL);
+
+chart = new Clizia.Graph.Rickshaw.Stacked({metric: gon.metrics[0], chart: "clizia", yaxis: "clizia_y", start: gon.start, stop: gon.stop, step: gon.step})
+
+chart.render()
+
 </script>
 <% end # @gon%>
 
