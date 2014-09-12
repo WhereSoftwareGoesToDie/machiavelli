@@ -1,6 +1,6 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= stylesheet_link_tag    "graphs/standard" %>
-<%= javascript_include_tag "graphs/standard" %>
+<%#= javascript_include_tag "graphs/standard" %>
 <%= javascript_include_tag "clizia" %>
 <%= include_gon %>
 
@@ -24,28 +24,53 @@
 	<div class="chart"  id="<%="chart_#{index}"%>"></div>
 </div>
 
-<div id="chart_container">
-	<div class="y_axis" id="clizia_y"></div>
-	<div class="chart" id="clizia"></div>
-</div>
 <script>
-color.push(palette.color());
-renderWaiting("chart_<%=index%>");
-renderStandard(<%=index%>);
-showURL("metric_<%=index%>_url", gon.metrics[<%=index%>].sourceURL);
-removeURL("remove_metric_<%=index%>", gon.metrics[<%=index%>].removeURL);
+//color.push(palette.color());
+//renderWaiting("chart_<%=index%>");
+//renderStandard(<%=index%>);
+//showURL("metric_<%=index%>_url", gon.metrics[<%=index%>].sourceURL);
+//r/emoveURL("remove_metric_<%=index%>", gon.metrics[<%=index%>].removeURL);
 
-chart = new Clizia.Graph.Rickshaw.Stacked({metric: gon.metrics[0], chart: "clizia", yaxis: "clizia_y", start: gon.start, stop: gon.stop, step: gon.step})
-
-chart.render()
 
 </script>
 <% end # @gon%>
+<div id="chart_container">
+	<div class="y_axis" id="clizia_y0"></div>
+	<div class="chart" id="clizia0"></div>
+</div>
+
+<div id="chart_container">
+	<div class="y_axis" id="clizia_y1"></div>
+	<div class="chart" id="clizia1"></div>
+</div>i
 
 <script>
+
+slider = Clizia.Slider({element: "multi_slider"})
+
+for (n = 0; n < gon.metrics.length; n++) { 
+	m = gon.metrics[n]
+	
+	chart = new Clizia.Graph.Rickshaw.Standard({
+		metric: gon.metrics[n], 
+		chart: "clizia"+n, yaxis: "clizia_y"+n, 
+		start: gon.start, 
+		stop: gon.stop, 
+		step: gon.step, 
+		slider: slider})
+
+	chart.render()
+}
+
+
+
+//new Clizia.Slider({graphs: chart, element: "multi_slider" })
+
+
+
 var intervalID;
-function stopUpdates() { clearInterval(intervalID);} 
-function startUpdates() { intervalID = updateStandard();} 
+//function stopUpdates() { clearInterval(intervalID);} 
+function startUpdates() { } //intervalID = updateStandard();} 
 zoomtoselected()
 </script>
 

@@ -15,9 +15,10 @@ colours = safe_array Horizon.get_colours
 
 <script>
 
-	chart = Clizia.Graph.Horizon({metric: gon.metrics, chart: "clizia", color: <%=colours %>})
+	chart = Clizia.Graph.Horizon({metric: gon.metrics[0], chart: "clizia", color: <%=colours %>})
 	chart.render()
 
+/*
 	function stopUpdates() { context.stop(); }
 	function startUpdates() { context.start(); } 
 
@@ -35,7 +36,6 @@ colours = safe_array Horizon.get_colours
 	if (gon.clock == "utc") { context.utcTime(true);}
 
 	datum = [];
-/*
 	machiavelli = context.machiavelli(window.location.origin);
 	<% @metrics.each do |m| %>
 	datum.push(machiavelli.metric("<%=m.id%>","<%=m.titleize%>", updateProgress));
