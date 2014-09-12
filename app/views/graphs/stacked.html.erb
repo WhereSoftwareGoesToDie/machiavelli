@@ -34,16 +34,8 @@ config.stack = <%= to_bool(check_param(:stack, ["on","off"]) || ui_defaults("sta
 	left_links.push("<%= rem_qs :right, m.id%>");
 <%end%>
 
-var graph;
-renderWaiting("chart");
-<% if dckx %>
-//	data = getMetrics(metrics,"xkcd");
-<% else %>
-//	data = getMetrics(metrics);
-<% end %>
-
 chart = new Clizia.Graph.Rickshaw.Stacked({
-	metric: gon.metrics[0], 
+	metric: gon.metrics, 
 	chart: "chart", 
 	yaxis: "y_axis", 
 	start: gon.start, 
@@ -56,7 +48,9 @@ chart.render()
 
 
 var intervalID;
-function startUpdates() { intervalID = updateStacked(); } 
+function startUpdates() { 
+	 intervalID = setInterval(function(d){  chart.update()}, gon.step * 1000 )
+ }
 function stopUpdates()  { clearInterval(intervalID); } 
 zoomtoselected()
 </script>

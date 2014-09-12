@@ -24,7 +24,6 @@ Clizia.Slider = function (args) {
 		if (that.slider) { 
 			that.slider.delete
 		} else { 
-			console.log("new slider for "+that.graphs.length+" graphs")
 			that.slider = new Rickshaw.Graph.RangeSlider.Preview({
 				graphs: that.graphs,
 				height: that.height, 

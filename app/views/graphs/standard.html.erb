@@ -1,14 +1,9 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= stylesheet_link_tag    "graphs/standard" %>
-<%#= javascript_include_tag "graphs/standard" %>
 <%= javascript_include_tag "clizia" %>
 <%= include_gon %>
 
-<script>
-	var color = [];
-	var palette = new Rickshaw.Color.Palette({scheme: "munin"});
-</script>
-<div class="slider" id="multi_slider"></div>
+<div class="slider" id="slider"></div>
 <span id="zoomtoselected" class="no_link zoomtoselected"></span>
 <% @metrics.each_with_index do |m, index| %>
 <div class="graph_title">
@@ -19,58 +14,44 @@
 		<div id="remove_metric_<%=index%>" class="remove_metric"></div>
 	</h4>
 </div>
+
 <div id="chart_container">
 	<div class="y_axis" id="<%="y_axis_#{index}"%>"></div>
 	<div class="chart"  id="<%="chart_#{index}"%>"></div>
 </div>
-
-<script>
-//color.push(palette.color());
-//renderWaiting("chart_<%=index%>");
-//renderStandard(<%=index%>);
-//showURL("metric_<%=index%>_url", gon.metrics[<%=index%>].sourceURL);
-//r/emoveURL("remove_metric_<%=index%>", gon.metrics[<%=index%>].removeURL);
-
-
-</script>
 <% end # @gon%>
-<div id="chart_container">
-	<div class="y_axis" id="clizia_y0"></div>
-	<div class="chart" id="clizia0"></div>
-</div>
-
-<div id="chart_container">
-	<div class="y_axis" id="clizia_y1"></div>
-	<div class="chart" id="clizia1"></div>
-</div>i
 
 <script>
 
-slider = Clizia.Slider({element: "multi_slider"})
+charts = []
+slider = Clizia.Slider({element: "slider"})
 
 for (n = 0; n < gon.metrics.length; n++) { 
 	m = gon.metrics[n]
 	
 	chart = new Clizia.Graph.Rickshaw.Standard({
 		metric: gon.metrics[n], 
-		chart: "clizia"+n, yaxis: "clizia_y"+n, 
+		chart: "chart_"+n, 
+		yaxis: "y_axis_"+n, 
 		start: gon.start, 
 		stop: gon.stop, 
 		step: gon.step, 
 		slider: slider})
 
 	chart.render()
+	charts.push(chart)
 }
 
-
-
-//new Clizia.Slider({graphs: chart, element: "multi_slider" })
-
-
-
 var intervalID;
-//function stopUpdates() { clearInterval(intervalID);} 
-function startUpdates() { } //intervalID = updateStandard();} 
+function stopUpdates() { clearInterval(intervalID);} 
+function startUpdates() { 
+	intervalID = setInterval(function(d){ 
+			charts.forEach(function(d) { 
+				d.update()
+				})
+			}, gon.step * 1000 )
+		
+}
 zoomtoselected()
 </script>
 

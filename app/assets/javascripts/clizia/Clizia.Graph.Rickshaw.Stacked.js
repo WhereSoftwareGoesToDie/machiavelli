@@ -12,15 +12,6 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		if (!is_array(that.metric)) { 
 			that.metric = [that.metric] 
 		}
-
-		for (n = 0; n < that.metric.length; n++) {                   
-			m = that.metric[n]      
-			if (!m.feed) {
-			       throw "Metric '"+m.id+"' has no feed!"
-		       	}
-		} 
-
-
 		that.scalarPad = args.scalarPad || args.padding || 1;
 		if (args.renderer != "line" ) { that.scalarPad = 0 } 
 
@@ -96,7 +87,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 			series.push({ 
 				data: dataStore[n].data,
 				name: dataStore[n].name,
-				color: that.color, 
+				color: that.metric[n].color, 
 				scale: scale
 			})
 		}

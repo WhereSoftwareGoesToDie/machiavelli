@@ -5,8 +5,6 @@ Clizia.Graph.Rickshaw = function (args) {
 
 	var defaults = { width: 700, height: 200, padding: 1 }
 
-	var palette = new Rickshaw.Color.Palette({scheme: "munin"})
-
 	that.init = function(args) { 
 		//TODO arg handler? args key then error if 404 then assignment?
 		if (!args.start) throw "Clizia.Graph.Rickshaw needs a start time"
@@ -21,12 +19,31 @@ Clizia.Graph.Rickshaw = function (args) {
 		if (!args.yaxis) throw "I should have a yaxis"
 		that.yaxis = args.yaxis	
 
-
 		if (args.slider) { that.slider = args.slider } 
 		else { that.noSlider = true }
 
+		if (is_array(that.metric)) { 
+
+			that.color = args.color || []
+			for (n = 0; n < that.metric.length; n++ ) {
+				m = that.metric[n]
+
+				if (!m.feed) {
+					throw "Metric '"+m.id+"' has no feed!"
+				}
+
+				// Expect metric and color to either be Object, String; or [Object], [String]
+				m.color = that.color[n] || next_color(); 
+			}
+
+		} else {
+			if (!that.metric.feed) { throw "Metric "+that.metric.id+" has no feed!" }
+
+			that.metric.color = args.color || next_color();
+		} 
+		
+
 		//TODO nicer defaults, like above, but optional?
-		that.color = args.color || palette.color();
 		that.width = args.width || defaults.width;
 		that.height = args.height || defaults.height;
 		that.padding = args.padding || defaults.padding;
@@ -69,13 +86,25 @@ Clizia.Graph.Rickshaw = function (args) {
 
 	that.update = function() {  
 		now = parseInt(Date.now() / 1000, 10)
-		span = (that.stop - that.start) 
- 		newfeed = that.feed({start: now - span, stop: now})
-		$.getJSON(newfeed, function(data) { 
-			if (that.invalidData(data)) { throw "Invalid Data, cannot render update" }
-			that.graph.series[0].data = data
-			that.graph.render();
-		})	
+		span = (that.stop - that.start)
+
+		if (is_array(that.metric)) { 
+			$.each(that.metric, function(n, m) { 
+				newfeed = that.feed({index: n, start: now - span, stop: now})
+				$.getJSON(newfeed, function(data) { 
+					if (that.invalidData(data)) { throw "Invalid Data, cannot render update" }
+					that.graph.series[n].data = data
+					that.graph.render();
+				})	
+			})
+		} else {
+			newfeed = that.feed({start: now - span, stop: now})
+			$.getJSON(newfeed, function(data) {
+				 if (that.invalidData(data)) { throw "Invalid Data, cannot render update" }
+				 that.graph.series[0].data = data
+				 that.graph.render();
+			 })
+		}
 	}
 
 	that.init(args) 

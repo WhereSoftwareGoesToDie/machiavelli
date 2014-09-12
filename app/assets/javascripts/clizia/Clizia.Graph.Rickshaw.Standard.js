@@ -1,13 +1,8 @@
 Clizia.Graph.Rickshaw.Standard = function(args) { 
 	var that = Clizia.Graph.Rickshaw(args);
 
-	that.init = function(args) { 
-		if (!that.metric.feed) { throw "Metric "+that.metric.id+" has no feed!" }
-	}
-
 	that.render = function(args) { 
 		$.getJSON(that.feed(), function(data) { 
-			console.log(that.metric); //
 			if (that.invalidData(data)) { 
 				err = data.error ||  errorMessage.noData	
 				renderError(that.chart, err, null, that.metric.removeURL)
@@ -19,7 +14,7 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 				width: that.width, 
 				height: that.height,
 				renderer: 'line', 
-				series: [{ data: data, color: that.color }]
+				series: [{ data: data, color: that.metric.color }]
 			});
 			
 			extent = that.extents(data);

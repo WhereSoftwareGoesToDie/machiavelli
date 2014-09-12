@@ -12,7 +12,15 @@ Clizia.Graph = function(args) {
         that.render = function(args) { throw "Cannot invoke parent Clizia.Graph.render() directly." }
         that.update = function(args) { throw "Cannot invoke parent Clizia.Graph.update() directly." }
 
-        that.init(args);
-        return that;
+
+	next_color = function() {  
+		if (typeof clizia_palette === "undefined") {
+			clizia_palette = new Rickshaw.Color.Palette({scheme: "munin"})
+		}
+		return clizia_palette.color()
+	} 
+
+	that.init(args);
+	return that;
 }
 
