@@ -17,6 +17,7 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 				series: [{ data: data, color: that.metric.color }]
 			});
 			
+			that.graph = graph;
 			extent = that.extents(data);
 
 			graph.configure({min: extent[0] - that.padding, max: extent[1] + that.padding});
@@ -36,28 +37,37 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 
 			new Rickshaw.Graph.Axis.Time({
 				graph: graph,
-				timeFixture: getTimeFixture()
+				timeFixture: that.timeFixture()
 			});
 
-//			dynamicWidth(graph);
+			that.dynamicWidth();
 			graph.render();
 			
 			new Rickshaw.Graph.HoverDetail({
 				graph: graph,
 				formatter: function (series, x, y) {
-					content = "<span class='date'>"+ getD3Time(x) +"</span><br/>"+formatData(y);
+					content = "<span class='date'>" + 
+						  that.d3_time(x) +
+						  "</span><br/>" + 
+						  that.format(y);
 					return content;
 				}
 			});
 
 			graph.render();	
 
-			that.graph = graph;
 
 			if (that.slider) { 
 				that.slider.render({graphs: graph})
 			} 
 
+			if (that.showurl) {
+				Clizia.Utils.showURL(that.showurl, that.metric.sourceURL);
+			} 
+
+			if (that.removeurl) { 
+				Clizia.Utils.removeURL(that.removeurl, that.metric.removeURL);
+			} 
 		})
 	} 
 

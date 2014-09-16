@@ -1,7 +1,6 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= javascript_include_tag "clizia" %>
 <%= stylesheet_link_tag    "graphs/stacked" %>
-<%= javascript_include_tag "graphs/stacked.js" %>
 <%= stylesheet_link_tag    "graphs/dckx" if dckx %>
 <div class="slider" id="slider"></div>
 <span id="zoomtoselected" class="no_link zoomtoselected"></span>
@@ -52,5 +51,5 @@ function startUpdates() {
 	 intervalID = setInterval(function(d){  chart.update()}, gon.step * 1000 )
  }
 function stopUpdates()  { clearInterval(intervalID); } 
-zoomtoselected()
+Clizia.Utils.zoomtoselected()
 </script>

@@ -70,12 +70,12 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 			}
 		}	
 	
-		if (hasRight()) { 
+		if (that.hasRight) { 
 			right_range = [right_range[0] - that.scalarPad, right_range[1] + that.scalarPad] 
 			right_scale = d3.scale.linear().domain(right_range);
 		}
 
-		if (hasLeft())  { 
+		if (that.hasLeft)  { 
 			left_range  = [left_range[0]  - that.scalarPad, left_range[1]  + that.scalarPad] 
 			left_scale = d3.scale.linear().domain(left_range);
 		}
@@ -94,10 +94,10 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		
 		config.interpolate = "monotone";
 			
-		if (hasRight() && hasLeft() ) {
+		if (that.hasRight && that.hasLeft ) {
 			d = [Math.min(left_scale.domain()[0], right_scale.domain()[0]),
 			Math.max(left_scale.domain()[1], right_scale.domain()[1])]
-		} else if (hasRight()) {
+		} else if (that.hasRight) {
 			d = right_scale.domain()
 		} else {
 			d = left_scale.domain()
@@ -117,7 +117,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		config.padding = padArray
 
 		// ...
-		if (flag == "xkcd") {
+		if (that.flag === "xkcd") {
 			config.interpolate = "xkcd";
 		}
 
@@ -129,8 +129,9 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		})
 
 		graph.configure(config);
+		that.graph = graph;
 
-		if (hasLeft()) { 
+		if (that.hasLeft) { 
 			left_axis = new Rickshaw.Graph.Axis.Y.Scaled({
 				element: document.getElementById(that.yaxis),
 				graph: graph,
@@ -140,7 +141,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 			});
 		}
 
-		if (hasRight()) { 
+		if (that.hasRight) { 
 			right_axis = new Rickshaw.Graph.Axis.Y.Scaled({
 				element: document.getElementById(that.y2axis),
 				graph: graph,
@@ -149,16 +150,17 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 				tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
 				scale: right_scale
 			});
+			that.ryaxis = right_axis;
 		}
 
 		// One X-axis for time
 		new Rickshaw.Graph.Axis.Time({
 			graph: graph,
-			timeFixture: getTimeFixture()
+			timeFixture: that.timeFixture()
 		});
 
 		/////
-		dynamicWidth(graph);
+		that.dynamicWidth();
 		graph.render();
 
 		// Make stacks easier to see by adding an alpha transperancy to both
@@ -172,15 +174,14 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 			graph: graph,
 			height: 30,
 			element: $('#slider')[0],
-			onChangeDo: generate_legend
-
+			onChangeDo: that.generateLegend
 		});
 
 		var hoverDetail = new Rickshaw.Graph.HoverDetail( {
 			graph: graph,
 			formatter: function(series, x, y, fx, fy, d) {
 				var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
-				var date = '<span class="date"> '+getD3Time(x)+'</span>';
+				var date = '<span class="date"> '+that.d3_time(x)+'</span>';
 				var content = swatch + format_metrics[d.order - 1] + ": " + y.toFixed(4) + "<br>"+ date;
 				return content;
 			},
@@ -191,7 +192,6 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 	
 		that.generateLegend()	
 			
-		that.graph = graph;
 
 	}
 
@@ -305,7 +305,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 			return t.join("");
 		};
 
-		if (hasRight()) {
+		if (that.hasRight) {
 			table.push("<tr><td colspan=99><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
 		} else {
 			if (graph.series.length >= 2) {
@@ -317,11 +317,11 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		legend.innerHTML = table.join("\n");
 
 		showURLs.forEach(function(d){
-			showURL(d[0],d[1]);
+			Clizia.Utils.showURL(d[0],d[1]);
 		});
 
 		removeURLs.forEach(function(d) {
-			removeURL(d[0],d[1]);
+			Clizia.Utils.removeURL(d[0],d[1]);
 		});
 
 		$("[data-toggle='tooltip-shuffle']").tooltip({

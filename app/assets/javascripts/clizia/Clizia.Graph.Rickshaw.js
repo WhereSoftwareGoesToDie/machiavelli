@@ -22,6 +22,10 @@ Clizia.Graph.Rickshaw = function (args) {
 		if (args.slider) { that.slider = args.slider } 
 		else { that.noSlider = true }
 
+
+		if (args.showurl) { that.showurl = args.showurl}
+		if (args.removeurl) { that.removeurl = args.removeurl}
+
 		if (is_array(that.metric)) { 
 
 			that.color = args.color || []
@@ -106,6 +110,47 @@ Clizia.Graph.Rickshaw = function (args) {
 			 })
 		}
 	}
+
+	that.format = function(d) {
+		return Rickshaw.Fixtures.Number.formatKMBT_round(parseFloat(d),0,0,4);
+	}
+
+	that.timeFixture = function() {
+		if (gon.clock == "utc") { 
+			return new Rickshaw.Fixtures.Time.Precise()
+		} else { 
+			return new Rickshaw.Fixtures.Time.Precise.Local() 
+		}
+	}
+	that.d3_time = function(x) {
+		f_string = "%Y-%m-%d %H:%M:%S %Z"
+		date = new Date(x*1000)
+		if (gon.clock == "utc") {
+			d = d3.time.format.utc(f_string)
+		} else {
+			d = d3.time.format(f_string)
+		}
+		return d(date)
+	}
+
+	that.fitToWindow = function() { 
+		if (window.innerWidth < 768) { r = 180; } else { r = 460; }
+		new_width = window.innerWidth - r;
+		that.graph.configure({ width: new_width});
+		that.graph.render();
+		if (that.ryaxis) { 
+			$(that.yaxis).attr("style","left: "+(new_width+60)+"px");
+		}
+		if (that.legend) { 
+			$(that.legend).attr("style","width: "+(new_width)+"px");
+		}
+	} 
+
+	that.dynamicWidth = function() { 
+		that.fitToWindow()
+		$(window).on('resize', function(){ that.fitToWindow(); })
+	} 
+
 
 	that.init(args) 
 	return that;	

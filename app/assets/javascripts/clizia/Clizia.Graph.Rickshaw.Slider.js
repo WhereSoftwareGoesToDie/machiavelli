@@ -1,4 +1,4 @@
-Clizia.Slider = function (args) { 
+Clizia.Graph.Rickshaw.Slider = function (args) { 
 	var that = {} 
 
 	var rickshaw_graphs = []

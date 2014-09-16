@@ -24,7 +24,7 @@
 <script>
 
 charts = []
-slider = Clizia.Slider({element: "slider"})
+slider = Clizia.Graph.Rickshaw.Slider({element: "slider"})
 
 for (n = 0; n < gon.metrics.length; n++) { 
 	m = gon.metrics[n]
@@ -33,6 +33,8 @@ for (n = 0; n < gon.metrics.length; n++) {
 		metric: gon.metrics[n], 
 		chart: "chart_"+n, 
 		yaxis: "y_axis_"+n, 
+		showurl: "metric_"+n+"_url",
+		removeurl: "remove_metric_"+n,
 		start: gon.start, 
 		stop: gon.stop, 
 		step: gon.step, 
@@ -52,6 +54,6 @@ function startUpdates() {
 			}, gon.step * 1000 )
 		
 }
-zoomtoselected()
+Clizia.Utils.zoomtoselected()
 </script>
 
