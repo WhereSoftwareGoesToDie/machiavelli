@@ -38,6 +38,7 @@ for (n = 0; n < gon.metrics.length; n++) {
 		removeurl: "remove_metric_"+n,
 		start: gon.start, 
 		stop: gon.stop, 
+		base: gon.base, 
 		step: gon.step, 
 		slider: slider})
 
@@ -55,6 +56,5 @@ function startUpdates() {
 			}, gon.step * 1000 )
 		
 }
-Clizia.Utils.zoomtoselected()
 </script>
 

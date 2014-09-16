@@ -191,8 +191,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		} );
 	
 		that.generateLegend()	
-			
-
+		that.zoomtoselected(that.base, that.start, that.stop);	
 	}
 
 	that.generateLegend = function() {
