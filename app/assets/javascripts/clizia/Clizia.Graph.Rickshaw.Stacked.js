@@ -232,8 +232,8 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 			obj.colour = d.color;
 
 			obj.ydata = visibleData(d.data);
-			obj.sourceURL = gon.metrics[i].sourceURL;
-			obj.removeURL = gon.metrics[i].removeURL;
+			obj.sourceURL = that.metric[i].sourceURL;
+			obj.removeURL = that.metric[i].removeURL;
 			obj.index = i;
 			obj.show_url = "metric_"+i+"_showurl";
 			obj.remove_url = "metric_"+i+"_removeurl";
