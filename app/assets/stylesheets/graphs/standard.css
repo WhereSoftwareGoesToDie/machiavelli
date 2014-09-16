@@ -28,24 +28,6 @@
 	background: transparent;
 	color: black;
 }
-.x_axis { 
-        position: relative;
-        left: 60px; /* yaxis */
-        height: 10px;
-}  
-.axis0 {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 100px;
-}
-.axis1 {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 760px; /* Chart width + y-axis:width */
-        width: 100px;
-}
 
 /* Rickshaw Customizations */
 /* Increase hover value dot for ease of visibility */
