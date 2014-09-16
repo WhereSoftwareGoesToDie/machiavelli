@@ -3,7 +3,7 @@ Clizia.Graph.Rickshaw = function (args) {
 
 	var that = Clizia.Graph(args)
 
-	var defaults = { width: 700, height: 200, padding: 1 }
+	var defaults = { width: 700, height: 200, padding: 1 , clock: "utc"}
 
 	that.init = function(args) { 
 		//TODO arg handler? args key then error if 404 then assignment?
@@ -51,6 +51,8 @@ Clizia.Graph.Rickshaw = function (args) {
 		that.width = args.width || defaults.width;
 		that.height = args.height || defaults.height;
 		that.padding = args.padding || defaults.padding;
+		that.clock = args.clock || defaults.clock;
+		that.base = args.base || "??";
 	} 
 
 	that.feed = function(args) { 
@@ -116,7 +118,7 @@ Clizia.Graph.Rickshaw = function (args) {
 	}
 
 	that.timeFixture = function() {
-		if (gon.clock == "utc") { 
+		if (that.clock == "utc") { 
 			return new Rickshaw.Fixtures.Time.Precise()
 		} else { 
 			return new Rickshaw.Fixtures.Time.Precise.Local() 
@@ -125,7 +127,7 @@ Clizia.Graph.Rickshaw = function (args) {
 	that.d3_time = function(x) {
 		f_string = "%Y-%m-%d %H:%M:%S %Z"
 		date = new Date(x*1000)
-		if (gon.clock == "utc") {
+		if (that.clock == "utc") {
 			d = d3.time.format.utc(f_string)
 		} else {
 			d = d3.time.format(f_string)
