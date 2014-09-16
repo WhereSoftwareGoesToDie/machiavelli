@@ -34,6 +34,20 @@ Clizia.Utils = {
 			$("[data-toggle='tooltip_z']").tooltip({ placement: "bottom", container: "body", delay: { show: 500} });
 		});
 
+	},
+	state: function(args) { 
+		if (args.state) { 
+			if (state === "waiting") { 
+				console.log("waiting")
+			} else if (state === "error") { 
+				console.log("error")
+			} else if (state === "complete") { 
+				console.log("complete")
+			} 
+		} else { 
+			throw "No state"
+		}
 	} 
+
 }
 

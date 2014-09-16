@@ -2,10 +2,18 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 	var that = Clizia.Graph.Rickshaw(args);
 
 	that.render = function(args) { 
+		if (that.showurl) {
+			Clizia.Utils.showURL(that.showurl, that.metric.sourceURL);
+		} 
+
+		if (that.removeurl) { 
+			Clizia.Utils.removeURL(that.removeurl, that.metric.removeURL);
+		} 
 		$.getJSON(that.feed(), function(data) { 
 			if (that.invalidData(data)) { 
 				err = data.error ||  errorMessage.noData	
-				renderError(that.chart, err, null, that.metric.removeURL)
+				that.state({state: "error", element: that.chart, error: err, removeURL: that.metric.removeURL})
+				if (that.slider) { that.slider.failed({graph: that.metric.id}) }
 				throw "Error retrieving data: "+err
 			}
 
@@ -55,19 +63,12 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 			});
 
 			graph.render();	
+			that.state({state: "complete"})
 
-
-			if (that.slider) { 
+			if (that.slider) {
 				that.slider.render({graphs: graph})
 			} 
 
-			if (that.showurl) {
-				Clizia.Utils.showURL(that.showurl, that.metric.sourceURL);
-			} 
-
-			if (that.removeurl) { 
-				Clizia.Utils.removeURL(that.removeurl, that.metric.removeURL);
-			} 
 		})
 	} 
 

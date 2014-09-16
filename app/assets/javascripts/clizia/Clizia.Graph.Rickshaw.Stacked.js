@@ -36,9 +36,9 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		$.each(that.metric, function(i,d) { 
 			$.getJSON(that.feed({index: i}), function(data) { 
 				if (that.invalidData(data)) { 
-					err = data.error || errorMessage.noData
-					renderError(that.chart, err)
-					throw "Error retrieving data: "+err
+					err = data.error || "No data receieved"
+					that.state({state: "error", chart: that.chart, error: err})
+					throw err
 				} 
 				dataStore[i] = {data: data, name: d }
 				flagComplete();

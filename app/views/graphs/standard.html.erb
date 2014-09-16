@@ -1,6 +1,7 @@
 <%= javascript_include_tag "rickshaw" %>
 <%= stylesheet_link_tag    "graphs/standard" %>
 <%= javascript_include_tag "clizia" %>
+<%= stylesheet_link_tag    "clizia" %>
 <%= include_gon %>
 
 <div class="slider" id="slider"></div>
@@ -24,7 +25,7 @@
 <script>
 
 charts = []
-slider = Clizia.Graph.Rickshaw.Slider({element: "slider"})
+slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: gon.metrics.length})
 
 for (n = 0; n < gon.metrics.length; n++) { 
 	m = gon.metrics[n]

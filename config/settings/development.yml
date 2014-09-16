@@ -8,3 +8,12 @@ origins:
                 }
         }
 
+        "2Simple": {
+                store: "Simple",
+                source: "Source",
+                title: "2Simple",
+                store_settings: {
+                        url: "http://localhost:3001",
+                }
+        }
+

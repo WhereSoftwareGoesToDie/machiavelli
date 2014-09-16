@@ -16,3 +16,4 @@
 //= require sb-admin
 //= require jquery.metisMenu
 //= require graphs/util
+//= require css_cleaner
