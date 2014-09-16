@@ -57,7 +57,8 @@ class Store
 	def search_metrics q, args={}
                 raise Store::Error, "Unable to connect to #{@origin_id} backend at #{@base_url}" unless is_up?
 
-                return [] if args[:page] and args[:page].to_i > 1
+		# TODO Pending redis pagination logic
+                return [] if args[:page] and args[:page].to_i > 2
 
                 r = redis_conn
                 keys = r.keys "#{REDIS_KEY}:#{@origin_id}#{q}"
