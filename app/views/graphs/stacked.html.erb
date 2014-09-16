@@ -42,6 +42,7 @@ chart = new Clizia.Graph.Rickshaw.Stacked({
 	chart: "chart", 
 	yaxis: "y_axis", 
 	start: gon.start, 
+	base: gon.base, 
 	legend: "legend-dual",
 	y2axis: "y_axis_right", 
 	stop: gon.stop, 
@@ -49,11 +50,9 @@ chart = new Clizia.Graph.Rickshaw.Stacked({
 
 chart.render()
 
-
 var intervalID;
 function startUpdates() { 
 	 intervalID = setInterval(function(d){  chart.update()}, gon.step * 1000 )
  }
 function stopUpdates()  { clearInterval(intervalID); } 
-Clizia.Utils.zoomtoselected()
 </script>
