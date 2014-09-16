@@ -1,8 +1,3 @@
-var errorMessage = { 
-	'noData': "No data returned from endpoint",
-	'endpointError': "Error retrieving data from endpoint",
-}; 
-
 function initProgress() { 
 	nanobar = new Nanobar({bg: "#356895" ,id:"#progress"})
 	if (typeof complete === 'undefined') { _complete = 0 }
@@ -18,47 +13,6 @@ function doneProgress() {
 } 
 function fitSlider() {
 	if (typeof slider != "undefined" ) { slider.configure({width : new_width}); slider.render();}
-}
-
-function renderWaiting(element) { 
-	document.getElementById(element).innerHTML = "<i class='icon-spinner icon-spin'>";
-}
-
-function unrenderWaiting(element) {
-	if (element) { $("#"+element).find(".icon-spinner").hide(); }
-	else { $(".icon-spinner").hide(); }
-}
-
-function stripHTML(e) { 
-	return e.replace(/<(?:.|\n)*?>/gm, '').replace(/(\r\n|\n|\r)/gm,"");
- }
-
-
-function renderError(element, error, detail, url) {
-	error = stripHTML(error);
-	error_alert = "<div class='alert alert-danger'>" + error;
-
-	if (url) { 
-		error_alert +=  ". <a class='alert-link' href='"+url+"'>Remove graph</a>."; 
-	}
-
-	if (detail) { 
-		error_alert +=  "<a class='detail_toggle alert-link' href='javascript:void(0);'>(details)</a>" +
-			"<div class='detail' style='display:none'>" +
-			detail +
-			"</div>";
-	} 
-	error_alert += "</div>";
-	document.getElementById(element).innerHTML = error_alert;
-
-	
-	$("#"+element+" .detail_toggle").click(function() {
-		$(this).parent().find(".detail").toggle(100);
-	});
-}
-
-function metricURL(base, start, stop, step){ 
-	return base+"&start="+start+"&stop="+stop+"&step="+step;
 }
 
 function stopButtonClick() { 
