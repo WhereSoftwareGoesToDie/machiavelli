@@ -1,0 +1,10 @@
+.waiting i { 
+	font-size: 48px;
+}
+
+.waiting i:before { 
+	font-family: FontAwesome;
+	content: "\f110"
+} 
+
+
