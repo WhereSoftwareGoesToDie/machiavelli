@@ -18,17 +18,19 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		that.ratioPad  = args.ratioPad || 0.1;
 
 		that.right = args.right || [] 
-		
+		that.right_links = args.right_links || []
+		that.left_links = args.left_links || []
+
 		if (that.right.length === that.metric.length) { that.hasLeft = false }
 		else { that.hasLeft = true; }
 		
 		if (that.right.length === 0) { that.hasRight = false } 
 		else { that.hasRight = true; }
-		
+	
 	} 
 
-	isRight = function (m) { right_id.indexOf(that.metric[m].id) >=  0 } 
-	isLeft = function (m) { right_id.indexOf(that.metric[m].id) >=  0 } 
+	isRight = function (m) { return that.right.indexOf(that.metric[m].id) >=  0 } 
+	isLeft = function (m) { return that.right.indexOf(that.metric[m].id) === -1 } 
 	
 	dataStore = []
 	
@@ -54,11 +56,12 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		} 
 	}
 		
-	right_range = [Number.MAX_VALUE, Number.MIN_VALUE];
-	left_range  = [Number.MAX_VALUE, Number.MIN_VALUE];
-
 
 	completeRender = function() {
+
+		right_range = [Number.MAX_VALUE, Number.MIN_VALUE];
+		left_range  = [Number.MAX_VALUE, Number.MIN_VALUE];
+
 		for (n = 0; n < dataStore.length; n++) { 
 			extent = that.extents(dataStore[n].data)
 			if (isRight(n)) { 
@@ -239,11 +242,11 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 			obj.remove_url = "metric_"+i+"_removeurl";
 
 			if (isRight(i)) {
-				obj.link = left_links[i];
+				obj.link = that.left_links[i];
 				obj.tooltip = "Move metric to the left y-axis";
 				right.push(obj);
 			} else {
-				obj.link = right_links[i];
+				obj.link = that.right_links[i];
 				obj.tooltip = "Move metric to the right y-axis";
 				left.push(obj);
 			}
