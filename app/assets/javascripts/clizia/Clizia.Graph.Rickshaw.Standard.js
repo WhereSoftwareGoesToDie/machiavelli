@@ -64,6 +64,7 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 
 			graph.render();	
 			that.state({state: "complete"})
+			that.metric_complete(); 
 
 			if (that.slider) {
 				that.slider.render({graphs: graph})
