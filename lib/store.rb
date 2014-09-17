@@ -1,4 +1,4 @@
-# Parent Sitore class. Contains mostly defaults
+# Parent Store class. Contains mostly defaults
 class Store
 	include Helpers
 
@@ -58,7 +58,7 @@ class Store
                 raise Store::Error, "Unable to connect to #{@origin_id} backend at #{@base_url}" unless is_up?
 
 		# TODO Pending redis pagination logic
-                return [] if args[:page] and args[:page].to_i > 2
+                return [] if args[:page] and args[:page].to_i > 1
 
                 r = redis_conn
                 keys = r.keys "#{REDIS_KEY}:#{@origin_id}#{q}"
