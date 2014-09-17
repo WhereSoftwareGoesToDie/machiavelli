@@ -37,6 +37,7 @@ class GraphsController < ApplicationController
 			g[:id]        = m.id
 			g[:feed]      = m.feed
 			g[:live]      = m.live?
+			g[:title]     = m.titleize
 			g[:sourceURL] = m.get_metric_url start, stop, step
 			g[:removeURL] = rem_qs(:metric, metric)
 		 #	g[:counter] = true if m.counter? ##TODO Incorporate vaultaire based metadata
