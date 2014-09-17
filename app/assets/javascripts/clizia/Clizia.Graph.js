@@ -7,8 +7,6 @@ Clizia.Graph = function(args) {
 
                 if (!args.metric) throw "Clizia.Graph needs a metric"
                 that.metric = args.metric;
-
-		that.state({state: "waiting"})
         }
 
         that.render = function(args) { throw "Cannot invoke parent Clizia.Graph.render() directly." }

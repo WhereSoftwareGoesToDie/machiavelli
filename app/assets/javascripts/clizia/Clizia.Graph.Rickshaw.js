@@ -55,6 +55,8 @@ Clizia.Graph.Rickshaw = function (args) {
 		that.padding = args.padding || defaults.padding;
 		that.clock = args.clock || defaults.clock;
 		that.base = args.base || "??";
+
+		that.state({state: "waiting"})
 	} 
 
 	that.feed = function(args) { 
