@@ -19,7 +19,9 @@
 <script>
 var data = [], metrics =  [], format_metrics = [], right_links = [], left_links = [];
 var reset = "<%= obl_qs :right%>";
-var right_id = ["<%= (que_qs :right).join('","').html_safe%>"];
+
+var right_id = <%= (que_qs :right).to_json.html_safe%>;
+if ( right_id == [""]) { right_id = null; }
 
 <% def to_bool(s) return s == "on" ? true : false; end 
 def check_param(s,allowed) 
@@ -44,6 +46,9 @@ chart = new Clizia.Graph.Rickshaw.Stacked({
 	yaxis: "y_axis", 
 	start: gon.start, 
 	base: gon.base, 
+	right: right_id,
+        right_links: right_links, 
+	left_links: left_links, 
 	legend: "legend-dual",
 	y2axis: "y_axis_right", 
 	stop: gon.stop, 
