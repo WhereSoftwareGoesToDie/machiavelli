@@ -33,6 +33,9 @@ var config = {}
 config.renderer = '<%= check_param(:render, ["line","area","bar"]) || "line" %>'
 config.stack = <%= to_bool(check_param(:stack, ["on","off"]) || ui_defaults("stack")) %>
 
+
+Clizia.Utils.ProgressBar(gon.metrics.length); 
+
 <% @metrics.each do |m| %>
 	metrics.push("<%= m.id %>");
 	format_metrics.push("<%= m.titleize%>")
@@ -51,7 +54,7 @@ chart = new Clizia.Graph.Rickshaw.Stacked({
 	left_links: left_links, 
 	legend: "legend-dual",
 	y2axis: "y_axis_right", 
-	stop: gon.stop, 
+	stop: gon.stop,	
 	step: gon.step})
 
 chart.render()

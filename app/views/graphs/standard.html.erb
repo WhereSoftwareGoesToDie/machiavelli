@@ -27,6 +27,9 @@
 charts = []
 slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: gon.metrics.length})
 
+Clizia.Utils.ProgressBar(gon.metrics.length);  //instantiate a progress bar
+
+
 for (n = 0; n < gon.metrics.length; n++) { 
 	m = gon.metrics[n]
 	
