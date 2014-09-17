@@ -19,6 +19,8 @@ Clizia.Graph.Rickshaw = function (args) {
 		if (!args.yaxis) throw "I should have a yaxis"
 		that.yaxis = args.yaxis	
 
+		that.y2axis = args.y2axis
+
 		if (args.slider) { that.slider = args.slider } 
 		else { that.noSlider = true }
 
@@ -140,11 +142,11 @@ Clizia.Graph.Rickshaw = function (args) {
 		new_width = window.innerWidth - r;
 		that.graph.configure({ width: new_width});
 		that.graph.render();
-		if (that.ryaxis) { 
-			$(that.yaxis).attr("style","left: "+(new_width+60)+"px");
+		if (that.y2axis) { 
+			$("#"+that.y2axis).attr("style","left: "+(new_width+60)+"px");
 		}
 		if (that.legend) { 
-			$(that.legend).attr("style","width: "+(new_width)+"px");
+			$("#"+that.legend).attr("style","width: "+(new_width)+"px");
 		}
 	} 
 
