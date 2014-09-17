@@ -182,7 +182,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 			formatter: function(series, x, y, fx, fy, d) {
 				var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
 				var date = '<span class="date"> '+that.d3_time(x)+'</span>';
-				var content = swatch + format_metrics[d.order - 1] + ": " + y.toFixed(4) + "<br>"+ date;
+				var content = swatch + that.metric[d.order -1].title + ": " + y.toFixed(4) + "<br>"+ date;
 				return content;
 			},
 			xFormatter: function(x){
@@ -228,7 +228,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		for (var i = 0; i < graph.series.length; i++) { 
 			d = graph.series[i];
 			obj = {};
-			obj.metric = format_metrics[i];
+			obj.metric = that.metric[i].title;
 			obj.colour = d.color;
 
 			obj.ydata = visibleData(d.data);
