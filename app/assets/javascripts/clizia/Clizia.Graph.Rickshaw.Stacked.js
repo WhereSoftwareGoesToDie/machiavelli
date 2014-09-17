@@ -50,6 +50,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 	}
 	completeCount = 0;
 	flagComplete = function(args) {
+		that.metric_complete()
 		completeCount += 1;
 		if (completeCount === that.metric.length) { 
 			completeRender()
@@ -195,6 +196,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 	
 		that.generateLegend()	
 		that.zoomtoselected(that.base, that.start, that.stop);	
+		that.state({state: "complete"})
 	}
 
 	that.generateLegend = function() {
