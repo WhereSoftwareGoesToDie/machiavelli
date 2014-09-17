@@ -62,6 +62,11 @@ Clizia.Graph = function(args) {
 	}	
 	function stripHTML(e) {  return e.replace(/<(?:.|\n)*?>/gm, '').replace(/(\r\n|\n|\r)/gm,""); }
 
+	that.metric_complete = function() {
+		if (typeof nanobar === "object") {
+			nanobar.inc()
+		} 
+	} 
 
 	that.init(args);
 	return that;
