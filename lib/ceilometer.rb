@@ -28,8 +28,7 @@ class Ceilometer < Source
 			if keys["counter_name"] == "image.download" || keys["counter_name"] == "image.serve" then
 				search = store.search_metrics "*gauge*image*#{keys["resource_id"]}*"
 				if search.length >= 1
-					result = search.select{|m| m.include? "resource%5fid~#{keys["resource_id"]}," }
-					result = keysplit(result.first)
+					result = keysplit(search.first)
 					display_name = "(#{result["name"]})"
 				end
 			end

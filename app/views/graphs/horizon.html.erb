@@ -1,63 +1,34 @@
 <%= javascript_include_tag "cubism.v1" %>
+<%= javascript_include_tag "clizia" %>
 <%= stylesheet_link_tag    "cubism" %>
-<%= stylesheet_link_tag    "graphs/horizon" %>
+<%= stylesheet_link_tag    "clizia" %>
 
 <% width = 600 %>
 
 <div id="horizon_graph" style="position:relative; width:<%=width%>px"></div>
+
+<div id="clizia" style="position:relative; width: <%=width%>px"></div>
 
 <% def safe_array a; ("['"+a.join("','")+"']").html_safe; end
 colours = safe_array Horizon.get_colours
 %>
 
 <script>
-	function stopUpdates() { context.stop(); }
-	function startUpdates() { context.start(); } 
 
-	delay = Date.now() - (gon.stop* 1000)
+	Clizia.Utils.ProgressBar(gon.metrics.length);
+	chart = Clizia.Graph.Horizon({
+		metric: gon.metrics, 
+		chart: "clizia", 
+		color: <%=colours %>,
+		start: gon.start, 
+		stop: gon.stop, 
+		step: gon.step,
+		clock: gon.clock
 
-	var context = cubism.context()
-		.serverDelay(delay)
-		.clientDelay(0)
-		.step(gon.step*1000) //1e3)
-		.size(<%=width%>)
-		.stop();
-	
-	initProgress();
+	})
+	chart.render()
 
-	if (gon.clock == "utc") { context.utcTime(true);}
+	function stopUpdates() { chart.context.stop(); }
+	function startUpdates() { chart.context.start(); } 
 
-	datum = [];
-
-	machiavelli = context.machiavelli(window.location.origin);
-	<% @metrics.each do |m| %>
-	datum.push(machiavelli.metric("<%=m.id%>","<%=m.titleize%>", updateProgress));
-
-	<% end %>
-
-	$(document).ajaxComplete(doneProgress);
-
-	d3.select("#horizon_graph").call(function(div) {
-		div.append("div")
-			.attr("class", "axis")
-			.call(context.axis().orient("top"));
-
-		div.selectAll(".horizon")
-			.data(datum)
-			.enter().append("div")
-			.attr("class", "horizon")
-			.call(
-				context.horizon()
-				.height(50)
-				.colors(<%=colours%>)
-			); 
-
-		div.append("div")
-			.attr("class", "rule")
-			.call(context.rule());
-	});
-	// On mousemove, reposition the chart values to match the rule.
-	context.on("focus", function(i) {
-		d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
-	});
 </script>

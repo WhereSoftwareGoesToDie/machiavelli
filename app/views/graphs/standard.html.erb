@@ -1,13 +1,10 @@
 <%= javascript_include_tag "rickshaw" %>
-<%= stylesheet_link_tag    "graphs/standard" %>
-<%= javascript_include_tag "graphs/standard" %>
+<%= stylesheet_link_tag    "rickshaw" %>
+<%= javascript_include_tag "clizia" %>
+<%= stylesheet_link_tag    "clizia" %>
 <%= include_gon %>
 
-<script>
-	var color = [];
-	var palette = new Rickshaw.Color.Palette({scheme: "munin"});
-</script>
-<div class="slider" id="multi_slider"></div>
+<div class="slider" id="slider"></div>
 <span id="zoomtoselected" class="no_link zoomtoselected"></span>
 <% @metrics.each_with_index do |m, index| %>
 <div class="graph_title">
@@ -18,24 +15,50 @@
 		<div id="remove_metric_<%=index%>" class="remove_metric"></div>
 	</h4>
 </div>
+
 <div id="chart_container">
 	<div class="y_axis" id="<%="y_axis_#{index}"%>"></div>
 	<div class="chart"  id="<%="chart_#{index}"%>"></div>
 </div>
-
-<script>
-color.push(palette.color());
-renderWaiting("chart_<%=index%>");
-renderStandard(<%=index%>);
-showURL("metric_<%=index%>_url", gon.metrics[<%=index%>].sourceURL);
-removeURL("remove_metric_<%=index%>", gon.metrics[<%=index%>].removeURL);
-</script>
 <% end # @gon%>
 
 <script>
-var intervalID; 
+
+charts = []
+slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: gon.metrics.length})
+
+Clizia.Utils.ProgressBar(gon.metrics.length);  //instantiate a progress bar
+
+
+for (n = 0; n < gon.metrics.length; n++) { 
+	m = gon.metrics[n]
+	
+	chart = new Clizia.Graph.Rickshaw.Standard({
+		metric: gon.metrics[n], 
+		chart: "chart_"+n, 
+		yaxis: "y_axis_"+n, 
+		showurl: "metric_"+n+"_url",
+		removeurl: "remove_metric_"+n,
+		start: gon.start, 
+		clock: gon.clock,
+		stop: gon.stop, 
+		base: gon.base, 
+		step: gon.step, 
+		slider: slider})
+
+	chart.render()
+	charts.push(chart)
+}
+
+var intervalID;
 function stopUpdates() { clearInterval(intervalID);} 
-function startUpdates() { intervalID = updateStandard();} 
-zoomtoselected()
+function startUpdates() { 
+	intervalID = setInterval(function(d){ 
+			charts.forEach(function(d) { 
+				d.update()
+				})
+			}, gon.step * 1000 )
+		
+}
 </script>
 
