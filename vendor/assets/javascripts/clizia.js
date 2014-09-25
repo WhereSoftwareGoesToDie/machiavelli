@@ -46,6 +46,11 @@ Clizia.Nanobar = function(args) {
 		} 
 	}; 
 	
+	// Force the completion of the nanobar progress (e.g. unrecoverable error)
+	that.complete = function() { 
+		that.nanobar.go(100);
+	}
+
 	that.init(args);
 
 	return that; 
@@ -136,6 +141,12 @@ Clizia.Graph = function(args) {
 	that.metric_complete = function() {
 		if (typeof nanobar === "object") {
 			nanobar.inc()
+		} 
+	} 
+
+	that.metric_failed = function() { 
+		if (typeof nanobar === "object") {
+			nanobar.complete()
 		} 
 	} 
 
@@ -447,6 +458,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 				if (that.invalidData(data)) { 
 					err = data.error || "No data receieved"
 					that.state({state: "error", chart: that.chart, error: err})
+					that.metric_failed();
 					throw err
 				} 
 				dataStore[i] = {data: data, name: d }
@@ -669,7 +681,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		function rtd(side) {
 			c = [];
 
-			["&nbsp","average","deviation","bounds","&nbsp"].forEach(function(d){
+			["&nbsp","mean","std.deviation","min, max","&nbsp"].forEach(function(d){
 				c.push("<td align='right'>"+d+"</td>");
 			});
 
@@ -764,6 +776,7 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 				err = data.error ||  errorMessage.noData	
 				that.state({state: "error", element: that.chart, error: err, removeURL: that.metric.removeURL})
 				if (that.slider) { that.slider.failed({graph: that.metric.id}) }
+				that.metric_complete();
 				throw "Error retrieving data: "+err
 			}
 
@@ -859,7 +872,7 @@ Clizia.Graph.Rickshaw.Slider = function (args) {
 
 		if (!that.graphs) { throw "Clizia.Slider cannot render if no graphs" }
 
-		if (that.length == that.graphs.length) { 
+		if (that.length == that.graphs.length && that.length >= 1) { 
 			that.slider = new Rickshaw.Graph.RangeSlider.Preview({
 				graphs: that.graphs,
 				height: that.height, 
