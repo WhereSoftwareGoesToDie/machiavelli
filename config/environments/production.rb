@@ -61,6 +61,7 @@ Machiavelli::Application.configure do
   # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
   config.assets.precompile += %w( *.js *.css )
   config.assets.precompile << /\.(?:svg|eot|woff|ttf)\z/
+  config.assets.precompile << /\.(?:gif|png)\z/
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found).
