@@ -9,14 +9,14 @@ class Vaultaire < Store
 
 	# Sieste can be used to query for a metric's metadata based on it's origin and metric_id alone
 	def metadata metric_id
-		r = get_json("#{@base_url}/simple/search?origin=#{@origin_id}&address=#{metric_id}").first
-		return machiavelli_encode(r) if r
-		return metric_id
+		meta = get_json("#{@base_url}/simple/search?origin=#{@origin_id}&address=#{metric_id}").first
+		keys = keysplit(machiavelli_encode(meta))
+		return keys
 	end
 
 	# Split the metadata into nice pieces and make a HTML table.
 	def metadata_table metric
-		t = URI.decode(metric).strip.split(DELIM).map{|a| a.split(KVP)}
+		t = metric.map{|k,v| [k,v]}
 
 		table = ""
 		t.each {|a|
@@ -68,7 +68,7 @@ class Vaultaire < Store
 	def get_metric_url m, start, stop, step 
 		query = []
 
-		metakeys = keysplit(m.metadata)
+		metakeys = m.metadata
 		float = metakeys["_float"]
                 
 		_start, _stop = validate_time(start, stop)

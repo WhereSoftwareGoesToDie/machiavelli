@@ -4,8 +4,7 @@ class Ceilometer < Source
 
 	# Take a metric metadata string, and return a human readable title
 	def titleize metric
-
-		keys = keysplit(metric)
+		keys = metric
 		nice = []
 
 		display_name = nil

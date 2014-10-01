@@ -87,7 +87,6 @@ class Metric
 				# Origin~[meta]
 				origin, str = str.split(SEP) 
 			end
-			@meta = str
 			# Split to get address, and rebuild
 			keys = keysplit(str)
 			return build_id origin, keys["address"]
