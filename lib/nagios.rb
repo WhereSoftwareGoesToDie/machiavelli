@@ -25,7 +25,7 @@ class Nagios < Source
 			color = { "Used" => "#729fcf", "Cached" => "#fcaf3e", "Buffers" => "#fce84f", "Free" => "#8ae234"} #pnp4nagios
 		end
 
-		color.each{|k,v| if meta["metric"].include? k then meta["color"] = v; end }
+		color.each{|k,v| if meta["metric"].include? k then meta["color"] = v; end } if color
 
 		return meta
 	end
