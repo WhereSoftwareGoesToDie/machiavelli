@@ -4,14 +4,20 @@ class Nagios < Source
 
 	# Humanize the title for the perfdata feed. Handles both v1 and v2 style Vaultaire metadata
 	def titleize keys 
-		nice = keys["host"]
-		nice << keys["service"] unless keys["service"] == "host"
-		nice << keys["metric"]
+		nice = []
+
+		if keys.include? "hostname"
+			nice << keys["hostname"]
+			nice << keys["service_name"] unless keys["service_name"] == "host"
+			nice << keys["metric"]
+		else
+			nice << keys["host"]
+			nice << keys["service"] unless keys["service"] == "host"
+			nice << keys["metric"]
+		end
 
 		return URI.decode(nice.join(" - "))
 	end
-
-
 
 	# For nagios, add some nice things
 	def metaadd meta
