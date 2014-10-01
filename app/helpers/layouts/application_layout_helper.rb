@@ -124,6 +124,13 @@ module Layouts
 			end
 		end
 
+		def to_bool(s)
+			return s == "on" ? true : false; 
+		end
+		def check_param(s,allowed)
+			v = get_param(s)
+			v if allowed.include? v.to_s
+		end
 
 		# Query string manipulation functions
 		

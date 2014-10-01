@@ -23,16 +23,11 @@ var reset = "<%= obl_qs :right%>";
 var right_id = <%= (que_qs :right).to_json.html_safe%>;
 if ( right_id == [""]) { right_id = null; }
 
-<% def to_bool(s) return s == "on" ? true : false; end 
-def check_param(s,allowed) 
-	v = get_param(s)
-	v if allowed.include? v.to_s
-end%>
-
 var config = {}
 config.renderer = '<%= check_param(:render, ["line","area","bar"]) || "line" %>'
 config.stack = <%= to_bool(check_param(:stack, ["on","off"]) || ui_defaults("stack")) %>
 
+zeromin = <%= to_bool(check_param(:zeromin, ["on","off"] || false)) %>
 
 Clizia.Utils.ProgressBar(gon.metrics.length); 
 
