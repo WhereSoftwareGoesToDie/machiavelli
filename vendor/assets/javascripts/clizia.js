@@ -255,9 +255,9 @@ Clizia.Graph.Rickshaw = function (args) {
 		if (args.slider) { that.slider = args.slider } 
 		else { that.noSlider = true }
 
-
 		if (args.showurl) { that.showurl = args.showurl}
 		if (args.removeurl) { that.removeurl = args.removeurl}
+		if (args.zeromin) { that.zeromin = args.zeromin }
 
 		if (is_array(that.metric)) { 
 
@@ -312,16 +312,17 @@ Clizia.Graph.Rickshaw = function (args) {
 	} 
 
 	that.extents = function(data) { 
-			min = Number.MAX_VALUE; 
-			min = $.map(data, function(d){return d.y}).min() 
+		min = Number.MAX_VALUE; 
+		min = $.map(data, function(d){return d.y}).min() 
+		if (that.zeromin) { min = 0 } 
 
-			max = Number.MIN_VALUE;
-			max = $.map(data, function(d){return d.y}).max()
-			
-			if (min == Number.MAX_VALUE) { 
-				min=0; 
-				max=0;
-			}
+		max = Number.MIN_VALUE;
+		max = $.map(data, function(d){return d.y}).max()
+		
+		if (min == Number.MAX_VALUE) { 
+			min=0; 
+			max=0;
+		}
 		return [min, max]
 	} 
 

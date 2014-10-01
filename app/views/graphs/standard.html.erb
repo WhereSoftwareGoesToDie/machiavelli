@@ -28,7 +28,7 @@ charts = []
 slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: gon.metrics.length})
 
 Clizia.Utils.ProgressBar(gon.metrics.length);  //instantiate a progress bar
-
+zeromin = <%= to_bool(check_param(:zeromin, ["on","off"] || false)) %>
 
 for (n = 0; n < gon.metrics.length; n++) { 
 	m = gon.metrics[n]
@@ -44,8 +44,9 @@ for (n = 0; n < gon.metrics.length; n++) {
 		stop: gon.stop, 
 		base: gon.base, 
 		step: gon.step, 
-		slider: slider})
-
+		slider: slider, 
+		zeromin: zeromin})
+	
 	chart.render()
 	charts.push(chart)
 }
