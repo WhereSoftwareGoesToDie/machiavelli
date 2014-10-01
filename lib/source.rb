@@ -6,6 +6,12 @@ class Source
 		@settings = settings
 	end
 
+	# Add any source-specific metadata to the string
+	def metaadd m
+		return m
+	end
+
+	# Make the title of the graph human-readable
 	# Default: return the string itself as the title
 	def titleize str
 		return str

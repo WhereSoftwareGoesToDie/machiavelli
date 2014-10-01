@@ -45,6 +45,7 @@ class Metric
 	def metadata
 		if @meta.nil?
 			@meta = @store.metadata @metric_id
+			@meta = @source.metaadd @meta
 		end
 		return @meta
 	end

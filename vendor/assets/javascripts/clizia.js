@@ -270,13 +270,13 @@ Clizia.Graph.Rickshaw = function (args) {
 				}
 
 				// Expect metric and color to either be Object, String; or [Object], [String]
-				m.color = that.color[n] || next_color(); 
+				m.color = m.metadata.color || that.color[n] || next_color(); 
 			}
 
 		} else {
 			if (!that.metric.feed) { throw "Metric "+that.metric.id+" has no feed!" }
-
-			that.metric.color = args.color || next_color();
+			that.metric.color = that.metric.metadata.color || args.color || next_color();
+			console.log(that.metric.color)
 		} 
 		
 
