@@ -23,11 +23,6 @@ var reset = "<%= obl_qs :right%>";
 var right_id = <%= (que_qs :right).to_json.html_safe%>;
 if ( right_id == [""]) { right_id = null; }
 
-var config = {}
-config.renderer = '<%= check_param(:render, ["line","area","bar"]) || "line" %>'
-config.stack = <%= to_bool(check_param(:stack, ["on","off"]) || ui_defaults("stack")) %>
-
-zeromin = <%= to_bool(check_param(:zeromin, ["on","off"] || false)) %>
 
 Clizia.Utils.ProgressBar(gon.metrics.length); 
 
@@ -38,27 +33,47 @@ Clizia.Utils.ProgressBar(gon.metrics.length);
 	left_links.push("<%= rem_qs :right, m.id%>");
 <%end%>
 
-chart = new Clizia.Graph.Rickshaw.Stacked({
-	metric: gon.metrics, 
-	chart: "chart", 
-	yaxis: "y_axis", 
-	start: gon.start, 
-	base: gon.base, 
-	right: right_id,
-        right_links: right_links, 
-	left_links: left_links, 
-	legend: "legend-dual",
-	y2axis: "y_axis_right", 
-	stop: gon.stop,	
-	step: gon.step,
-	zeromin: zeromin
-	})
+// Div IDS
+divs = {
+	chart:  "chart", 
+	yaxis:  "y_axis", 
+	legend: "legend-dual", 
+	y2axis: "y_axis_right"
+}
 
+// query bounds
+st  = { 
+	start: gon.start, 
+	stop:  gon.stop, 
+	step:  gon.step
+}
+
+
+// Graph objects
+graph = {
+	metric:      gon.metrics,
+	base:        gon.base,
+	right:       right_id, 
+	right_links: right_links,
+	left_links:  left_links 
+}
+// Extra GUI
+gui  = {
+	renderer: "<%= check_param(:render, ["line","area","bar"]) || "line" %>",
+	stack: <%= to_bool(check_param(:stack, ["on","off"]) || ui_defaults("stack")) %>,
+	zeromin: <%= to_bool(check_param(:zeromin, ["on","off"] || false)) %>,
+} 
+
+var settings = $.extend({}, divs, st, graph, gui)
+
+chart = new Clizia.Graph.Rickshaw.Stacked(settings)
 chart.render()
 
 var intervalID;
 function startUpdates() { 
 	 intervalID = setInterval(function(d){  chart.update()}, gon.step * 1000 )
- }
-function stopUpdates()  { clearInterval(intervalID); } 
+}
+function stopUpdates()  { 
+	clearInterval(intervalID); 
+} 
 </script>

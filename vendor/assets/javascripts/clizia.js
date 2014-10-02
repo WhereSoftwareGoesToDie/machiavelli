@@ -276,7 +276,6 @@ Clizia.Graph.Rickshaw = function (args) {
 		} else {
 			if (!that.metric.feed) { throw "Metric "+that.metric.id+" has no feed!" }
 			that.metric.color = that.metric.metadata.color || args.color || next_color();
-			console.log(that.metric.color)
 		} 
 		
 
