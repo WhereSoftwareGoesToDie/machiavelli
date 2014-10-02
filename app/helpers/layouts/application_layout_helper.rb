@@ -17,7 +17,8 @@ module Layouts
 			time: "relative",
 			render: "line",
 			stack: "off",
-			clock: "utc"
+			clock: "utc",
+			zeromin: "off"
 		}
 		
 		# Method helper for defaults to the UI
