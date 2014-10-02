@@ -444,6 +444,9 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		
 		if (that.right.length === 0) { that.hasRight = false } 
 		else { that.hasRight = true; }
+
+		that.stack = args.stack || "off";
+		that.renderer = args.renderer || "line";
 	
 	} 
 
@@ -514,7 +517,10 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 				scale: scale
 			})
 		}
-		
+	
+		config = {}
+		config.renderer = that.renderer;
+		config.stack = that.stack;
 		config.interpolate = "monotone";
 			
 		if (that.hasRight && that.hasLeft ) {
@@ -588,7 +594,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 
 		// Make stacks easier to see by adding an alpha transperancy to both
 		// the graph and the legend 
-		if (config.stack === false && (config.renderer == "area")) {
+		if (that.stack === false && (that.renderer == "area")) {
 			$(document.head).append("<style>path.area{opacity:0.8};.legend-color{opacity:0.8}</style>");
 		}
 
@@ -692,7 +698,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 
 
 		// Stacked graphs will order last to first, so flip the legend, for sanity
-		if (config.stack) { left = left.reverse(); right = right.reverse()  }
+		if (that.stack) { left = left.reverse(); right = right.reverse()  }
 
 		if (left[0]) { table.push(rtd("Left"))  }
 		left.forEach(function(d){ row = tableize(d); table.push(row) })
