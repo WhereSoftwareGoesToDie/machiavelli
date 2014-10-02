@@ -796,8 +796,11 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 			
 			that.graph = graph;
 			extent = that.extents(data);
+			pextent = {min: extent[0] - that.padding, max: extent[1] + that.padding}
 
-			graph.configure({min: extent[0] - that.padding, max: extent[1] + that.padding});
+			if (that.zeromin) { pextent.min = 0 }
+
+			graph.configure(pextent);
 
 			if (that.metric.counter)  { 
 				graph.configure({interpolation: 'step'});
