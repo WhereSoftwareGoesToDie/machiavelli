@@ -62,6 +62,7 @@ gui  = {
 	renderer: "<%= check_param(:render, ["line","area","bar"]) || "line" %>",
 	stack: <%= to_bool(check_param(:stack, ["on","off"]) || ui_defaults("stack")) %>,
 	zeromin: <%= to_bool(check_param(:zeromin, ["on","off"] || false)) %>,
+	clock: <%= to_bool(check_param(:clock, ["utc","local"] || ui_defaults("clock"))) %>,
 } 
 
 var settings = $.extend({}, divs, st, graph, gui)
