@@ -1,0 +1,18 @@
+<%= include_gon %>
+<div class="btn-group">
+	<a id="zeromin" type="button" class="btn btn-default" data-toggle="tooltip-down" 
+		data-original-title="Force min(y) == 0" 
+		>
+		<b>y0</b>
+	</a>
+</div>
+<script>
+$(function() {
+	zm = <%= to_bool(check_param(:zeromin, ["on","off"] || false)) %>
+	if (zm) { 
+		$("#zeromin").addClass("active").attr("href","<%=(root_path + chg_qs(:zeromin, 'off')).html_safe %>")
+	} else { 
+		$("#zeromin").removeClass("active").attr("href","<%=(root_path + chg_qs(:zeromin, 'on')).html_safe %>") 
+	}
+})
+</script>
