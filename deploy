@@ -18,46 +18,17 @@ def run a, env={}
 	end
 end
 
-def compile?
-	unless File.exists?("public/assets/")
-		puts "No folder known as public/assets, compile to create"
-		return true
-	end
-	if Dir[File.join("public/assets/", '**', '*')].count { |file| File.file?(file) } == 0
-		puts "No files in public/assets, compile to create"
-		return true
-	end
-
-	
-	diff = `git diff app/assets/ vendor/assets/`.strip()
-	if diff.empty? 
-		puts "No differences in assets. Not compiling"
-		return false
-	else 
-		puts "I see assets changes. I will compile."
-		return true
-	end
+def deploy env
+	branch = git_branch
+	run "git checkout -b deploy_temp"
+	run "bundle exec rake assets:precompile", { "RAILS_ENV" => env }
+	run "git add public/assets"
+	run "git commit public/assets -m'compile assets'"
+	run "git push deploy_#{env} deploy_temp:master --force"
+	run "git checkout #{branch}"
+	run "git branch -D deploy_temp"
 end
 
-def compile_assets env
-	puts "Call compile with #{env}"
-	run "bundle exec rake assets:precompile", {"RAILS_ENV" => env}
-end
-
-def compile_if_required env
-	if compile? 
-		compile_assets env
-		git_commit nil, "compile assets"
-	end
-end
-
-def git_commit file=nil, message=nil
-	add_flag = file || "-A"
-	commit_flag = file || "-a"
-	message ||= "bump repo"
-	run "git add #{add_flag}"
-	run "git commit #{commit_flag} -m '#{message}'"
-end
 
 def gvb_version
 	require 'git-version-bump'
@@ -105,12 +76,6 @@ def update_github
 	run "git push origin #{git_branch}"
 end
 
-def git_deploy name, branch=nil
-	branch ||= git_branch
-	force = "--force" if @force
-	run "git push deploy_#{name} #{branch}:master #{force}"
-end
-
 def failexit msg
 	puts msg
 	exit
@@ -126,17 +91,9 @@ end
 
 case ARGV[0]
 when "staging" 
-	compile_assets ARGV[0]
-	git_commit "public/assets", "assets"
-	git_deploy ARGV[0] 
+	deploy "staging"
 when "production"
-	tag = ARGV[1]
-	unless tag
-		failexit "You must specify a tagged version to push to production. Perhaps #{prev_tag}?"
-	end
-	git_deploy "production", tag
-when "commit"
-	git_commit "-v" 
+	deploy "production"
 when "upcoming_version" 
 	vb = ARGV[1]
 	unless vb
@@ -144,10 +101,6 @@ when "upcoming_version"
 	end
 	v = up_version vb
 	puts "If you invoke me with #{vb} I'll go up to version v#{v}"
-when "update_assets"
-	compile_if_required ARGV[1]
-when "precompile"
-	compile_assets ARGV[1]
 when "release"
 	unless git_branch == "master"
 		failexit "Cannot release unless we are on master"
@@ -157,7 +110,6 @@ when "release"
 		failexit "Dirty tree. Cannot release"
 	end
 	v = up_version ARGV[1]
-		
 
 	if @force	
 		puts "Forcing release"
@@ -174,15 +126,11 @@ when "release"
 		end
 	end
 
-	compile_assets "production"
 	write_version v
-	git_commit @version_file, "bump to version #{v}" 
+	run "git commit #{@version_file} -m'bump to version #{v}'"
 	
 	run "git version-bump -n #{ARGV[1]}"
 	run "git release"
-when "update_github";
-	puts "Just pushing to origin, don't mind me"
-	update_github
 else 
 	puts "I don't understand #{ARGV[0]}"
 end
