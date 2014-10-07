@@ -9,12 +9,9 @@
 
 <div class="slider" id="slider"></div>
 <span id="zoomtoselected" class="no_link zoomtoselected"></span>
-<div id="chart_container">
-	<div class="y_axis" id="y_axis"></div>
-	<div class="chart"  id="chart"></div>
-	<div class="y_axis right_axis" id="y_axis_right"></div>
-	<div class="legend" id="legend-dual"></div>
-</div>
+
+<div id="chart"></div>
+<div class="legend" id="legend-dual"></div>
 
 <script>
 var data = [], metrics =  [], format_metrics = [], right_links = [], left_links = [];
@@ -26,6 +23,9 @@ if ( right_id == [""]) { right_id = null; }
 
 Clizia.Utils.ProgressBar(gon.metrics.length); 
 
+slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: 1})
+
+
 <% @metrics.each do |m| %>
 	metrics.push("<%= m.id %>");
 	format_metrics.push("<%= m.titleize%>")
@@ -36,9 +36,9 @@ Clizia.Utils.ProgressBar(gon.metrics.length);
 // Div IDS
 divs = {
 	chart:  "chart", 
-	yaxis:  "y_axis", 
 	legend: "legend-dual", 
-	y2axis: "y_axis_right"
+	y2axis: "y_axis_right",
+	slider: slider
 }
 
 // query bounds
@@ -55,7 +55,8 @@ graph = {
 	base:        gon.base,
 	right:       right_id, 
 	right_links: right_links,
-	left_links:  left_links 
+	left_links:  left_links,
+	dynamic: true
 }
 // Extra GUI
 gui  = {
@@ -67,12 +68,12 @@ gui  = {
 
 var settings = $.extend({}, divs, st, graph, gui)
 
-chart = new Clizia.Graph.Rickshaw.Stacked(settings)
-chart.render()
+tchart = new Clizia.Graph.Rickshaw.Stacked(settings)
+tchart.render()
 
 var intervalID;
 function startUpdates() { 
-	 intervalID = setInterval(function(d){  chart.update()}, gon.step * 1000 )
+	 intervalID = setInterval(function(d){  tchart.update()}, gon.step * 1000 )
 }
 function stopUpdates()  { 
 	clearInterval(intervalID); 
