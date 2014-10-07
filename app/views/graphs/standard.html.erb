@@ -16,10 +16,8 @@
 	</h4>
 </div>
 
-<div id="chart_container">
-	<div class="y_axis" id="<%="y_axis_#{index}"%>"></div>
-	<div class="chart"  id="<%="chart_#{index}"%>"></div>
-</div>
+<div id="<%="chart_#{index}"%>"></div>
+
 <% end # @gon%>
 
 <script>
@@ -36,6 +34,7 @@ config = {
 	stop: gon.stop, 
 	step: gon.step, 
 	slider: slider, 
+	dynamic: true,
 	zeromin: <%= to_bool(check_param(:zeromin, ["on","off"] || false)) %>
 }
 
@@ -45,7 +44,6 @@ for (n = 0; n < gon.metrics.length; n++) {
 	setting = {  
 		metric: gon.metrics[n], 
 		chart: "chart_"+n, 
-		yaxis: "y_axis_"+n, 
 		showurl: "metric_"+n+"_url",
 		removeurl: "remove_metric_"+n
 	}
