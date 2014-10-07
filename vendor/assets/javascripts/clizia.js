@@ -113,12 +113,12 @@ Clizia.Graph = function(args) {
 	that.state = function(args) {          
 		if (typeof args === "String" ) { args = {state: args} }
 
-		function rmv_wait() { chart.find(".waiting").remove() }
+		function rmv_wait() { graph.find(".waiting").remove() }
 
 		if (args.state) { 
-			chart = $("#"+that.chart)
+			graph = $("#"+that.chart)
 			if (args.state === "waiting") { 
-				chart.append("<div class='waiting'><i class='icon-spin'></i></div>")
+				graph.append("<div class='waiting'><i class='icon-spin'></i></div>")
 			} else if (args.state === "error") {
 				rmv_wait()
 
@@ -140,9 +140,9 @@ Clizia.Graph = function(args) {
 						"</div>";
 				}
 				error_alert += "</div>";
-				chart.append(error_alert)
+				graph.append(error_alert)
 
-				chart.addClass("error")
+				graph.addClass("error")
 			} else if (args.state === "complete") { 
 				rmv_wait()
 			} 
@@ -626,7 +626,9 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		}
 
 		// X-axis slider for zooming
-		if (that.slider) { that.slider.render({graphs: graph, onchange: that.generateLegend})}
+		if (that.slider) { 
+			that.slider.render({graphs: graph, onchange: that.generateLegend})
+		}
 
 		var hoverDetail = new Rickshaw.Graph.HoverDetail( {
 			graph: graph,
@@ -664,12 +666,12 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		function fix(a) { return Rickshaw.Fixtures.Number.formatKMBT_round(a);}
 
 		function visibleData(a) {
-			if (graph.window.xMin === undefined) {
+			if (that.graph.window.xMin === undefined) {
 				min = Number.MIN_VALUE;
-			} else { min = graph.window.xMin; }
-			if (graph.window.xMax === undefined) {
+			} else { min = that.graph.window.xMin; }
+			if (that.graph.window.xMax === undefined) {
 				max = Number.MAX_VALUE;
-			} else { max = graph.window.xMax; }
+			} else { max = that.graph.window.xMax; }
 
 			return $.map(a, function(d) { if (d.x >= min && d.x <= max) { return d.y;}  });
 		}
@@ -677,8 +679,8 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		left = [];
 		right = [];
 
-		for (var i = 0; i < graph.series.length; i++) { 
-			d = graph.series[i];
+		for (var i = 0; i < that.graph.series.length; i++) { 
+			d = that.graph.series[i];
 			obj = {};
 			obj.metric = that.metric[i].title || that.metric[i].id;
 			obj.colour = d.color;
@@ -759,7 +761,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		if (that.hasRight) {
 			table.push("<tr><td colspan=99><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
 		} else {
-			if (graph.series.length >= 2) {
+			if (that.graph.series.length >= 2) {
 				table.push("<tr><td colspan=99>Click a metric to move it to the Right Axis</td></tr>");
 			}
 		}
@@ -905,13 +907,19 @@ Clizia.Graph.Rickshaw.Slider = function (args) {
 
 		if (!that.graphs) { throw "Clizia.Slider cannot render if no graphs" }
 
-		if (that.length == that.graphs.length && that.length >= 1) { 
-			that.slider = new Rickshaw.Graph.RangeSlider.Preview({
+		if (that.length == that.graphs.length && that.length >= 1) {
+			settings = {
 				graphs: that.graphs,
 				height: that.height, 
 				element: document.getElementById(that.element)
-			})
+			}
+			if (args.onchange) { settings.onChangeDo = args.onchange }
+			that.slider = new Rickshaw.Graph.RangeSlider.Preview(settings)
+
 			that.slider.render()
+		}
+		if (args.onchange) { 
+			args.onchange()
 		}
 	}
 
