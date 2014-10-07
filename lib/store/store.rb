@@ -1,5 +1,5 @@
 # Parent Store class. Contains mostly defaults
-class Store
+class Store::Store
 	include Helpers
 
 	# Store given settings into more user friendly forms

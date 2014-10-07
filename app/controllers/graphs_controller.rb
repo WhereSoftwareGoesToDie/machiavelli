@@ -81,7 +81,7 @@ class GraphsController < ApplicationController
 			Settings.origins.each do |o|
 				begin
 					origin, settings = o
-					store = Object.const_get(settings.store).new origin, settings
+					store = "Store::#{settings.store.titleize}".constantize.new origin, settings
 					store.refresh_metrics_cache
 				rescue Store::Error => e
 					inactive_backends << [o[0], e]

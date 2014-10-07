@@ -1,5 +1,5 @@
 # Flatfile - ideally a CSV of `time,value\n`
-class Flatfile < Store
+class Store::Flatfile < Store::Store
 
 	# Initalize and get settings
 	def initialize origin, settings

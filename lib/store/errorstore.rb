@@ -1,4 +1,4 @@
-class Errorstore < Store
+class Store::Errorstore < Store::Store
         def get_metric _,_,_,_
                 raise Store::Error, "Invalid origin: '#{@origin_id}' not defined in settings"
         end   

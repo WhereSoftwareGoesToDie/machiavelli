@@ -1,5 +1,5 @@
 # Collector: https://github.com/anchor/vaultaire-collector-nagios
-class Nagios < Source
+class Source::Nagios < Source::Source
 	include Helpers
 
 	# Humanize the title for the perfdata feed. Handles both v1 and v2 style Vaultaire metadata

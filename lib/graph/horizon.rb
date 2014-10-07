@@ -1,7 +1,7 @@
 require 'color'
 
 # Horizon extension of Graph
-class Horizon < Graph
+class Graph::Horizon < Graph::Graph
 
 	# Default: Anchor blue
 	GRAPH_COLOUR = Settings.horizon_color || "#006d2c"
