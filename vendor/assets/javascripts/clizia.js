@@ -291,7 +291,7 @@ Clizia.Graph.Rickshaw = function (args) {
 			that.color = args.color || []
 			for (n = 0; n < that.metric.length; n++ ) {
 				m = that.metric[n]
-
+				m.metadata = m.metadata || {}
 				if (!m.feed) {
 					throw "Metric '"+m.id+"' has no feed!"
 				}
@@ -301,6 +301,8 @@ Clizia.Graph.Rickshaw = function (args) {
 			}
 
 		} else {
+			that.metric.metadata = that.metric.metadata || {}
+
 			if (!that.metric.feed) { throw "Metric "+that.metric.id+" has no feed!" }
 			that.metric.color = that.metric.metadata.color || args.color || next_color();
 		} 
