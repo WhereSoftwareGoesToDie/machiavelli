@@ -18,7 +18,7 @@ margin:0 4px 0 0;
 color:#a0a0a0;
 }
 
-#chart_container {
+.chart_container {
 padding-bottom:40px;
 }
 
@@ -84,13 +84,6 @@ font-family:FontAwesome;
 content:"\f110";
 }
 
-/* Increase hover value dot for ease of visibility */
-.rickshaw_graph .detail .dot {
-width:8px;
-height:8px;
-margin-left:-4px;
-margin-top:-4px;
-}
 
 .graph_title {
 padding-left:60px;
@@ -117,7 +110,7 @@ color:#000;
 .borderless td {
 border:none!important;
 }
-#chart_container {
+.chart_container {
 position:relative;
 display:inline-block;
 font-family:Arial, Helvetica, sans-serif;
@@ -133,7 +126,6 @@ padding-bottom:20px;
 .chart {
 display:inline-block;
 margin-left:60px;
-/* yaxis */
 }
 
 .y_axis {

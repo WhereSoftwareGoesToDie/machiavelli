@@ -56,6 +56,7 @@ Clizia.Nanobar = function(args) {
 	return that; 
 }; 
 
+var clizia_utils_unique_id_seed = 0;
 Clizia.Utils = {
 	showURL: function(element, url) { 
 		var show = "<span class='data_source'><a href='"+
@@ -72,12 +73,25 @@ Clizia.Utils = {
 	},
 	ProgressBar: function(a) { 
 		nanobar = Clizia.Nanobar({count: a});
-	}
+	},
+
+	uniq_id: function(a) { 
+		//unique, not a GUID, but unique enough
+		if (typeof a === "undefined") { 
+			div_name = "id_" 
+		} else { 
+			div_name = a + "_" 
+		}
+		return div_name + (++clizia_utils_unique_id_seed) 
+	} 
+
 };
 Clizia.Graph = function(args) {
         var that = {};
 
         that.init = function(args) {
+		if (!args) throw "Clizia.Graph requires at least some settings. You have provided none."
+
                 if (!args.chart) throw "Clizia.Graph needs a chart";
                 that.chart = args.chart;
 
@@ -99,12 +113,12 @@ Clizia.Graph = function(args) {
 	that.state = function(args) {          
 		if (typeof args === "String" ) { args = {state: args} }
 
-		function rmv_wait() { chart.find(".waiting").remove() }
+		function rmv_wait() { graph.find(".waiting").remove() }
 
 		if (args.state) { 
-			chart = $("#"+that.chart)
+			var graph = $("#"+that.chart)
 			if (args.state === "waiting") { 
-				chart.append("<div class='waiting'><i class='icon-spin'></i></div>")
+				graph.append("<div class='waiting'><i class='icon-spin'></i></div>")
 			} else if (args.state === "error") {
 				rmv_wait()
 
@@ -126,9 +140,9 @@ Clizia.Graph = function(args) {
 						"</div>";
 				}
 				error_alert += "</div>";
-				chart.append(error_alert)
+				graph.append(error_alert)
 
-				chart.addClass("error")
+				graph.addClass("error")
 			} else if (args.state === "complete") { 
 				rmv_wait()
 			} 
@@ -247,14 +261,25 @@ Clizia.Graph.Rickshaw = function (args) {
 		if (!args.step)  throw "Clizia.Graph.Rickshaw needs a step interval"
 		that.step = args.step
 
-		if (!args.yaxis) throw "I should have a yaxis"
-		that.yaxis = args.yaxis	
+		container = $("#"+that.chart)
+		container.addClass("chart_container")
+
+		that.yaxis = Clizia.Utils.uniq_id("y_axis")
+		container.append("<div id='"+that.yaxis+"' class='y_axis'></div>")
+
+		that.graph = Clizia.Utils.uniq_id("graph")
+		container.append("<div id='"+that.graph+"' class='chart'></div>")
 
 		that.y2axis = args.y2axis
 
-		if (args.slider) { that.slider = args.slider } 
+		if (args.slider) { 
+			that.slider = args.slider 
+			$("#"+that.slider.element).addClass("slider")
+		} 
 		else { that.noSlider = true }
+		
 
+		if (args.dynamic) { that.dynamic = args.dynamic }
 		if (args.showurl) { that.showurl = args.showurl}
 		if (args.removeurl) { that.removeurl = args.removeurl}
 		if (args.zeromin) { that.zeromin = args.zeromin }
@@ -383,9 +408,11 @@ Clizia.Graph.Rickshaw = function (args) {
 		}
 	} 
 
-	that.dynamicWidth = function() { 
-		that.fitToWindow()
-		$(window).on('resize', function(){ that.fitToWindow(); })
+	that.dynamicWidth = function() {
+		if (that.dynamic) { 
+			that.fitToWindow()
+			$(window).on('resize', function(){ that.fitToWindow(); })
+		}
 	} 
 
 	that.zoomtoselected = function(_base, _start, _stop) { 
@@ -551,7 +578,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		}
 
 		graph = new Rickshaw.Graph({
-			element: document.getElementById(that.chart),
+			element: document.getElementById(that.graph),
 			width: that.width, 
 			height: that.height, 
 			series: series
@@ -599,12 +626,9 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		}
 
 		// X-axis slider for zooming
-		slider = new Rickshaw.Graph.RangeSlider.Preview({
-			graph: graph,
-			height: 30,
-			element: $('#slider')[0],
-			onChangeDo: that.generateLegend
-		});
+		if (that.slider) { 
+			that.slider.render({graphs: graph, onchange: that.generateLegend})
+		}
 
 		var hoverDetail = new Rickshaw.Graph.HoverDetail( {
 			graph: graph,
@@ -625,7 +649,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 	}
 
 	that.generateLegend = function() {
-		if (!that.disableLegend) { 
+		if (that.legend) { 
 		
 		var legend = document.getElementById(that.legend);
 
@@ -642,12 +666,12 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		function fix(a) { return Rickshaw.Fixtures.Number.formatKMBT_round(a);}
 
 		function visibleData(a) {
-			if (graph.window.xMin === undefined) {
+			if (that.graph.window.xMin === undefined) {
 				min = Number.MIN_VALUE;
-			} else { min = graph.window.xMin; }
-			if (graph.window.xMax === undefined) {
+			} else { min = that.graph.window.xMin; }
+			if (that.graph.window.xMax === undefined) {
 				max = Number.MAX_VALUE;
-			} else { max = graph.window.xMax; }
+			} else { max = that.graph.window.xMax; }
 
 			return $.map(a, function(d) { if (d.x >= min && d.x <= max) { return d.y;}  });
 		}
@@ -655,10 +679,10 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		left = [];
 		right = [];
 
-		for (var i = 0; i < graph.series.length; i++) { 
-			d = graph.series[i];
+		for (var i = 0; i < that.graph.series.length; i++) { 
+			d = that.graph.series[i];
 			obj = {};
-			obj.metric = that.metric[i].title;
+			obj.metric = that.metric[i].title || that.metric[i].id;
 			obj.colour = d.color;
 
 			obj.ydata = visibleData(d.data);
@@ -737,7 +761,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		if (that.hasRight) {
 			table.push("<tr><td colspan=99><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
 		} else {
-			if (graph.series.length >= 2) {
+			if (that.graph.series.length >= 2) {
 				table.push("<tr><td colspan=99>Click a metric to move it to the Right Axis</td></tr>");
 			}
 		}
@@ -787,7 +811,7 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 			}
 
 			graph = new Rickshaw.Graph({
-				element: document.getElementById(that.chart),
+				element: document.getElementById(that.graph),
 				width: that.width, 
 				height: that.height,
 				renderer: 'line', 
@@ -797,6 +821,8 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 			that.graph = graph;
 			extent = that.extents(data);
 			pextent = {min: extent[0] - that.padding, max: extent[1] + that.padding}
+			
+			
 
 			if (that.zeromin) { pextent.min = 0 }
 
@@ -881,12 +907,15 @@ Clizia.Graph.Rickshaw.Slider = function (args) {
 
 		if (!that.graphs) { throw "Clizia.Slider cannot render if no graphs" }
 
-		if (that.length == that.graphs.length && that.length >= 1) { 
-			that.slider = new Rickshaw.Graph.RangeSlider.Preview({
+		if (that.length == that.graphs.length && that.length >= 1) {
+			settings = {
 				graphs: that.graphs,
 				height: that.height, 
 				element: document.getElementById(that.element)
-			})
+			}
+			if (args) { if (args.onchange) { settings.onChangeDo = args.onchange }}
+			that.slider = new Rickshaw.Graph.RangeSlider.Preview(settings)
+
 			that.slider.render()
 		}
 	}

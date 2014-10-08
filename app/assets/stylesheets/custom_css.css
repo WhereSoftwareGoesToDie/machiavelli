@@ -8,6 +8,7 @@ input.error {
 	text-decoration: none;
 	background-color: #eeeeee;
 }
+.error, .waiting { padding-left: 60px}
 .hover { opacity: 0.5; visibility: hidden}
 .drag{ cursor: move; padding-right: 5px}
 .header-text { font-weight: bold; padding: 10px; color: #333}

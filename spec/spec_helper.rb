@@ -45,7 +45,7 @@ shared_examples 'a graph' do |metric, title|
 
 	range.each do |t|
 		time_css_button metric, title, "standard", t, ["#slider","#chart_0",".x_tick"]
-		time_css_button metric, title, "stacked",  t, [".rickshaw_graph","#chart_container",".y_axis"]
+		time_css_button metric, title, "stacked",  t, [".rickshaw_graph",".chart_container",".y_axis"]
 		time_css_button metric, title, "horizon",  t, [".horizon","#horizon_graph",".axis"]
 	end
 end
