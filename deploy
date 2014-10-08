@@ -29,6 +29,9 @@ def deploy env
 	run "git branch -D deploy_temp"
 end
 
+def reset
+	run "git branch -D deploy_temp"
+end
 
 def gvb_version
 	require 'git-version-bump'
@@ -94,6 +97,8 @@ when "staging"
 	deploy "staging"
 when "production"
 	deploy "production"
+when "reset"
+	reset
 when "upcoming_version" 
 	vb = ARGV[1]
 	unless vb
