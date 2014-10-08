@@ -1,7 +1,7 @@
 require 'net/http'
 
 # Class for extracting data from Graphite (https://github.com/graphite-project/graphite-web)
-class Graphite < Store
+class Store::Graphite < Store::Store
 
 	def initialize origin,settings
 		super

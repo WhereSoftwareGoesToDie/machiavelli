@@ -10,7 +10,7 @@
 <div id="clizia" style="position:relative; width: <%=width%>px"></div>
 
 <% def safe_array a; ("['"+a.join("','")+"']").html_safe; end
-colours = safe_array Horizon.get_colours
+colours = safe_array Graph::Horizon.get_colours
 %>
 
 <script>

@@ -8,8 +8,8 @@ class Metric
 		metric_id = get_id metric
 		@origin_id, @metric_id = metric_id.split(SEP)
 		@settings = origin_settings(@origin_id).last
-		@store = Object.const_get(@settings.store).new @origin_id, @settings
-		@source = Object.const_get(@settings.source).new @origin_id, @settings 
+		@store = "Store::#{@settings.store.titleize}".constantize.new @origin_id, @settings
+		@source = "Source::#{@settings.source.titleize}".constantize.new @origin_id, @settings 
 	end
 
 	# origin_id accessor function

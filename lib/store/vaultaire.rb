@@ -1,5 +1,5 @@
 # Storage for Vaultaire TSDB (https://github.com/anchor/vaultaire) via it's RESTful backend (https://github.com/anchor/sieste)
-class Vaultaire < Store
+class Store::Vaultaire < Store::Store
 	include Helpers
 
 	def initialize origin, settings

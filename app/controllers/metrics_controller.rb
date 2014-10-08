@@ -51,7 +51,7 @@ class MetricsController < ApplicationController
 		b.each do |x|
 			begin
 				origin, settings = Settings.origins.find{|o,k| o.to_s == x}
-				be = (Object.const_get settings.store).new origin, settings
+				be = "Store::#{settings.store}".constantize.new origin, settings
 				ret = be.search_metrics(search, { page: page.to_i, page_size: page_size.to_i})
 				ret.each do |r| 
 					m = Metric.new r

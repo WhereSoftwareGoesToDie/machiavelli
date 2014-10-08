@@ -3,7 +3,7 @@
 # Assumes an endpoint for a list of metrics, and an endpoint to request data for a specific metric
 #
 # This class can be used as a template for development of any custom classes to leverage JSON feeds of metrics
-class Simple < Store
+class Store::Simple < Store::Store
         def initialize origin, settings
 		super 
                 @base_url = mandatory_param :url, "store_settings"
