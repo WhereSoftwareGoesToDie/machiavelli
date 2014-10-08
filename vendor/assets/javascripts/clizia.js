@@ -209,7 +209,9 @@ Clizia.Graph.Horizon = function(args) {
 		machiavelli = context.machiavelli(window.location.origin);
 		for (n = 0; n < that.metric.length; n++ ) { 
 			m = that.metric[n]
-			datum.push(machiavelli.metric(m.id,m.titleize, updateProgress));
+			id = m.id;
+			title = m.title || m.id
+			datum.push(machiavelli.metric(id,title, updateProgress));
 		}
 
 		$(document).ajaxComplete(doneProgress);
