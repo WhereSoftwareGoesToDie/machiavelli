@@ -116,7 +116,7 @@ Clizia.Graph = function(args) {
 		function rmv_wait() { graph.find(".waiting").remove() }
 
 		if (args.state) { 
-			graph = $("#"+that.chart)
+			var graph = $("#"+that.chart)
 			if (args.state === "waiting") { 
 				graph.append("<div class='waiting'><i class='icon-spin'></i></div>")
 			} else if (args.state === "error") {
@@ -913,13 +913,10 @@ Clizia.Graph.Rickshaw.Slider = function (args) {
 				height: that.height, 
 				element: document.getElementById(that.element)
 			}
-			if (args.onchange) { settings.onChangeDo = args.onchange }
+			if (args) { if (args.onchange) { settings.onChangeDo = args.onchange }}
 			that.slider = new Rickshaw.Graph.RangeSlider.Preview(settings)
 
 			that.slider.render()
-		}
-		if (args.onchange) { 
-			args.onchange()
 		}
 	}
 
