@@ -68,12 +68,12 @@ gui  = {
 
 var settings = $.extend({}, divs, st, graph, gui)
 
-tchart = new Clizia.Graph.Rickshaw.Stacked(settings)
-tchart.render()
+chart = new Clizia.Graph.Rickshaw.Stacked(settings)
+chart.render()
 
 var intervalID;
 function startUpdates() { 
-	 intervalID = setInterval(function(d){  tchart.update()}, gon.step * 1000 )
+	 intervalID = setInterval(function(d){  chart.update()}, gon.step * 1000 )
 }
 function stopUpdates()  { 
 	clearInterval(intervalID); 
