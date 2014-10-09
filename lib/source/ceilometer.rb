@@ -1,5 +1,5 @@
 # Collector: https://github.com/anchor/ceilometer-publisher-vaultaire
-class Source::Ceilometer < Source
+class Source::Ceilometer < Source::Source
 	include Helpers
 
 	# Take a metric metadata string, and return a human readable title
@@ -15,7 +15,7 @@ class Source::Ceilometer < Source
 		if keys["counter_name"] then
 
 			# Create a Store object from the settings file to search metrics for us
-			store = "Store::#{@settings.store.titlize}".constantize.new @origin_id, @settings
+			store = "Store::#{@settings.store.titleize}".constantize.new @origin_id, @settings
 
 			if (keys["counter_name"].include? "network.") then
 				search = store.search_metrics "*memory*#{keys["instance_id"]}*"
