@@ -14,6 +14,31 @@ function doneProgress() {
 function fitSlider() {
 	if (typeof slider != "undefined" ) { slider.configure({width : new_width}); slider.render();}
 }
+// Oh dear...
+function general_removechart(metric,newurl) { 
+
+	//Rebuild slider, if exists
+	if (typeof slider === "object") { 
+		$.each($("#"+slider.element).children(), function(i,d) { d.remove() })
+		slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: charts.length})
+		$.each(charts, function(i,d) { slider.render({graphs: d.graph})})
+	}
+	//Remove listing from cache of select2 listings (allows researching)
+	if (filter_metrics_select) { 
+		var news2 = $.grep($("#filter_metrics_select").select2("data"), function(d) { return d.id != metric})
+		$("#filter_metrics_select").select2("data",news2)
+	}
+
+	//Remove li metric listing
+	$('*[data-metric="'+metric+'"]').parent().parent().remove()
+	if (charts.length === 0) { 
+		window.location.replace(window.location.origin)
+	}
+
+	//Finally, update location url
+	window.history.pushState(null,"Machiavelli",newurl)
+
+}
 
 function stopButtonClick() { 
         stopUpdates();

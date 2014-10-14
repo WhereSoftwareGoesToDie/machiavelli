@@ -7,6 +7,7 @@
 <div class="slider" id="slider"></div>
 <span id="zoomtoselected" class="no_link zoomtoselected"></span>
 <% @metrics.each_with_index do |m, index| %>
+	<div id="chart_<%=index%>_container">
 <div class="graph_title">
 	<h4>
 		<a href="#" data-toggle="tooltip-always-metric" data-html="true" 
@@ -17,7 +18,7 @@
 </div>
 
 <div id="<%="chart_#{index}"%>"></div>
-
+</div>
 <% end # @gon%>
 
 <script>
@@ -64,5 +65,20 @@ function startUpdates() {
 			}, gon.step * 1000 )
 		
 }
+function removechart(metric, newurl) { 
+	// remove dom object
+	var chart_id = $.grep(charts, function(d,i) { return d.metric.id == metric})[0].chart
+
+
+        $("#"+chart_id).parent().remove()
+        
+        //remove object from charts by object
+        rm = $.grep(charts, function(d) {return d.metric.id === metric})[0]
+        charts = $.grep(charts, function(d) { return d != rm })
+
+	// Throw to general functionality
+	general_removechart(metric, newurl)
+} 
+
 </script>
 
