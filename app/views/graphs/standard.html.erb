@@ -76,8 +76,16 @@ function removechart(metric, newurl) {
         rm = $.grep(charts, function(d) {return d.metric.id === metric})[0]
         charts = $.grep(charts, function(d) { return d != rm })
 
+
+	 //Rebuild slider, if exists
+        if (typeof slider === "object") { 
+                $.each($("#"+slider.element).children(), function(i,d) { d.remove() })
+                slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: charts.length})
+                $.each(charts, function(i,d) { slider.render({graphs: d.graph})})
+        }
+
 	// Throw to general functionality
-	general_removechart(metric, newurl)
+	general_removechart(metric, newurl, charts.length)
 } 
 
 </script>
