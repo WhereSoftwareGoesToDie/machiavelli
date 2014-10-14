@@ -66,6 +66,8 @@ gui  = {
 	clock: "<%= check_param(:clock, ["utc","local"] || ui_defaults("clock")) %>"
 } 
 
+<% if dckx %> gui.renderer = "xkcd"<% end %>
+
 var settings = $.extend({}, divs, st, graph, gui)
 
 chart = new Clizia.Graph.Rickshaw.Stacked(settings)
