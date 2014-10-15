@@ -29,6 +29,11 @@ function general_removechart(metric,newurl,length) {
 	//Remove li metric listing
 	$('*[data-metric="'+metric+'"]').parent().parent().remove()
 
+	//Remove metric from any other generated links on page (oh boy)
+	$.each($('a[href*="'+metric+'"]'), function(i,d) {
+		d.href = cleanURL(d.href,"metric="+metric)
+	})
+
 	//Finally, update location url
 	window.history.pushState(null,document.title,newurl)
 
@@ -39,6 +44,12 @@ $(window).bind('popstate', function(event){
       window.location = location.href
 })
 
+function cleanURL(url,rm_string) { 
+	url = url.replace(rm_string,"")
+	url = url.replace("&&","&")
+	url = url.replace("?&","?")
+	return url
+} 
 
 function stopButtonClick() { 
         stopUpdates();
