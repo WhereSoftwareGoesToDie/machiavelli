@@ -30,9 +30,15 @@ function general_removechart(metric,newurl,length) {
 	$('*[data-metric="'+metric+'"]').parent().parent().remove()
 
 	//Finally, update location url
-	window.history.pushState(null,"Machiavelli",newurl)
+	window.history.pushState(null,document.title,newurl)
 
 }
+
+// On back button popstate, reload the page. Uses history alterations, but actually invokes them
+$(window).bind('popstate', function(event){
+      window.location = location.href
+})
+
 
 function stopButtonClick() { 
         stopUpdates();
