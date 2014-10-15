@@ -29,6 +29,8 @@ class Source::Nagios < Source::Source
 			}
 		elsif meta["service"] == "mem" then
 			color = { "Used" => "#729fcf", "Cached" => "#fcaf3e", "Buffers" => "#fce84f", "Free" => "#8ae234"} #pnp4nagios
+		elsif meta["service"] == "neutron-L3_agents" then
+			color = { "l3_agents_alive" => "#54CA05", "l3_agents_dead" => "#2A6403", "routers_dead" => "#ff0000", "routers_alive" => "#ffeb00"}
 		end
 
 		color.each{|k,v| if meta["metric"].include? k then meta["color"] = v; end } if color
