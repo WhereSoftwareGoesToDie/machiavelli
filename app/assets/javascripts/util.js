@@ -14,6 +14,44 @@ function doneProgress() {
 function fitSlider() {
 	if (typeof slider != "undefined" ) { slider.configure({width : new_width}); slider.render();}
 }
+// Oh dear...
+function general_removechart(metric,newurl,length) { 
+
+	if (length === 0) { 
+		window.location.replace(window.location.origin)
+	}
+	//Remove listing from cache of select2 listings (allows researching)
+	if (filter_metrics_select) { 
+		var news2 = $.grep($("#filter_metrics_select").select2("data"), function(d) { return d.id != metric})
+		$("#filter_metrics_select").select2("data",news2)
+	}
+
+	//Remove li metric listing
+	$('*[data-metric="'+metric+'"]').parent().parent().remove()
+
+	//Remove metric from any other generated links on page (oh boy)
+	$.each($('a[href*="'+metric+'"]'), function(i,d) {
+		d.href = cleanURL(d.href,"metric="+metric)
+	})
+
+	//Finally, update location url
+	window.history.pushState({style:"removechart"},document.title,newurl)
+
+}
+
+// On back button popstate, reload the page. Uses history alterations, but actually invokes them
+$(window).bind('popstate', function(event){
+	if (event.originalEvent.state.style === "removechart") {
+		window.location = location.href
+	}
+})
+
+function cleanURL(url,rm_string) { 
+	url = url.replace(rm_string,"")
+	url = url.replace("&&","&")
+	url = url.replace("?&","?")
+	return url
+} 
 
 function stopButtonClick() { 
         stopUpdates();

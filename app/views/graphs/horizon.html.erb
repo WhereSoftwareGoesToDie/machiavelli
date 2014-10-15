@@ -26,9 +26,24 @@ colours = safe_array Graph::Horizon.get_colours
 		clock: gon.clock
 
 	})
-	chart.render()
+chart.render()
+
+	$.each(gon.metrics, function(i,d) { 
+		var sc = "horizon_close_"+i
+		$("span:contains('"+d.title+"')")
+			.filter(".title")
+			.append("<span id='"+sc+"' class='horizon_remove'></span>")
+		Clizia.Utils.removeURL(sc,d.removeURL)
+	})
 
 	function stopUpdates() { chart.context.stop(); }
 	function startUpdates() { chart.context.start(); } 
+	function removechart(metric,newurl) {
+		title = $.grep(chart.metric,function(d,i){return d.id == metric})[0].title
+		c = $("span:contains('"+title+"')").filter(".title").parent()
+		c.remove()
+		len = chart.metric.length
+		general_removechart(metric,newurl,len)
+	} 
 
 </script>

@@ -29,7 +29,7 @@ class GraphsController < ApplicationController
 		gon.metrics = []
 		@metrics = []
 
-		new_metrics.each do |metric|
+		new_metrics.each_with_index do |metric,i|
 			m = Metric.new(metric)
 			@metrics << m
 
@@ -40,7 +40,7 @@ class GraphsController < ApplicationController
 			g[:title]     = m.titleize
 			g[:metadata]  = m.metadata
 			g[:sourceURL] = m.get_metric_url start, stop, step
-			g[:removeURL] = rem_qs(:metric, metric)
+			g[:removeURL] = "javascript:removechart(\"#{metric}\", \"#{rem_qs(:metric, metric)}\")"
 		 #	g[:counter] = true if m.counter? ##TODO Incorporate vaultaire based metadata
 
 			gon.metrics << g

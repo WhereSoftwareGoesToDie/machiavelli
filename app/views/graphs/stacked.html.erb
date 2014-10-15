@@ -80,4 +80,14 @@ function startUpdates() {
 function stopUpdates()  { 
 	clearInterval(intervalID); 
 } 
+function removechart(metric, newurl) { 
+	if (chart.graph.series.length - 1 == 0) { 
+		window.location.replace(window.location.origin); return true
+	} 
+
+	index = $.map(chart.metric,function(d,i){return d.id}).indexOf(metric)
+	chart.graph.series.splice(index,1)
+	chart.graph.render()
+	general_removechart(metric,newurl,chart.graph.series.length)
+} 
 </script>

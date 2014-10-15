@@ -48,4 +48,11 @@ input.error {
 		max-width: 80%
 	} 
 }
-
+.horizon_remove { 
+	text-shadow:none;
+	float:right;
+}
+.horizon_remove .icon-remove { color: #333 }
+.horizon .title{
+	width: 630px;
+}
