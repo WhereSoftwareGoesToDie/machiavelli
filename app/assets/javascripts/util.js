@@ -1,16 +1,3 @@
-function initProgress() { 
-	nanobar = new Nanobar({bg: "#356895" ,id:"#progress"})
-	if (typeof complete === 'undefined') { _complete = 0 }
-} 
-function updateProgress() {
-	if (typeof complete === 'undefined') { _complete += 1; c = _complete} else { c = complete}  
-	a = (c / gon.metrics.length ) * 100
-	if (a < 100) { nanobar.go(a) }
-	if (a == 100) { doneProgress() }
-}
-function doneProgress() { 
-	nanobar.go(100)
-} 
 function fitSlider() {
 	if (typeof slider != "undefined" ) { slider.configure({width : new_width}); slider.render();}
 }
