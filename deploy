@@ -21,6 +21,9 @@ end
 def deploy env
 	branch = git_branch
 	run "git checkout -b deploy_temp"
+	run "git version-bump show > .gvb_version"
+	run "git add #{@version_file}"
+	run "git commit #{@version_file} -m 'update #{@version_file}'"
 	run "bundle exec rake assets:precompile", { "RAILS_ENV" => env }
 	run "git add public/assets"
 	run "git commit public/assets -m'compile assets'"

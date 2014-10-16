@@ -49,7 +49,11 @@ module Layouts
 			rescue
 				v = File.read(".gvb_version") if File.exists?(".gvb_version")
 			end
-			link_to v, "https://github.com/anchor/machiavelli/releases/tag/v#{v}", target: "blank" if v
+			# If we got a version then use it to construct a link to the github tag of the same
+			if v
+				l = link_to v, "https://github.com/anchor/machiavelli/releases/tag/v#{v}", target: "blank" if v
+				return "version #{l} ".html_safe
+			end
 		end
 
 		# Flash message styling based on the error level
