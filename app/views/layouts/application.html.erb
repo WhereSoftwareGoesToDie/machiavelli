@@ -43,7 +43,9 @@
 					<%= render partial: "partial/navbar/clock_changer" %>
 					<%= render partial: "partial/navbar/autoplay" if get_param(:time) == "relative" && get_param(:stop) == "now" %>
 					<%= render partial: "partial/navbar/graphs" %>
-					<%= render partial: "partial/navbar/zeromin" %>
+					<% unless get_param(:graph) == "horizon" %>
+						<%= render partial: "partial/navbar/zeromin" %>
+					<% end %>
 					<% if get_param(:time) == "absolute" %> 
 					<%=   render partial: "partial/navbar/time_absolute" %>
 					<% else %> 
