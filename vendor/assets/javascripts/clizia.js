@@ -718,15 +718,6 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		}
 
 
-		// Stacked graphs will order last to first, so flip the legend, for sanity
-		if (that.stack) { left = left.reverse(); right = right.reverse()  }
-
-		if (left[0]) { table.push(rtd("Left"))  }
-		left.forEach(function(d){ row = tableize(d); table.push(row) })
-
-		if (right[0]) { table.push("<tr><td>&nbsp;</td></tr>"); table.push(rtd("Right"))}
-		right.forEach(function(d){ row = tableize(d); table.push(row) })
-
 		function tableize(e) { //arr.forEach(function(d) { 
 			var t = [];
 			t.push("<tr>");
@@ -754,6 +745,16 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 			t.push("</tr>");
 			return t.join("");
 		};
+
+		// Stacked graphs will order last to first, so flip the legend, for sanity
+		if (that.stack) { left = left.reverse(); right = right.reverse()  }
+
+		if (left[0]) { table.push(rtd("Left"))  }
+		left.forEach(function(d){ row = tableize(d); table.push(row) })
+
+		if (right[0]) { table.push("<tr><td>&nbsp;</td></tr>"); table.push(rtd("Right"))}
+		right.forEach(function(d){ row = tableize(d); table.push(row) })
+
 
 		if (that.hasRight) {
 			table.push("<tr><td colspan=99><a href='"+reset+"'>Reset Left/Right Axis</a></td></tr>");
