@@ -18,7 +18,8 @@ def run a, env={}
 	end
 end
 
-def deploy env
+def deploy env, server=nil
+	server = env if server.nil?
 	branch = git_branch
 	run "git checkout -b deploy_temp"
 	run "git version-bump show > .gvb_version"
@@ -27,7 +28,7 @@ def deploy env
 	run "bundle exec rake assets:precompile", { "RAILS_ENV" => env }
 	run "git add public/assets"
 	run "git commit public/assets -m'compile assets'"
-	run "git push deploy_#{env} deploy_temp:master --force"
+	run "git push deploy_#{server} deploy_temp:master --force"
 	run "git checkout #{branch}"
 	run "git branch -D deploy_temp"
 end
@@ -97,9 +98,9 @@ end
 
 case ARGV[0]
 when "staging" 
-	deploy "staging"
+	deploy "staging", ARGV[1]
 when "production"
-	deploy "production"
+	deploy "production", ARGV[1]
 when "reset"
 	reset
 when "upcoming_version" 
