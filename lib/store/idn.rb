@@ -7,8 +7,7 @@ class Store::Idn < Store::Store
 
 	def get_metrics_list
 		list = []
-
-		Dir[@data_folder+"/*"].each{|f|
+		Dir[@data_folder+"/*/*"].each{|f|
 			d = JSON.parse(File.read(f))
 			site = nameparse(d.observations.header.first.name)
 			measures = d.observations.data.first.map{|k,v| k}.select{|m| METS.include? m}
@@ -30,12 +29,10 @@ class Store::Idn < Store::Store
         end
 
 
-	def get_metric_url _,_,_,_
-		return "file:///#{Rails.root}/#{@data_folder}"
-	end
-
-	def te msg
-		puts "#{Time.now().to_f}#{ "  "+msg if msg}"
+	def get_metric_url m,_,_,_
+		name = m.id.split(SEP).last.split(sep).first
+		id = idn_sitemap[name].first.split("/")[2]
+		return "files/#{id}"
 	end
 
 	def get_metric m, start=nil, stop=nil, step=nil
@@ -47,16 +44,11 @@ class Store::Idn < Store::Store
 
 
 		blob = []; zone = "";
-		te "pre loop"
-
 		idn_sitemap[site].each { |f|
-			te "start #{f}"
 			blob += JSON.parse(File.read(f)).observations.data
 			zone = JSON.parse(File.read(f)).observations.header.first.time_zone
-			te "end #{f}"
 		}
 
-		te "end loop"
 		offset = "+10" if zone == "EST"
 		offset = "+11" if zone == "EDT"
 
@@ -103,13 +95,10 @@ def nameparse n; n.gsub(" ","").gsub("-",""); end
 def idn_sitemap
 	return @map if @map
 	map = {}
-	te "start idnsitemap"
-	Dir[@data_folder+"/*"].each{|f|
-		te "inner loop #{f}"
+	Dir[@data_folder+"/*/*"].each{|f|
 		site = nameparse(JSON.parse(File.read(f)).observations.header.first.name)
 		map[site] ? map[site].push(f) : map[site] = [f]
 	}
-	te "end idnsitemap"
 	@map = map
 	map
 end
