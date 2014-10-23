@@ -13,7 +13,9 @@ class Store::Idn < Store::Store
 			measures = d.observations.data.first.map{|k,v| k}.select{|m| METS.include? m}
 			list.push( measures.map{|m| "#{site}#{sep}#{m}"})
 		}
-		
+	
+		set_idn_sitemap
+			
 		list.flatten.uniq
 	end
 
@@ -31,20 +33,20 @@ class Store::Idn < Store::Store
 
 	def get_metric_url m,_,_,_
 		name = m.id.split(SEP).last.split(sep).first
-		id = idn_sitemap[name].first.split("/")[2]
+		id = idn_sitemap(name).first.split("/")[2]
 		return "files/#{id}"
 	end
 
 	def get_metric m, start=nil, stop=nil, step=nil
 		site, met = m.id.split(SEP).last.split(sep)
 
-		unless idn_sitemap.map{|k,v| k}.include? site then
+		unless idn_sitemap(site).length > 1 then
 			return {error: "Site #{site} does not exist"}.to_json
 		end
 
 
 		blob = []; zone = "";
-		idn_sitemap[site].each { |f|
+		idn_sitemap(site).each { |f|
 			blob += JSON.parse(File.read(f)).observations.data
 			zone = JSON.parse(File.read(f)).observations.header.first.time_zone
 		}
@@ -92,17 +94,18 @@ METS = ["delta_t","gust_kmh","rain_trace","rel_hum","wind_spd_kmh","air_temp","a
 
 def nameparse n; n.gsub(" ","").gsub("-",""); end
 
-def idn_sitemap
-	return @map if @map
-	map = {}
+def set_idn_sitemap
+	r = redis_conn
 	Dir[@data_folder+"/*/*"].each{|f|
 		site = nameparse(JSON.parse(File.read(f)).observations.header.first.name)
-		map[site] ? map[site].push(f) : map[site] = [f]
+		r.sadd "#{REDIS_KEY}BOM:IDN_SITEMAP:#{site}",f 
 	}
-	@map = map
-	map
 end
-def sep; "-"; end
 
+def idn_sitemap site
+	redis_conn.smembers "#{REDIS_KEY}BOM:IDN_SITEMAP:#{site}"
+end
+
+def sep; "-"; end
 
 end
