@@ -650,11 +650,20 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		
 		var legend = document.getElementById(that.legend);
 
+		function median(a) { 
+			a.sort(function(a,b){return a - b});
+			h = Math.floor(a.length/2)
+			if (a.length % 2) { n = a[h]; m = n }
+			else { n = a[h-1]; m = a[h] }
+			return (n + m) / 2.0 
+		} 
+
 		function arr_f(a) { 
-			r = {avg: 0, min: 0, max: 0, std: 0};
+			r = {avg: 0, median: 0, min: 0, max: 0, std: 0};
 			t = a.length;
 			r.max = Math.max.apply(Math, a);
 			r.min = Math.min.apply(Math, a);
+			r.median = median(a); 	
 			for(var m, s = 0, l = t; l--; s += a[l]);
 			for(m = r.mean = s / t, l = t, s = 0; l--; s += Math.pow(a[l] - m, 2));
 			return r.deviation = Math.sqrt(r.variance = s / t), r;
@@ -708,7 +717,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		function rtd(side) {
 			c = [];
 
-			["&nbsp","mean","std.deviation","min, max","&nbsp"].forEach(function(d){
+			["&nbsp","mean","median","std.deviation","min, max","&nbsp"].forEach(function(d){
 				c.push("<td align='right'>"+d+"</td>");
 			});
 
@@ -735,6 +744,7 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 				"' data-toggle='tooltip-shuffle' data-original-title='"+
 				e.tooltip+"'>"+e.metric+"</a> <div id='"+e.show_url+"' class='metric_url' style='display:inline'></div></td>");
 			el.push(databit(fix(y.mean), y.mean));
+			el.push(databit(fix(y.median), y.median));
 			el.push(databit(fix(y.deviation), y.deviation));
 			el.push(databit(fix(y.min) + ", " + fix(y.max), y.min +" - "+ y.max));
 			el.push("<td style='width: 10px'><div id='"+e.remove_url+"' style='display:inline'></div></td>");
