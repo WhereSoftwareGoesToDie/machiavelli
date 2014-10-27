@@ -1,6 +1,9 @@
 # Parent Collector Source class
 # Use this class directly when the source does not need any overrides
 class Source::Source
+
+        include Helpers
+
 	def initialize origin_id, settings
 		@origin_id = origin_id
 		@settings = settings
