@@ -26,11 +26,9 @@
 	       	%>
 			<tr <%="class=alert-danger" if m%>>
 				<%[id,settings.title,settings.store,settings.source].each{|s| td s}%>
-			<% settings.sort.each do |k,v| 
-				unless v.is_a? String then
-				%><%td v.map{|a,b| "#{a}: #{b}"}.join("<br>")%>
-			<%      end
-			end%></tr>
+			<% s = settings_suppress(settings);
+			   td s.sort.map{ |k,v| "#{k}: #{v}"}.join("<br/>")
+			%></tr>
 			<% if m then %>
 				<tr <%="class=alert-danger" if m%>><td> - Error Encountered:</td><td colspan=4><%= m %></td></tr>
 			<% end %>

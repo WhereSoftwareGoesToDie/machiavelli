@@ -245,5 +245,11 @@ module Layouts
 				end )
 			eval("#{mult}.#{time_scale}.ago.to_i")
 		end
+
+		def settings_suppress settings
+			mock_origin = "ABC"
+			store = "Store::#{settings.store.titleize}".constantize.new mock_origin, settings
+			return store.supress_settings
+		end
 	end
 end
