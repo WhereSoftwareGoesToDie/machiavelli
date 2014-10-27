@@ -67,6 +67,20 @@ class Store::Store
                 keys
         end
 
+	# A list of store settings keys that should NEVER have their settings written out to the interface.
+	def hidden_keys
+		["password"]
+	end
+
+	# When parsing the settings file for the settings modal, suppress certain information
+	def supress_settings
+		hide = hidden_keys.map{|k| k.to_sym}
+		sett = @settings.store_settings.to_a.map do |k,v|
+			v = "*********" if hide.include? k
+			[k,v]
+		end
+		sett
+	end
 end
 
 # Stores have the own errors!
