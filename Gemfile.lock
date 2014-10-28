@@ -69,7 +69,7 @@ GEM
     execjs (2.2.1)
     ffi (1.9.3)
     formatador (0.2.5)
-    git-version-bump (0.9.1)
+    git-version-bump (0.13.1)
     gon (5.1.0)
       actionpack (>= 2.3.0)
       json
