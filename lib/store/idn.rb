@@ -1,5 +1,7 @@
 # IDN Datasource
 # From Bureau of Meteorology JSON outputs of Latest Observations
+# e.g. link at bottom of http://www.bom.gov.au/products/IDN60901/IDN60901.94759.shtml
+#     -> http://www.bom.gov.au/fwo/IDN60901/IDN60901.94759.json
 # Assumes a list of json files in a directory called @data_folder
 # 
 # Suggestion: place the @data_folder in a subfolder of public/ and use nginx's autoindex to serve the folder for debugging, etc
@@ -64,7 +66,9 @@ class Store::Idn < Store::Store
 		end
 
 
-		blob = []; zone = "";
+		blob = []
+		zone = ""
+
 		idn_sitemap(site).each { |f|
 			blob += JSON.parse(File.read(f)).observations.data
 			zone = JSON.parse(File.read(f)).observations.header.first.time_zone
