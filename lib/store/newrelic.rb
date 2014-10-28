@@ -59,7 +59,7 @@ class Store::Newrelic < Store::Store
 			metrics.map{|a| a.tr("/","_").tr(":",".")}
 			       .select{|a| !a.include? "{" }
 
-		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
+		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, SocketError => e
 			raise Store::Error, "Error retreiving new relic metrics list: #{e}"
 		end
         end
@@ -88,7 +88,7 @@ class Store::Newrelic < Store::Store
 		
 			return stream
 			
-		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
+		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, SocketError => e
 			raise Store::Error, "Error retreiving new relic metric #{m}: #{e}"
 		end
 
