@@ -19,9 +19,13 @@ class Store::Idn < Store::Store
 		@data_folder = mandatory_param :data_folder, "store_settings"
 	end
 
+	def data_files
+		Dir[@data_folder+"/**/*"].reject{|f| File.directory? f}
+	end
+
 	def get_metrics_list
 		list = []
-		Dir[@data_folder+"/*/*"].each{|f|
+		data_files.each{|f|
 			d = JSON.parse(File.read(f))
 			site = nameparse(d.observations.header.first.name)
 			measures = d.observations.data.first.map{|k,v| k}.select{|m| METS.include? m}
@@ -34,7 +38,7 @@ class Store::Idn < Store::Store
 	end
 
 
- # In lieu of pinging a href, confirm the existance of the file
+	# In lieu of pinging a href, confirm the existance of the file
         def is_up?
                 File.exists?(@data_folder)
         end
@@ -111,7 +115,7 @@ def nameparse n; n.gsub(" ","").gsub("-",""); end
 
 def set_idn_sitemap
 	r = redis_conn
-	Dir[@data_folder+"/*/*"].each{|f|
+	data_files.each{|f|
 		site = nameparse(JSON.parse(File.read(f)).observations.header.first.name)
 		r.sadd "#{REDIS_KEY}BOM:IDN_SITEMAP:#{site}",f 
 	}
