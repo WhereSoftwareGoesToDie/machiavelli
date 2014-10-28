@@ -1,3 +1,17 @@
+# IDN Datasource
+# From Bureau of Meteorology JSON outputs of Latest Observations
+# Assumes a list of json files in a directory called @data_folder
+# 
+# Suggestion: place the @data_folder in a subfolder of public/ and use nginx's autoindex to serve the folder for debugging, etc
+#
+# sample config:
+#
+# location /files {
+#        root /path/to/machiavelli/public;
+#        autoindex on;
+#    }
+ 
+
 class Store::Idn < Store::Store
 
 	def initialize origin,settings
