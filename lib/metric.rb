@@ -27,6 +27,11 @@ class Metric
 		@source
 	end
 
+	# store accessor function
+	def store
+		@store
+	end
+
 	# Get the human readable metric title from the available metadata, and prepend the title, or the origin_id
 	def titleize
 		if @title.nil?
