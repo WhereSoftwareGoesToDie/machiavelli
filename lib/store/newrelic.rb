@@ -56,7 +56,8 @@ class Store::Newrelic < Store::Store
 				}
 			}
 
-			metrics.each{|a| a.gsub("/","_")}
+			metrics.map{|a| a.tr("/","_").tr(":",".")}
+			       .select{|a| !a.include? "{" }
 
 		rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
 			raise Store::Error, "Error retreiving new relic metrics list: #{e}"
@@ -65,7 +66,7 @@ class Store::Newrelic < Store::Store
 
         def get_metric_url m, start=nil, stop=nil, step=nil
 		metric, sub_type = parse_newrelic m
-		metric = metric.tr("_","/")
+		metric = metric.tr("_","/").tr(".",":")
 		uri = "#{@newrelic_url}/#{@application_id}/metrics/data.json?names=#{metric}"
 		return uri
 	end
