@@ -34,7 +34,8 @@ class Store::Idn < Store::Store
 	def get_metric_url m,_,_,_
 		name = m.id.split(SEP).last.split(sep).first
 		id = idn_sitemap(name).first.split("/")[2]
-		return "files/#{id}"
+		dir = @data_folder.gsub("public/","")
+		return "#{dir}/#{id}"
 	end
 
 	def get_metric m, start=nil, stop=nil, step=nil

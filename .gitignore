@@ -37,4 +37,3 @@ lib/extensions
 # Ignore special settings files for specs
 spec/*.yml
 public/files/*
-vendor/bundle

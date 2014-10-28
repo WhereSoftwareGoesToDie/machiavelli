@@ -1,7 +1,0 @@
-<ul><%@files.each {|f| 
-	g = f.to_s.gsub("public/","/")
-	nice = g.gsub("/files/","")
-	nice.sub!(params[:site]+"/","") if params[:site]%>
-<li><%= link_to nice, g %></li>
-<% } %>
-</ul>

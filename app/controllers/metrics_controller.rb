@@ -80,10 +80,4 @@ class MetricsController < ApplicationController
 		end
 		
 	end
-
-	def files
-		site = params[:site] || "*"
-		@files = Dir.glob("public/files/#{site}/*").sort
-		render layout: false
-	end
 end

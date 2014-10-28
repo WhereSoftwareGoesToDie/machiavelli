@@ -9,7 +9,4 @@ Machiavelli::Application.routes.draw do
 
   get "metric" => "metrics#get", as: "get_metric"
   get "search" => "metrics#list", as: "list_metric"
-
-  get "files" => "metrics#files", as: "list_files"
-  get "files/:site" => "metrics#files", as: "list_files2"
 end
