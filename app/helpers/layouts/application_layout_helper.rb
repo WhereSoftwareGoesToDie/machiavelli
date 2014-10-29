@@ -247,9 +247,7 @@ module Layouts
 		end
 
 		def settings_suppress settings
-			mock_origin = "ABC"
-			store = "Store::#{settings.store.titleize}".constantize.new mock_origin, settings
-			return store.supress_settings
+			return (init_store settings.store, "ABC", settings).supress_settings
 		end
 	end
 end

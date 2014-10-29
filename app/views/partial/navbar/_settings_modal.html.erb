@@ -26,7 +26,8 @@
 	       	%>
 			<tr <%="class=alert-danger" if m%>>
 				<%[id,settings.title,settings.store,settings.source].each{|s| td s}%>
-			<% s = settings_suppress(settings);
+			<% begin; s = settings_suppress(settings); rescue Store::Error
+				s = []; end
 			   td s.sort.map{ |k,v| "#{k}: #{v}"}.join("<br/>")
 			%></tr>
 			<% if m then %>
