@@ -6,12 +6,12 @@ module Helpers
 
 	# Wrapper for getting json, with relevant error message
 	def json_metrics_list uri, args={}
-		get_json uri, args, "Error retriving #{@store} metrics list"
+		get_json uri, args, "Error retrieving #{@settings.title} #{@settings.store} metrics list"
 	end
 
 	# Wrapper for getting json, with relevant error message
 	def json_metrics uri, args={}
-		get_json uri, args, "Error retriving #{@store} metric"
+		get_json uri, args, "Error retrieving #{@settings.title} #{@settings.store} metric"
 	end
 
 	# Test if a URI is responding
@@ -99,9 +99,10 @@ module Helpers
 
 	# For a given key, ensure it exists in the Settings hash. Fail if this is not the case
 	def mandatory_param p, sub=nil
+		raise Store::Error, "Mandatory configuration #{p} not found in section #{sub} for #{@settings.title} origin" unless @settings[sub]
 		param = sub ? @settings[sub][p.to_sym] : @settings[p.to_sym]
 		if param.nil?
-			raise Store::Error, "Must provide #{p} value"
+			raise Store::Error, "Must provide mandatory configuration value for #{p} in #{@settings.title} #{@settings.store}"
 		else
 			param
 		end
