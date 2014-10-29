@@ -113,7 +113,7 @@ class Store::Vaultaire < Store::Store
                 end
 
                 if data.empty? then
-                        raise Store::Error, "No data returned from sieste query"
+                        raise Store::Error, "No data returned from sieste query for #{m.title}"
                 end
 
                 if stop - start == step then
