@@ -117,5 +117,23 @@ module Helpers
 		end
 	end
 
+	# Library initaliziation helper
+	def init_store name, origin=nil, settings={}
+		init_lib "Store", name, origin, settings
+	end
+
+	def init_source name, origin=nil, settings={}
+		init_lib "Source", name, origin, settings
+	end
+
+	def init_lib type, name, origin, settings
+		name = name.titleize
+		file = File.join(Rails.root, "lib", type.downcase, name.downcase+".rb") 
+		unless File.exists? file
+			raise Store::Error, "Library file #{file} does not exist. Check settings."
+		end
+
+		return "#{type}::#{name}".constantize.new origin, settings
+	end
 end
 
