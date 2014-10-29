@@ -122,7 +122,7 @@ module Helpers
 		init_lib "Store", name, origin, settings
 	end
 
-	def init_source origin=nil, settings={}
+	def init_source name, origin=nil, settings={}
 		init_lib "Source", name, origin, settings
 	end
 
