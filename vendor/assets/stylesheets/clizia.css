@@ -143,6 +143,24 @@ background:transparent;
 color:#000;
 }
 
+.overlay-name {
+  position: absolute;
+  font-size: 24px;
+  text-align: left;
+  width: 150px;
+  left: 20px;
+  bottom: 20px;
+  z-index: 200;
+}
+
+.overlay-number {
+  position: absolute;
+  font-size: 48px;
+  font-weight: bold;
+  right: 20px;
+  bottom: 20px;
+  z-index: 200;
+}
 .horizon .title,.horizon .value {
 font-weight:700;
 text-shadow:-1px 0   rgba(255,255,255,0.5),

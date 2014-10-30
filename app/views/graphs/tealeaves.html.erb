@@ -1,0 +1,88 @@
+<%= javascript_include_tag "rickshaw" %>
+<%= stylesheet_link_tag    "rickshaw" %>
+<%= javascript_include_tag "clizia" %>
+<%= stylesheet_link_tag    "clizia" %>
+<%= include_gon %>
+
+<% @metrics.each_with_index do |m, index| %>
+	<div id="<%="chart_#{index}"%>"></div>
+	<div id="metric_<%=index%>_url" class="metric_url leaf"></div>
+	<div id="remove_metric_<%=index%>" class="remove_metric leaf" style="float: none;"></div>
+<style>
+.leaf { 
+	float: none !important; margin-right: 0px;
+}
+.remove_metric { float: none } 
+</style>
+
+<% end # @gon%>
+
+<script>
+
+charts = []
+
+Clizia.Utils.ProgressBar(gon.metrics.length);  //instantiate a progress bar
+
+config = { 
+	base: gon.base, 
+}
+
+start = gon.start; stop = gon.stop; step = gon.step
+for (n = 0; n < gon.metrics.length; n++) { 
+	gon.metrics[n].feed =  metricURL(gon.metrics[n].feed_base, start, stop, step)
+
+	setting = {  
+		metric: gon.metrics[n], 
+		chart: "chart_"+n, 
+		showurl: "metric_"+n+"_url",
+		removeurl: "remove_metric_"+n
+	}
+
+	chart = new Clizia.Graph.Rickshaw.Tealeaves($.extend(config, setting))
+
+	chart.render()
+	charts.push(chart)
+}
+
+var intervalID;
+function stopUpdates() { clearInterval(intervalID);} 
+function startUpdates() { 
+	intervalID = setInterval(function(d){ 
+		charts.forEach(function(d,i) {
+			span = stop - start
+			now =  +new Date() / 1000
+
+			start = now - span
+			stop = now
+
+			feed = metricURL(gon.metrics[i].feed_base, start, stop, step)
+			d.update({metric: {feed: feed}})
+		})
+	}, gon.step * 1000 )
+}
+
+function removechart(metric, newurl) { 
+	// remove dom object
+	var chart_id = $.grep(charts, function(d,i) { return d.metric.id == metric})[0].chart
+
+
+        $("#"+chart_id).parent().remove()
+        
+        //remove object from charts by object
+        rm = $.grep(charts, function(d) {return d.metric.id === metric})[0]
+        charts = $.grep(charts, function(d) { return d != rm })
+
+
+	//Rebuild slider, if exists
+	if (typeof slider === "object") { 
+                $.each($("#"+slider.element).children(), function(i,d) { d.remove() })
+                slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: charts.length})
+                $.each(charts, function(i,d) { slider.render({graphs: d.graph})})
+        }
+
+	// Throw to general functionality
+	general_removechart(metric, newurl, charts.length)
+} 
+
+</script>
+
