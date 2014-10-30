@@ -75,3 +75,5 @@ function metric_sort() {
                 }
         });
 }
+
+function metricURL(feed,start,stop,step) { return feed+"&start="+start+"&stop="+stop+"&step="+step }

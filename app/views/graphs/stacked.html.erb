@@ -43,13 +43,11 @@ divs = {
 	slider: slider
 }
 
-// query bounds
-st  = { 
-	start: gon.start, 
-	stop:  gon.stop, 
-	step:  gon.step
-}
+start = gon.start; stop = gon.stop; step = gon.step; 
 
+for (n = 0; n < gon.metrics.length; n++) { 
+	gon.metrics[n].feed = metricURL(gon.metrics[n].feed_base, start, stop, step )
+}
 
 // Graph objects
 graph = {
@@ -60,6 +58,7 @@ graph = {
 	left_links:  left_links,
 	dynamic: true
 }
+
 // Extra GUI
 gui  = {
 	renderer: "<%= check_param(:render, ["line","area","bar"]) || "line" %>",
@@ -70,14 +69,26 @@ gui  = {
 
 <% if dckx %> gui.renderer = "xkcd"<% end %>
 
-var settings = $.extend({}, divs, st, graph, gui)
+var settings = $.extend({}, divs, graph, gui)
 
-chart = new Clizia.Graph.Rickshaw.Stacked(settings)
-chart.render()
+schart = new Clizia.Graph.Rickshaw.Stacked(settings)
+schart.render()
+
 
 var intervalID;
 function startUpdates() { 
-	 intervalID = setInterval(function(d){  chart.update()}, gon.step * 1000 )
+	 intervalID = setInterval(function(d){  
+		span = stop - start
+		now = +new Date() / 1000.0
+		start = now - span
+		stop = now
+
+		for (n = 0; n < gon.metrics.length; n++) { 
+			gon.metrics[n].feed = metricURL(gon.metrics[n].feed_base, start, stop, step )
+		}
+		
+		schart.update({metric: gon.metrics})
+	}, gon.step * 1000 )
 }
 function stopUpdates()  { 
 	clearInterval(intervalID); 
