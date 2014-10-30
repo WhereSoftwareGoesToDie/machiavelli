@@ -28,7 +28,6 @@ slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: gon.metrics.le
 
 Clizia.Utils.ProgressBar(gon.metrics.length);  //instantiate a progress bar
 
-
 config = { 
 	base: gon.base, 
 	clock: gon.clock,
@@ -36,7 +35,6 @@ config = {
 	dynamic: true,
 	zeromin: <%= to_bool(check_param(:zeromin, ["on","off"] || false)) %>
 }
-
 
 start = gon.start; stop = gon.stop; step = gon.step
 for (n = 0; n < gon.metrics.length; n++) { 
@@ -50,32 +48,29 @@ for (n = 0; n < gon.metrics.length; n++) {
 	}
 
 	setting.metric.feed =  metricURL(m.feed_base, start, stop, step)
-
 	chart = new Clizia.Graph.Rickshaw.Standard($.extend(config, setting))
 
 	chart.render()
 	charts.push(chart)
 }
 
-
-
 var intervalID;
 function stopUpdates() { clearInterval(intervalID);} 
 function startUpdates() { 
 	intervalID = setInterval(function(d){ 
-			charts.forEach(function(d,i) { 
-				span = stop - start
-				now =  +new Date() / 1000 
-		
-				start = now - span
-				stop = now 
-					
-				feed = metricURL(gon.metrics[i].feed_base, start, stop, step)
-				d.update({metric: {feed: feed}})
-				})
-			}, gon.step * 1000 )
-		
+		charts.forEach(function(d,i) {
+			span = stop - start
+			now =  +new Date() / 1000
+
+			start = now - span
+			stop = now
+
+			feed = metricURL(gon.metrics[i].feed_base, start, stop, step)
+			d.update({metric: {feed: feed}})
+		})
+	}, gon.step * 1000 )
 }
+
 function removechart(metric, newurl) { 
 	// remove dom object
 	var chart_id = $.grep(charts, function(d,i) { return d.metric.id == metric})[0].chart
@@ -88,8 +83,8 @@ function removechart(metric, newurl) {
         charts = $.grep(charts, function(d) { return d != rm })
 
 
-	 //Rebuild slider, if exists
-        if (typeof slider === "object") { 
+	//Rebuild slider, if exists
+	if (typeof slider === "object") { 
                 $.each($("#"+slider.element).children(), function(i,d) { d.remove() })
                 slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: charts.length})
                 $.each(charts, function(i,d) { slider.render({graphs: d.graph})})

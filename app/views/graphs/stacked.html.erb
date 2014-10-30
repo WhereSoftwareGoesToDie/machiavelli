@@ -79,7 +79,7 @@ var intervalID;
 function startUpdates() { 
 	 intervalID = setInterval(function(d){  
 		span = stop - start
-		now = +new Date() / 1000
+		now = +new Date() / 1000.0
 		start = now - span
 		stop = now
 
