@@ -28,8 +28,10 @@ function general_removechart(metric,newurl,length) {
 
 // On back button popstate, reload the page. Uses history alterations, but actually invokes them
 $(window).bind('popstate', function(event){
-	if (event.originalEvent.state.style === "removechart") {
-		window.location = location.href
+	if (!(event.originalEvent.state === null)) {
+		if (event.originalEvent.state.style === "removechart") {
+			window.location = location.href
+		}
 	}
 })
 
