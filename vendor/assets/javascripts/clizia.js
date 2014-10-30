@@ -250,15 +250,6 @@ Clizia.Graph.Rickshaw = function (args) {
 
 	that.init = function(args) { 
 		//TODO arg handler? args key then error if 404 then assignment?
-		if (!args.start) throw "Clizia.Graph.Rickshaw needs a start time"
-		that.start = args.start
-
-		if (!args.stop)  throw "Clizia.Graph.Rickshaw needs a stop time"
-		that.stop = args.stop
-
-		if (!args.step)  throw "Clizia.Graph.Rickshaw needs a step interval"
-		that.step = args.step
-
 		container = $("#"+that.chart)
 		container.addClass("chart_container")
 
@@ -266,6 +257,7 @@ Clizia.Graph.Rickshaw = function (args) {
 		container.append("<div id='"+that.yaxis+"' class='y_axis'></div>")
 
 		that.graph = Clizia.Utils.uniq_id("graph")
+		that.graph_id = that.graph
 		container.append("<div id='"+that.graph+"' class='chart'></div>")
 
 		that.y2axis = args.y2axis
@@ -288,8 +280,8 @@ Clizia.Graph.Rickshaw = function (args) {
 			for (n = 0; n < that.metric.length; n++ ) {
 				m = that.metric[n]
 				m.metadata = m.metadata || {}
-				if (!m.feed) {
-					throw "Metric '"+m.id+"' has no feed!"
+				if (!m.feed && !m.data) {
+					throw "Metric '"+m.id+"' has no data or feed!"
 				}
 
 				// Expect metric and color to either be Object, String; or [Object], [String]
@@ -299,7 +291,7 @@ Clizia.Graph.Rickshaw = function (args) {
 		} else {
 			that.metric.metadata = that.metric.metadata || {}
 
-			if (!that.metric.feed) { throw "Metric "+that.metric.id+" has no feed!" }
+			if (!that.metric.feed && !that.metric.data) { throw "Metric "+that.metric.id+" has no data or feed!" }
 			that.metric.color = that.metric.metadata.color || args.color || next_color();
 		} 
 		
@@ -313,21 +305,6 @@ Clizia.Graph.Rickshaw = function (args) {
 
 		that.state({state: "waiting"})
 	} 
-
-	that.feed = function(args) { 
-		args = args || {}
-		index = args.index || 0
-		if (is_array(that.metric)) {
-			feed = args.feed || that.metric[index].feed
-		} else { 
-			feed = args.feed || that.metric.feed
-		} 
-		start = args.start || that.start
-		stop = args.stop || that.stop
-		step = args.step || that.step
-		
-		return feed + "&start=" + start + "&stop=" + stop + "&step=" + step;
-	}
 
 	that.invalidData = function(data) { 
 		if (data.error) { return true } 
@@ -350,26 +327,33 @@ Clizia.Graph.Rickshaw = function (args) {
 		return [min, max]
 	} 
 
-	that.update = function() {  
-		now = parseInt(Date.now() / 1000, 10)
-		span = (that.stop - that.start)
-
-		if (is_array(that.metric)) { 
-			$.each(that.metric, function(n, m) { 
-				newfeed = that.feed({index: n, start: now - span, stop: now})
-				$.getJSON(newfeed, function(data) { 
-					if (that.invalidData(data)) { throw "Invalid Data, cannot render update" }
-					that.graph.series[n].data = data
-					that.graph.render();
-				})	
+	that.update = function(args) {  
+				
+		if (is_array(args.metric)) { 
+			$.each(args.metric, function(n, m) { 
+				if (m.data) {  
+					that.graph.series[n].data = m.data
+				} else { 
+					newfeed = m.feed
+					$.getJSON(newfeed, function(data) { 
+						if (that.invalidData(data)) { throw "Invalid Data, cannot render update" }
+						that.graph.series[n].data = data
+					})
+				}	
 			})
+			that.graph.render();
 		} else {
-			newfeed = that.feed({start: now - span, stop: now})
-			$.getJSON(newfeed, function(data) {
-				 if (that.invalidData(data)) { throw "Invalid Data, cannot render update" }
-				 that.graph.series[0].data = data
-				 that.graph.render();
-			 })
+			if (args.data) {
+				that.graph.series[0].data = args.data
+				that.graph.render();
+			} else { 
+				newfeed = args.metric.feed
+				$.getJSON(newfeed, function(data) {
+					 if (that.invalidData(data)) { throw "Invalid Data, cannot render update" }
+					 that.graph.series[0].data = data
+					 that.graph.render();
+				 })
+			}
 		}
 	}
 
@@ -483,17 +467,22 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 	dataStore = []
 	
 	that.render = function(args) {
-		$.each(that.metric, function(i,d) { 
-			$.getJSON(that.feed({index: i}), function(data) { 
-				if (that.invalidData(data)) { 
-					err = data.error || "No data receieved"
-					that.state({state: "error", chart: that.chart, error: err})
-					that.metric_failed();
-					throw err
-				} 
-				dataStore[i] = {data: data, name: d }
-				flagComplete();
-			}) 
+		$.each(that.metric, function(i,d) {
+			if (d.data) { 
+				dataStore[i] = {data: d.data, name: d.title || d.id }; flagComplete()
+			} else { 
+				feed = that.metric[i].feed 
+				$.getJSON(feed, function(data) { 
+					if (that.invalidData(data)) { 
+						err = data.error || "No data receieved"
+						that.state({state: "error", chart: that.chart, error: err})
+						that.metric_failed();
+						throw err
+					} 
+					dataStore[i] = {data: data, name: d }
+					flagComplete();
+				}) 
+			}
 		})
 			
 	}
@@ -808,81 +797,92 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 
 		if (that.removeurl) { 
 			Clizia.Utils.removeURL(that.removeurl, that.metric.removeURL);
-		} 
-		$.getJSON(that.feed(), function(data) { 
-			if (that.invalidData(data)) { 
-				err = data.error ||  errorMessage.noData	
-				that.state({state: "error", element: that.chart, error: err, removeURL: that.metric.removeURL})
-				if (that.slider) { that.slider.failed({graph: that.metric.id}) }
-				that.metric_complete();
-				throw "Error retrieving data: "+err
-			}
-
-			graph = new Rickshaw.Graph({
-				element: document.getElementById(that.graph),
-				width: that.width, 
-				height: that.height,
-				renderer: 'line', 
-				series: [{ data: data, color: that.metric.color }]
-			});
-			
-			that.graph = graph;
-			extent = that.extents(data);
-			pextent = {min: extent[0] - that.padding, max: extent[1] + that.padding}
-			
-			
-
-			if (that.zeromin) { pextent.min = 0 }
-
-			graph.configure(pextent);
-
-			if (that.metric.counter)  { 
-				graph.configure({interpolation: 'step'});
-			}
-
-			new Rickshaw.Graph.Axis.Y( {
-				graph: graph,
-				orientation: 'left',
-				interpolate: 'monotone',
-				pixelsPerTick: 30,
-				tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
-				element: document.getElementById(that.yaxis)
-			} );
-
-			new Rickshaw.Graph.Axis.Time({
-				graph: graph,
-				timeFixture: that.timeFixture()
-			});
-
-			that.dynamicWidth();
-			graph.render();
-			
-			new Rickshaw.Graph.HoverDetail({
-				graph: graph,
-				formatter: function (series, x, y) {
-					content = "<span class='date'>" + 
-						  that.d3_time(x) +
-						  "</span><br/>" + 
-						  that.format(y);
-					return content;
+		}
+		
+		if (that.metric.feed) { 
+ 
+			$.getJSON(that.metric.feed, function(data) { 
+				if (that.invalidData(data)) { 
+					err = data.error ||  errorMessage.noData	
+					that.state({state: "error", element: that.chart, error: err, removeURL: that.metric.removeURL})
+					if (that.slider) { that.slider.failed({graph: that.metric.id}) }
+					that.metric_complete();
+					throw "Error retrieving data: "+err
 				}
-			});
+				
+				that.process(data)
 
-			graph.render();	
-			that.state({state: "complete"})
-			that.metric_complete(); 
+			})
+		} else if (that.metric.data) { 
+			that.process(that.metric.data)
+		}
+	}
+		
+	that.process = function(data) { 
+		graph = new Rickshaw.Graph({
+			element: document.getElementById(that.graph),
+			width: that.width, 
+			height: that.height,
+			renderer: 'line', 
+			series: [{ data: data, color: that.metric.color }]
+		});
+		
+		that.graph = graph;
+		extent = that.extents(data);
+		pextent = {min: extent[0] - that.padding, max: extent[1] + that.padding}
+		
+		
 
-			if (that.slider) {
-				that.slider.render({graphs: graph})
-			} 
+		if (that.zeromin) { pextent.min = 0 }
 
-			that.zoomtoselected(that.base, that.start, that.stop);
+		graph.configure(pextent);
+
+		if (that.metric.counter)  { 
+			graph.configure({interpolation: 'step'});
+		}
+
+		new Rickshaw.Graph.Axis.Y( {
+			graph: graph,
+			orientation: 'left',
+			interpolate: 'monotone',
+			pixelsPerTick: 30,
+			tickFormat: Rickshaw.Fixtures.Number.formatKMBT_round,
+			element: document.getElementById(that.yaxis)
+		} );
+
+		new Rickshaw.Graph.Axis.Time({
+			graph: graph,
+			timeFixture: that.timeFixture()
+		});
+
+		that.dynamicWidth();
+		graph.render();
+		
+		new Rickshaw.Graph.HoverDetail({
+			graph: graph,
+			formatter: function (series, x, y) {
+				content = "<span class='date'>" + 
+					  that.d3_time(x) +
+					  "</span><br/>" + 
+					  that.format(y);
+				return content;
+			}
+		});
+
+		graph.render();	
+		that.state({state: "complete"})
+		that.metric_complete(); 
+
+		if (that.slider) {
+			that.slider.render({graphs: graph})
+		} 
+
+		that.zoomtoselected(that.base, that.start, that.stop);
 
 
-		})
-	} 
+} 
 
-	return that;
+return that;
 }
 
 Clizia.Graph.Rickshaw.Slider = function (args) { 

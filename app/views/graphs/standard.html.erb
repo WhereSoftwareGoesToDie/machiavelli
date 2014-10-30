@@ -28,17 +28,17 @@ slider = Clizia.Graph.Rickshaw.Slider({element: "slider", length: gon.metrics.le
 
 Clizia.Utils.ProgressBar(gon.metrics.length);  //instantiate a progress bar
 
+
 config = { 
 	base: gon.base, 
 	clock: gon.clock,
-	start: gon.start, 
-	stop: gon.stop, 
-	step: gon.step, 
 	slider: slider, 
 	dynamic: true,
 	zeromin: <%= to_bool(check_param(:zeromin, ["on","off"] || false)) %>
 }
 
+
+start = gon.start; stop = gon.stop; step = gon.step
 for (n = 0; n < gon.metrics.length; n++) { 
 	m = gon.metrics[n]
 
@@ -49,18 +49,29 @@ for (n = 0; n < gon.metrics.length; n++) {
 		removeurl: "remove_metric_"+n
 	}
 
+	setting.metric.feed =  metricURL(m.feed_base, start, stop, step)
+
 	chart = new Clizia.Graph.Rickshaw.Standard($.extend(config, setting))
 
 	chart.render()
 	charts.push(chart)
 }
 
+
+
 var intervalID;
 function stopUpdates() { clearInterval(intervalID);} 
 function startUpdates() { 
 	intervalID = setInterval(function(d){ 
-			charts.forEach(function(d) { 
-				d.update()
+			charts.forEach(function(d,i) { 
+				span = stop - start
+				now =  +new Date() / 1000 
+		
+				start = now - span
+				stop = now 
+					
+				feed = metricURL(gon.metrics[i].feed_base, start, stop, step)
+				d.update({metric: {feed: feed}})
 				})
 			}, gon.step * 1000 )
 		

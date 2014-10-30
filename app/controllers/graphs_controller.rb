@@ -35,7 +35,7 @@ class GraphsController < ApplicationController
 
 			g = {}
 			g[:id]        = m.id
-			g[:feed]      = m.feed
+			g[:feed_base] = m.feed
 			g[:live]      = m.live?
 			g[:title]     = m.titleize
 			g[:metadata]  = m.metadata
