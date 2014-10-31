@@ -5,11 +5,13 @@
 <%= include_gon %>
 
 <% @metrics.each_with_index do |m, index| %>
-	<div id="<%="chart_#{index}"%>">
-	<span class="leaf_links">
-		<span id="metric_<%=index%>_url" class="metric_url leaf"></span>
-		<span id="remove_metric_<%=index%>" class="remove_metric leaf" style="float: none;"></span>
-	</span>
+ <div id="chart_<%=index%>_container" style="display: inline-block">
+		<div id="<%="chart_#{index}"%>">
+		<span class="leaf_links">
+			<span id="metric_<%=index%>_url" class="metric_url leaf"></span>
+			<span id="remove_metric_<%=index%>" class="remove_metric leaf" style="float: none;"></span>
+		</span>
+	</div>
 </div>
 <style>
 .leaf { 
