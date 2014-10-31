@@ -5,12 +5,24 @@
 <%= include_gon %>
 
 <% @metrics.each_with_index do |m, index| %>
-	<div id="<%="chart_#{index}"%>"></div>
-	<div id="metric_<%=index%>_url" class="metric_url leaf"></div>
-	<div id="remove_metric_<%=index%>" class="remove_metric leaf" style="float: none;"></div>
+	<div id="<%="chart_#{index}"%>">
+	<span class="leaf_links">
+		<span id="metric_<%=index%>_url" class="metric_url leaf"></span>
+		<span id="remove_metric_<%=index%>" class="remove_metric leaf" style="float: none;"></span>
+	</span>
+</div>
 <style>
 .leaf { 
 	float: none !important; margin-right: 0px;
+	position:relative; display:inline-block
+}
+.leaf_links { 
+    position: relative;
+    left: 420px;
+    display: inline-block;
+    width: 10px;
+    z-index: 100;
+    top: 100px;
 }
 .remove_metric { float: none } 
 </style>
@@ -28,6 +40,7 @@ config = {
 }
 
 start = gon.start; stop = gon.stop; step = gon.step
+
 for (n = 0; n < gon.metrics.length; n++) { 
 	gon.metrics[n].feed =  metricURL(gon.metrics[n].feed_base, start, stop, step)
 

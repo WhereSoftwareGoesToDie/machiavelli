@@ -336,22 +336,27 @@ Clizia.Graph.Rickshaw = function (args) {
 				} else { 
 					newfeed = m.feed
 					$.getJSON(newfeed, function(data) { 
-						if (that.invalidData(data)) { throw "Invalid Data, cannot render update" }
+						if (that.invalidData(data)) { 
+							throw "Invalid Data, cannot render update" 
+						}
 						that.graph.series[n].data = data
 					})
 				}	
 			})
+			if (typeof that.update_overlay == "function") { that.update_overlay() }
 			that.graph.render();
 		} else {
-			if (args.data) {
-				that.graph.series[0].data = args.data
+			if (args.metric.data) {
+				that.graph.series[0].data = args.metric.data
 				that.graph.render();
+				if (typeof that.update_overlay == "function") { that.update_overlay() }
 			} else { 
 				newfeed = args.metric.feed
 				$.getJSON(newfeed, function(data) {
-					 if (that.invalidData(data)) { throw "Invalid Data, cannot render update" }
-					 that.graph.series[0].data = data
-					 that.graph.render();
+					if (that.invalidData(data)) { throw "Invalid Data, cannot render update" }
+					that.graph.series[0].data = data
+					that.graph.render();
+					if (typeof that.update_overlay == "function") { that.update_overlay() }
 				 })
 			}
 		}
