@@ -4,7 +4,7 @@ gem 'rails_config'
 gem 'therubyracer'
 gem 'sass-rails' 
 gem 'uglifier'
-
+gem 'sprockets', "~> 2.12"
 gem 'gon'
 gem 'color'
 gem 'redis'
@@ -16,7 +16,7 @@ group :production do
 end
 
 group :development do
-	gem "better_errors"
+	gem "better_errors", "~> 1.1"
 	gem "binding_of_caller"
 	gem "capybara"
 	gem "capybara-webkit"
