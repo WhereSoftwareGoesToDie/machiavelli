@@ -127,4 +127,9 @@ class GraphsController < ApplicationController
 		url = chg_qs(:stop, stop, {url: p_url})
 		redirect_to root_path + url
 	end
+
+	def suggest
+		render :file => "public/suggest.html"
+	end
+
 end

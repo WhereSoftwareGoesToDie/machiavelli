@@ -9,4 +9,6 @@ Machiavelli::Application.routes.draw do
 
   get "metric" => "metrics#get", as: "get_metric"
   get "search" => "metrics#list", as: "list_metric" 
+
+  get "suggest/:origin(/host/:host/service/:service)" => "suggest#get", as: "suggest"
 end

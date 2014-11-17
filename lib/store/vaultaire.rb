@@ -64,6 +64,25 @@ class Store::Vaultaire < Store::Store
                 result.map{|x| "#{@origin_id}#{SEP}#{machiavelli_encode x}"}
 	end
 
+	def adv_search_metrics kvp={}, args={}
+		page = args[:page] || 1
+                page_size = args[:page_size] || 0
+		
+		uri = "#{@base_url}/simple/search?origin=#{@origin_id}&page=#{page - 1}&page_size=#{page_size}"
+
+		kvp.each do |k,v|
+			uri += "&key=#{k}&value=#{v}"
+		end
+
+		result = json_metrics_list uri
+
+                # Beta Sieste - remove known bad metadata items
+                result.delete_if{|a| a.include? "%3b"} # semicolon
+                result.delete_if{|a| !a.include? DELIM} # remove address-only listings
+
+                result.map{|x| "#{machiavelli_encode x}"}
+	end
+
 	# Generate the url for the datastream for a given metric
 	def get_metric_url m, start, stop, step 
 		query = []

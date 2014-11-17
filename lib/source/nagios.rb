@@ -37,4 +37,51 @@ class Source::Nagios < Source::Source
 
 		return meta
 	end
+
+	def suggest params
+
+		stacks_on = "&graph=stacked&render=area&stack=on"
+		area_on   = "&graph=stacked&render=area"
+
+		store = init_store @settings.store, @origin_id, @settings
+
+		query = {}
+		style = ""
+		query[:host]    =  params[:host].to_s
+		query[:service] = "*#{params[:service].to_s}*"
+
+
+		# Pre query conditionals
+		case params[:service]
+			when "cpu" then
+				query[:metric] = "*Percent*"
+		end
+
+		result = (store.adv_search_metrics query).map{|r| keysplit r}
+
+		# Post query conditionals
+		case params[:service]
+			when "cpu", "mem" then 
+				style = stacks_on
+			when "load" then 
+				result = result.sort_by{|a| a["metric"].split(params[:service]).last.to_i}
+			when "diskio" then
+				result = result.select{
+					|a| (a["metric"].include? "overall") && (a["metric"].include? "bytes")
+				}
+				style = right_on result 
+		end
+
+		"?#{result.map{|r| "&metric=#{urlify r}"}.join("")}#{style}"
+	end
+
+	def urlify r
+		"#{@origin_id}#{SEP}#{r.address}"
+	end
+
+	def right_on ms, index=-1
+		right = ms[index]
+		return "&graph=stacked&right=#{urlify right}"
+	end
+
 end

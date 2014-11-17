@@ -19,4 +19,8 @@ class Source::Source
 	def titleize str
 		return str
 	end
+
+	def suggest params
+		return {error: "No suggestion engine for #{self.class.name}"}
+	end
 end
