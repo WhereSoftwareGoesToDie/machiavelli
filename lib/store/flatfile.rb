@@ -51,7 +51,7 @@ class Store::Flatfile < Store::Store
 		raise Store::Error, "No data for #{m.metric_id} within selected time period" if data == []
 
 		if @settings.store_settings.interpolate
-                        interpolate(data, start, stop, _step).to_json
+                        interpolate(data, start, stop, step).to_json
                 else
                         data.to_json
                 end
