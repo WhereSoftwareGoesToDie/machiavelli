@@ -23,13 +23,13 @@ class Store::Flatfile < Store::Store
 
 	# Flat files don't auto update, therefore cannot be assumed to be live
 	def live?
-		false 
+		false
 	end
 
 	# In lieu of querying an endpoint, confirm the file exists, and return the metric from the settings
 	def get_metrics_list
 		test_file
-		[@metric]	
+		[@metric]
         end
 
 	# In lieu of a href, use a file locator
@@ -38,10 +38,10 @@ class Store::Flatfile < Store::Store
 
 	end
 
-	# Traverse the file for the parameters given 
+	# Traverse the file for the parameters given
         def get_metric m, start=nil, stop=nil, step=nil
 		test_file
-		
+
 		data = []
 		File.open(@file).each_line do |line|
 			x, y = line.split(@delimiter)
@@ -50,25 +50,10 @@ class Store::Flatfile < Store::Store
 
 		raise Store::Error, "No data for #{m.metric_id} within selected time period" if data == []
 
-		filtered = []			
-		
-		# Attempt filtering of data as per the 3st parameters.
-		(start..stop).step(step).each do |x|
-			points = data.select{|p| p[:x].between?(x, x+step-1)}
-			case
-				when points.length == 1 then 
-					filtered << {x: x, y: points[0][:y]}
-				when points.length > 0 then 
-					avg = points.map{|b| b[:y]}.inject{|a, b| a+b}.to_f / points.size
-					filtered << {x: x, y: avg}
-				when points.length == 0 then
-					# no data within range, so give it a NaN
-					filtered << {x: x, y: (0.0 / 0.0)}
-			end
-		end
-
-		# Ensure a hard limit on the size of the array before returning
-		point_c = (stop - start) / step
-		filtered.take(point_c)
+		if @settings.store_settings.interpolate
+                        interpolate(data, start, stop, _step).to_json
+                else
+                        data.to_json
+                end
         end
-end 
+end

@@ -3,7 +3,7 @@
 # e.g. link at bottom of http://www.bom.gov.au/products/IDN60901/IDN60901.94759.shtml
 #     -> http://www.bom.gov.au/fwo/IDN60901/IDN60901.94759.json
 # Assumes a list of json files in a directory called @data_folder
-# 
+#
 # Suggestion: place the @data_folder in a subfolder of public/ and use nginx's autoindex to serve the folder for debugging, etc
 #
 # sample config:
@@ -12,7 +12,7 @@
 #        root /path/to/machiavelli/public;
 #        autoindex on;
 #    }
- 
+
 
 class Store::Idn < Store::Store
 
@@ -33,9 +33,9 @@ class Store::Idn < Store::Store
 			measures = d.observations.data.first.map{|k,v| k}.select{|m| METS.include? m}
 			list.push( measures.map{|m| "#{site}#{sep}#{m}"})
 		}
-	
+
 		set_idn_sitemap
-			
+
 		list.flatten.uniq
 	end
 
@@ -84,7 +84,7 @@ class Store::Idn < Store::Store
 			date = DateTime.parse("#{b.local_date_time_full}#{offset}").strftime("%s").to_i
 			data.push({x: date, y: b[met].to_f}) if date.between?(start,stop)
 		}
-
+		_step = step;
 		step =  data[1] ? (data[1][:x] - data[0][:x]).abs : 1800
 		data = [{x:(stop - (stop-start)/2).to_i,y:nil}] if data.empty?
 
@@ -99,8 +99,13 @@ class Store::Idn < Store::Store
 
 		((data[-1][:x] + step)..stop).step(step).each{|x| padded.push({x:x, y:nil}) }
 
-		padded.take((stop-start)/step).to_json
+		result = padded.take((stop-start)/step)
 
+		if @settings.store_settings.interpolate
+			interpolate(result, start, stop, _step).to_json
+		else
+			result.to_json
+		end
 	end
 
 
@@ -121,7 +126,7 @@ def set_idn_sitemap
 	r = redis_conn
 	data_files.each{|f|
 		site = nameparse(JSON.parse(File.read(f)).observations.header.first.name)
-		r.sadd "#{REDIS_KEY}BOM:IDN_SITEMAP:#{site}",f 
+		r.sadd "#{REDIS_KEY}BOM:IDN_SITEMAP:#{site}",f
 	}
 end
 

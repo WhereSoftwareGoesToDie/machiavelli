@@ -2,13 +2,13 @@ source 'https://rubygems.org'
 gem 'rails'
 gem 'rails_config'
 gem 'therubyracer'
-gem 'sass-rails' 
+gem 'sass-rails'
 gem 'uglifier'
 gem 'sprockets', "~> 2.12"
 gem 'gon'
 gem 'color'
 gem 'redis'
-
+gem 'interpolate'
 gem "git-version-bump"
 
 group :production do

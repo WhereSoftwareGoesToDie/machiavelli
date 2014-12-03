@@ -1,6 +1,7 @@
 require 'net/http'
 require 'uri'
 require 'ostruct'
+require 'interpolate'
 # Library filers file
 module Helpers
 
@@ -23,13 +24,13 @@ module Helpers
                         return false
                 end
         end
-	
+
 	# Given an origin ID, find the key/value in the settings file and return it, plus the search key
 	def origin_settings ostr
 		settings = Settings.origins.find{|o,k| o.to_s == ostr.to_s}
 		unless settings
 			# Use a Error store, default Source if no settings found
-			return [ostr,OpenStruct.new({store: "Errorstore", source: "Source"})] 
+			return [ostr,OpenStruct.new({store: "Errorstore", source: "Source"})]
 		end
 		settings
 	end
@@ -43,7 +44,7 @@ module Helpers
 
 	# Base parent key for all our Redis doings
         REDIS_KEY = Settings.metrics_key || "Machiavelli.Metrics"
-  
+
 	# Create a redis connection object
         def redis_conn
                 host = Settings.redis_host || "127.0.0.1"
@@ -129,12 +130,33 @@ module Helpers
 
 	def init_lib type, name, origin, settings
 		name = name.titleize
-		file = File.join(Rails.root, "lib", type.downcase, name.downcase+".rb") 
+		file = File.join(Rails.root, "lib", type.downcase, name.downcase+".rb")
 		unless File.exists? file
 			raise Store::Error, "Library file #{file} does not exist. Check settings."
 		end
 
 		return "#{type}::#{name}".constantize.new origin, settings
 	end
+
+	def interpolate data, start, stop, step
+		lerp = []
+
+		d = {}
+
+		# Format to prefered format and nils to NaN for Interpolate::
+		data.each{|i| y = i[:y] || (0.0/0.0); d[i[:x]] = y}
+
+		# Dirty cheater
+		path = Interpolate::Points.new(d)
+		(start..stop).step(step).each do |x|
+			y = path.at(x)
+			lerp << {x: x, y: y}
+		end
+
+                # Ensure a hard limit on the size of the array before returning
+                point_c = (stop - start) / step
+                lerp.take(point_c)
+	end
+
 end
 
