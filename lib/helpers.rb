@@ -138,11 +138,27 @@ module Helpers
 		return "#{type}::#{name}".constantize.new origin, settings
 	end
 
+
+	# Data Sanitization
+	def top_tail_pad data, start, stop, step, pad=nil
+		padded = []
+
+		data = data.sort{|a,b| a[:x] <=> b[:x]}
+
+		(data[0][:x] - step).step(start, -step).each{|x| padded.push({x:x, y: pad}) }
+
+		padded.reverse!
+		padded.concat data
+
+                ((data[-1][:x] + step)..stop).step(step).each{|x| padded.push({x:x, y: pad}) }
+
+		padded.take((stop - start)/step)
+	end
+
 	def interpolate data, start, stop, step
 		lerp = []
 
 		d = {}
-
 		# Format to prefered format and nils to NaN for Interpolate::
 		data.each{|i| y = i[:y] || (0.0/0.0); d[i[:x]] = y}
 
@@ -156,6 +172,16 @@ module Helpers
                 # Ensure a hard limit on the size of the array before returning
                 point_c = (stop - start) / step
                 lerp.take(point_c)
+	end
+
+	def data_sanitize data, start, stop, step
+		data = top_tail_pad(data, start, stop, step)
+
+                if @settings.store_settings.interpolate
+                        interpolate(data, start, stop, step).to_json
+                else
+                        data.to_json
+                end
 	end
 
 end

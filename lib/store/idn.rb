@@ -65,7 +65,6 @@ class Store::Idn < Store::Store
 			return {error: "Site #{site} does not exist"}.to_json
 		end
 
-
 		blob = []
 		zone = ""
 
@@ -84,28 +83,10 @@ class Store::Idn < Store::Store
 			date = DateTime.parse("#{b.local_date_time_full}#{offset}").strftime("%s").to_i
 			data.push({x: date, y: b[met].to_f}) if date.between?(start,stop)
 		}
-		_step = step;
-		step =  data[1] ? (data[1][:x] - data[0][:x]).abs : 1800
-		data = [{x:(stop - (stop-start)/2).to_i,y:nil}] if data.empty?
 
-		data = data.sort{|a,b| a[:x] <=> b[:x]} if data
+		return {error: "No data for period specified"} if data.nil? || data == []
 
-		padded = []
-
-		(data[0][:x] - step).step(start, -step).each{|x| padded.push({x:x, y:nil}) }
-
-		padded.reverse!
-		padded.concat data
-
-		((data[-1][:x] + step)..stop).step(step).each{|x| padded.push({x:x, y:nil}) }
-
-		result = padded.take((stop-start)/step)
-
-		if @settings.store_settings.interpolate
-			interpolate(result, start, stop, _step).to_json
-		else
-			result.to_json
-		end
+		data_sanitize data, start, stop, step
 	end
 
 
