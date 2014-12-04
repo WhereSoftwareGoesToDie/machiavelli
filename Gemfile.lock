@@ -92,6 +92,7 @@ GEM
     hitimes (1.2.2)
     i18n (0.6.11)
     interception (0.5)
+    interpolate (0.3.0)
     json (1.8.1)
     kgio (2.9.2)
     libv8 (3.16.14.7)
@@ -252,6 +253,7 @@ DEPENDENCIES
   gon
   guard-rspec
   guard-spork
+  interpolate
   pry-debugger
   pry-rescue
   pry-stack_explorer

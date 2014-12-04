@@ -6,24 +6,24 @@ describe "Flatfiles backend", :js => true do
         type = "Flatfile"
 	name = "Metric"
 	metric = "#{type}~#{name}"
-	
+
 	before :each do
-		add_config type_config("Flatfile", {file_name: 'public/flatfile_15s.csv', metric: name})
+		add_config type_config("Flatfile", {file_name: 'public/flatfile_15s.csv', metric: name, interpolate: true})
 		test_config type
 	end
 
 	context "refresh metrics" do
 		include_examples "refresh metrics", type
 	end
-	
+
 	context "graphs" do
 		it_behaves_like "a graph", metric
 	end
 end
 
-describe "Broken Filefiles Backend", :js => true do	
-	
-	
+describe "Broken Filefiles Backend", :js => true do
+
+
 	it "test fallback functionality" do
 
 		bad_backend = "Flatfile~Potato"

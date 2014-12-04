@@ -65,12 +65,12 @@ class Store::Vaultaire < Store::Store
 	end
 
 	# Generate the url for the datastream for a given metric
-	def get_metric_url m, start, stop, step 
+	def get_metric_url m, start, stop, step
 		query = []
 
 		metakeys = m.metadata
 		float = metakeys["_float"]
-                
+
 		_start, _stop = validate_time(start, stop)
 
                 query << "start=#{_start}"
@@ -121,31 +121,6 @@ class Store::Vaultaire < Store::Store
                         return [metric.select{|a| a[:x] >= start}.first]
                 end
 
-                padded = []
-
-
-                # Assume that we never get the complete set of data from start to stop. 
-                # Backpad the starting data, and forward pad the ending data
-                # Use steps to ensure consistent intervals
-                first_point = metric[0][:x]
-
-                # Reversing ensures consistent steps from interval BEFORE first data point to start 
-                (first_point-step).step(start, -step).each do |x|
-                        padded << {x: x, y: nil}
-                end
-                padded.reverse!
-
-                # Append actual data
-                padded.concat metric
-
-                # Append forward padding from one step AFTER data to stop
-                last_point = metric[-1][:x]
-                (last_point+step..stop).step(step).each do |x|
-                        padded << {x: x, y: nil}
-                end
-
-		# Ensure a hard limit on the size of the array before returning
-		points = (stop - start)/step
-                padded.take(points)
+		data_sanitize metric, start, stop, step
 	end
 end
