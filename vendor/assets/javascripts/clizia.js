@@ -567,12 +567,17 @@ Clizia.Graph.Rickshaw.Stacked = function(args) {
 		config.padding = padArray
 
 
-		graph = new Rickshaw.Graph({
-			element: document.getElementById(that.graph),
-			width: that.width, 
-			height: that.height, 
-			series: series
-		})
+		try {
+			graph = new Rickshaw.Graph({
+				element: document.getElementById(that.graph),
+				width: that.width,
+				height: that.height,
+				series: series
+			})
+		} catch (e) {
+			that.state({state: "error", element: that.chart, error: e, removeURL: that.metric.removeURL})
+			return
+		}
 
 		graph.configure(config);
 
