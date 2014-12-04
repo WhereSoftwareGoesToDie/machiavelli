@@ -6,7 +6,10 @@
 <%= form_for "time", url: absolute_time_path, html: {style: "display: inline-block"} do |f| %>
 	<% times.each do |b|
 		val = to_epoch(params[b[:field].to_sym] || b[:default].to_s)
-		val = Time.at(val.to_i).strftime("%d/%m/%Y %H:%M:%S") %>
+		val = Time.at(val.to_i)
+		val = val.gmtime if get_param(:clock) == "utc"
+		val = val.strftime("%d/%m/%Y %H:%M:%S")
+	%>
 
 <div class="btn-group" style="font-size: small"><%= b[:label] %></div> 	
 <div class="btn-group" style="width: 200px">
