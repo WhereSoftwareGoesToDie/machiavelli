@@ -9,22 +9,14 @@ class Source::Ceilometer < Source::Source
 
 		display_name = nil
 
-
 		# Given the metadata for a OpenStack object, this should return human readable metric names
 		# Only attempt to use a nicer name if we get sufficient metadata back from our calls
-		if keys["counter_name"] then
+		if keys["metric_name"] then
 
 			# Create a Store object from the settings file to search metrics for us
 			store = init_store @settings.store, @origin_id, @settings
 
-			if (keys["counter_name"].include? "network.") then
-				search = store.search_metrics "*memory*#{keys["instance_id"]}*"
-				if search.length >= 1
-					result = keysplit(search.first)
-					display_name = "(#{result["hostname"]})"
-				end
-			end
-			if keys["counter_name"] == "image.download" || keys["counter_name"] == "image.serve" then
+			if keys["metric_name"] == "image.download" || keys["metric_name"] == "image.serve" then
 				search = store.search_metrics "*gauge*image*#{keys["resource_id"]}*"
 				if search.length >= 1
 					result = keysplit(search.first)
@@ -40,9 +32,10 @@ class Source::Ceilometer < Source::Source
 			nice << (keys["display_name"] || keys["name"] || keys["id"])
 		end
 
-		nice << keys["counter_name"]
-		nice << keys["counter_type"]
+		nice << keys["metric_name"]
+		nice << keys["metric_type"]
 		nice << keys["_unit"]
-		return URI.decode(nice.join(" - "))
+
+		return URI.decode(nice.delete_if{|a| a.nil?}.join(" - "))
 	end
 end
