@@ -78,6 +78,8 @@ Clizia.Graph = function(args) {
 				error_alert += "</div>";
 				graph.append(error_alert)
 
+				stopButtonClick() 
+
 				graph.addClass("error")
 			} else if (args.state === "complete") {
 				rmv_wait()
