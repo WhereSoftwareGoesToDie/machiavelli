@@ -123,14 +123,19 @@ Clizia.Graph = function(args) {
 				rmv_wait()
 
 				error = args.error;
-				url = args.removeURL || ""
+				removeURL = args.removeURL || ""
+				showURL = args.showURL || ""
 				detail = args.detail || ""
 
 				error = stripHTML(error);
 				error_alert = "<div class='alert alert-danger'>" + error;
 
-				if (url) {
-					error_alert +=  ". <a class='alert-link' href='"+url+"'>Remove graph</a>.";
+				if (showURL) {
+					error_alert +=  ". <a class='alert-link' href='"+showURL+"'>Check source data</a>";
+				}
+
+				if (removeURL) {
+					error_alert +=  ". <a class='alert-link' href='"+removeURL+"'>Remove graph</a>.";
 				}
 
 				if (detail) {
@@ -801,13 +806,6 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 	var that = Clizia.Graph.Rickshaw(args);
 
 	that.render = function(args) {
-		if (that.showurl) {
-			Clizia.Utils.showURL(that.showurl, that.metric.sourceURL);
-		}
-
-		if (that.removeurl) {
-			Clizia.Utils.removeURL(that.removeurl, that.metric.removeURL);
-		}
 
 		if (that.metric.feed) {
 
@@ -829,6 +827,13 @@ Clizia.Graph.Rickshaw.Standard = function(args) {
 	}
 
 	that.process = function(data) {
+		if (that.showurl) {
+			Clizia.Utils.showURL(that.showurl, that.metric.sourceURL);
+		}
+
+		if (that.removeurl) {
+			Clizia.Utils.removeURL(that.removeurl, that.metric.removeURL);
+		}
 		graph = new Rickshaw.Graph({
 			element: document.getElementById(that.graph),
 			width: that.width,
@@ -942,18 +947,11 @@ Clizia.Graph.Rickshaw.Tealeaves = function(args) {
 	var that = Clizia.Graph.Rickshaw(args);
 	
 	that.render = function(args) { 
-		if (that.showurl) {
-			Clizia.Utils.showURL(that.showurl, that.metric.sourceURL);
-		} 
-
-		if (that.removeurl) { 
-			Clizia.Utils.removeURL(that.removeurl, that.metric.removeURL);
-		} 
 		if (that.metric.feed) { 
 			$.getJSON(that.metric.feed, function(data) { 
 				if (that.invalidData(data)) { 
 					err = data.error ||  errorMessage.noData	
-					that.state({state: "error", element: that.chart, error: err, removeURL: that.metric.removeURL})
+					that.state({state: "error", element: that.chart, error: err, removeURL: that.metric.removeURL, showURL: that.metric.sourceURL})
 					if (that.slider) { that.slider.failed({graph: that.metric.id}) }
 					that.metric_complete();
 					throw "Error retrieving data: "+err
@@ -967,6 +965,13 @@ Clizia.Graph.Rickshaw.Tealeaves = function(args) {
 	} 
 
 	that.process = function(data) {  
+		if (that.showurl) {
+			Clizia.Utils.showURL(that.showurl, that.metric.sourceURL);
+		} 
+
+		if (that.removeurl) { 
+			Clizia.Utils.removeURL(that.removeurl, that.metric.removeURL);
+		} 
 
 		graph = new Rickshaw.Graph({
 			element: document.getElementById(that.graph),
