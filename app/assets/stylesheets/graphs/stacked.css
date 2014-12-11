@@ -1,4 +1,7 @@
-/*= require graphs/standard  */
+/*
+ *= require graphs/standard
+ */
+
 .legend { 
 	margin-left: 40px;
 } 

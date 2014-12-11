@@ -1,6 +1,7 @@
-/*
+/* 
  *= require rickshaw
  */
+
 #chart_container {
         position: relative;
         display: inline-block;
