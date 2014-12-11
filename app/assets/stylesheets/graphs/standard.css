@@ -1,42 +1,33 @@
-/*
- *= require rickshaw
- */
-#chart_container {
-        position: relative;
-        display: inline-block;
-        font-family: Arial, Helvetica, sans-serif;
-}
-.slider {
-       display: inline-block;
-        margin-left: 60px; /* yaxis -20*/
-	padding-bottom: 20px;
-}
-.chart {
-       display: inline-block;
-        margin-left: 60px; /* yaxis */
-}
-.y_axis {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 60px;
-}
-.legend {
-	font-size: small;
-	vertical-align: top;
-	margin-top: 20px;
-	background: transparent;
-	color: black;
+.chart_container {
+position:relative;
+display:inline-block;
+font-family:Arial, Helvetica, sans-serif;
 }
 
-/* Rickshaw Customizations */
-/* Increase hover value dot for ease of visibility */
-.rickshaw_graph .detail .dot {
-        width: 8px;
-        height: 8px;
-        margin-left: -4px;
-        margin-top: -4px;
+.slider {
+display:inline-block;
+margin-left:60px;
+/* yaxis -20*/
+padding-bottom:20px;
 }
-.graph_title { 
-	padding-left: 60px; /*yaxis*/
+
+.chart {
+display:inline-block;
+margin-left:60px;
 }
+
+.y_axis {
+position:absolute;
+top:0;
+bottom:0;
+width:60px;
+}
+
+.legend {
+font-size:small;
+vertical-align:top;
+margin-top:20px;
+background:transparent;
+color:#000;
+}
+

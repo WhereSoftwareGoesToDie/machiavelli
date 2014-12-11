@@ -1,0 +1,90 @@
+.rickshaw_graph .detail .x_label {
+display:none;
+}
+
+.rickshaw_graph .detail .item {
+line-height:1.4;
+padding:.5em;
+}
+
+.detail_swatch {
+display:inline-block;
+width:10px;
+height:10px;
+margin:0 4px 0 0;
+}
+
+.rickshaw_graph .detail .date {
+color:#a0a0a0;
+}
+
+.chart_container {
+padding-bottom:40px;
+}
+
+.data_source {
+display:inline;
+}
+
+.data_source i {
+font-size:.8em;
+color:#666;
+text-decoration:none;
+}
+
+.remove_metric {
+display:inline;
+z-index:100;
+float:right;
+margin-right:40px;
+}
+
+.remove_metric a {
+color:#ccc;
+text-decoration:none;
+}
+
+.remove_metric a:hover {
+color:#666;
+}
+
+.metric_url {
+display:inline;
+}
+
+.metric_url span a {
+font-size:small;
+color:grey;
+}
+
+.plaid,.plaid:hover {
+text-decoration:none;
+color:#000;
+vertical-align:text-bottom;
+display:inline;
+}
+
+.tooltip-inner {
+max-width:800px;
+}
+
+#zoomtoselected {
+display:inline;
+position:relative;
+top:-25px;
+left:30px;
+}
+
+.waiting i {
+font-size:48px;
+}
+
+.waiting i:before {
+font-family:FontAwesome;
+content:"\f110";
+}
+
+
+.graph_title {
+padding-left:60px;
+}
