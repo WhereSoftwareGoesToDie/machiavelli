@@ -1,0 +1,18 @@
+.overlay-name {
+  position: absolute;
+  font-size: 18px;
+  text-align: left;
+  width: 150px;
+  left: 20px;
+  bottom: 20px;
+  z-index: 200;
+}
+
+.overlay-number {
+  position: absolute;
+  font-size: 48px;
+  font-weight: bold;
+  right: 20px;
+  bottom: 20px;
+  z-index: 200;
+}

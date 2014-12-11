@@ -1,10 +1,11 @@
-/* Formatting for better horizon labels */
-.horizon .title, .horizon .value {
-        font-weight: bold;
-        text-shadow: -1px 0 rgba(255,255,255,0.5), 0 1px rgba(255,255,255,0.5), 1px 0 rgba(255,255,255,0.5), 0 -1px rgba(255,255,255,0.5);
+.horizon .title,.horizon .value {
+font-weight:700;
+text-shadow:-1px 0   rgba(255,255,255,0.5),
+	     0   1px rgba(255,255,255,0.5),
+ 	     1px 0   rgba(255,255,255,0.5),
+	     0  -1px rgba(255,255,255,0.5);
 }
 
-.horizon .title { 
-	bottom: 20px
-} 
-
+.horizon .title {
+bottom:20px;
+}
