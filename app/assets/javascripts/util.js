@@ -54,10 +54,12 @@ function stopAll() {
 function enableStop() { 
 	$("#autoplay_stop_link").removeClass("disabled")
 	$("#autoplay_play_link").addClass("disabled")
+	document.title = "\u25B8 Machiavelli"
 } 
 function enablePlay() { 
 	$("#autoplay_stop_link").addClass("disabled")
 	$("#autoplay_play_link").removeClass("disabled")
+	document.title = "Machiavelli"
 } 
 
 function metric_sort() {
