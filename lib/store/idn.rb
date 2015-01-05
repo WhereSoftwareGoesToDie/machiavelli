@@ -30,8 +30,10 @@ class Store::Idn < Store::Store
 		data_files.each{|f|
 			d = JSON.parse(File.read(f))
 			site = nameparse(d.observations.header.first.name)
-			measures = d.observations.data.first.map{|k,v| k}.select{|m| METS.include? m}
-			list.push( measures.map{|m| "#{site}#{sep}#{m}"})
+			unless d.observations.data.empty? 
+				measures = d.observations.data.first.map{|k,v| k}.select{|m| METS.include? m}
+				list.push( measures.map{|m| "#{site}#{sep}#{m}"})
+			end
 		}
 
 		set_idn_sitemap
