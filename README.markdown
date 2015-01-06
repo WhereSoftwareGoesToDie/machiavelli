@@ -1,9 +1,9 @@
 Machiavelli
 =========
 
-[![Release Status](http://img.shields.io/github/release/anchor/machiavelli.svg?style=flat)](http://github.com/anchor/machiavelli/releases/latest)
-[![Travis Status](http://img.shields.io/travis/anchor/machiavelli.svg?style=flat)](https://travis-ci.org/anchor/machiavelli)
-[![Coverage Status](http://img.shields.io/coveralls/anchor/machiavelli.svg?style=flat)](https://coveralls.io/r/anchor/machiavelli)
+[![Release Status](http://img.shields.io/github/release/anchor/machiavelli.svg?style=flat-square)](http://github.com/anchor/machiavelli/releases/latest)
+[![Travis Status](http://img.shields.io/travis/anchor/machiavelli/master.svg?style=flat-square)](https://travis-ci.org/anchor/machiavelli)
+[![Coverage Status](http://img.shields.io/coveralls/anchor/machiavelli.svg?style=flat-sqaure)](https://coveralls.io/r/anchor/machiavelli)
 [![Documentation Coverage](http://inch-ci.org/github/anchor/machiavelli.svg)](http://inch-ci.org/github/anchor/machiavelli)
 
 
