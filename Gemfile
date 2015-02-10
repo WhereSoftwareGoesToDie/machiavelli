@@ -30,7 +30,3 @@ group :development do
 	gem 'simplecov', '~> 0.7.1'
 	gem 'sinatra'
 end
-
-gem "pry-debugger"
-gem "pry-rescue"
-gem "pry-stack_explorer"
