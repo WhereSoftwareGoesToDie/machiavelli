@@ -1,6 +1,5 @@
 # Machiavelli
 
-
 [![Release Status](http://img.shields.io/github/release/machiavellian/machiavelli.svg?style=flat-square)](http://github.com/machiavellian/machiavelli/releases/latest)
 [![Travis Status](http://img.shields.io/travis/machiavellian/machiavelli/master.svg?style=flat-square)](https://travis-ci.org/machiavellian/machiavelli)
 [![Coverage Status](http://img.shields.io/coveralls/machiavellian/machiavelli.svg?style=flat-sqaure)](https://coveralls.io/r/machiavellian/machiavelli)
@@ -15,7 +14,6 @@ By detailing the information required to get data out of it's data **store**, an
 ## Demonstration
 
 Live demo coming soon
-
 
 ## Local deployment
 
