@@ -3,7 +3,6 @@ require 'color'
 # Horizon extension of Graph
 class Graph::Horizon < Graph::Graph
 
-	# Default: Anchor blue
 	GRAPH_COLOUR = Settings.horizon_color || "#006d2c"
 	
 	# Given the base graph colour, create a range of hues from the inverse to the colour itself in a range. 
