@@ -1,5 +1,6 @@
 # Machiavelli
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/) 
 [![Release Status](http://img.shields.io/github/release/machiavellian/machiavelli.svg?style=flat-square)](http://github.com/machiavellian/machiavelli/releases/latest)
 [![Travis Status](http://img.shields.io/travis/machiavellian/machiavelli/master.svg?style=flat-square)](https://travis-ci.org/machiavellian/machiavelli)
 [![Coverage Status](http://img.shields.io/coveralls/machiavellian/machiavelli.svg?style=flat-sqaure)](https://coveralls.io/r/machiavellian/machiavelli)
