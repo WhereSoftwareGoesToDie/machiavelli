@@ -12,9 +12,6 @@ By detailing the information required to get data out of it's data **store**, an
 
 [See the Linux Conf AU 2015 talk on Machiavelli](https://www.youtube.com/watch?v=My65wJ-sBVc)
 
-## Demonstration
-
-Live demo coming soon
 
 ## Local deployment
 
