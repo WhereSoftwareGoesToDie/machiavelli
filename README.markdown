@@ -6,6 +6,13 @@
 [![Coverage Status](http://img.shields.io/coveralls/machiavellian/machiavelli.svg?style=flat-sqaure)](https://coveralls.io/r/machiavellian/machiavelli)
 [![Documentation Coverage](http://inch-ci.org/github/machiavellian/machiavelli.svg)](http://inch-ci.org/github/machiavellian/machiavelli)
 
+---------
+
+**machiavelli is no longer maintained. [Read more](http://glasnt.com/blog/2016/01/15/on-unmaintained-projects.html)**
+
+---------
+
+
 Machiavelli is a generic time-series dataset visualisation tool, written in Ruby on Rails, and using d3.js-family libraries.
 
 By detailing the information required to get data out of it's data **store**, and optional information about the humanization about the **source** of this data, Machiavelli can compare and correlate an abstract number of arbitary data metrics. 
